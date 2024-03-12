@@ -1,79 +1,49 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+<h1 align="center">
+      Coupon Aggregator Client
+	<br>
+</h1>
 
-# Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+<div align="center">
+Client source code for Coupon aggregator.
 
-## Step 1: Start the Metro Server
+Server Link <a href="https://github.com/p-society/coupon-aggregator-server">here</a> .
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+<h3>P-Society Handles</h3>
+<h3 align="center">
+	<a href="https://dev-psoc.netlify.app/">Website</a>
+	<span> | </span>
+	<a href="https://discord.gg/UhmKJGMnan">Community Discord</a>
+	<span> | </span>
+	<a href="https://github.com/p-society/gc-server/blob/main/docs/CONTRIBUTING.md">Contribute</a>
+</h3>
 
-To start Metro, run the following command from the _root_ of your React Native project:
+</div>
 
-```bash
-# using npm
-npm start
+----------------------------------------
+<div align="center">
+  
+*Coupon Aggregator* is a service made to allow transactions of mess coupons between IIIT-Bh Students.. The application is built using React native,Featherjs(v4) and MongoDB.
 
-# OR using Yarn
-yarn start
-```
+<img src='https://skillicons.dev/icons?i=react' ></img>
+<img src='https://github.com/p-society/raag/assets/119437069/5f30138e-fa76-4947-946e-603d2de1550f' width='50' height='50' style='border-radius: 10px;'>
 
-## Step 2: Start your Application
+</div>
+<div align="center">
+<br/>
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+### Current contributors <a name="Current contributors"></a>
 
-### For Android
+<a href="https://github.com/coupon-aggregator-client/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=p-society/coupon-aggregator-client" />
+</a>
 
-```bash
-# using npm
-npm run android
+Made with [contributors-img](https://contributors-img.web.app).
+<!--
+## Subscribe to updates
+<!--
+Join our [Discord Server](https://gCBS.com/joincommunity) and subscribe to this repository[Developer Newsletter](https://gCBS.com/newsletter/?utm_medium=community&utm_source=github&utm_campaign=gCBS%20repo) to get updates, information about gCBS 
+-->
+# License <a name="License"></a>
 
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+GC-Server and GC-Client is licensed under [Apache License](https://github.com/gc-server/gc-server/blob/master/LICENSE)
