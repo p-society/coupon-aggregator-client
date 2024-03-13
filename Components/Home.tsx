@@ -6,6 +6,11 @@ import { darkGreen, green } from './constants'
 
 const Home = (props: { navigation: { navigate: (arg0: string) => any } }) => {
   return (
+    /* <View>
+      <Text style={{
+        color:"#000000"
+      }}>Hi</Text>
+    </View> */
     <Background>
         <View
             style={{
@@ -18,7 +23,7 @@ const Home = (props: { navigation: { navigate: (arg0: string) => any } }) => {
         </View>
         <Btn bgColour={green} textColor='white' btnLabel="Login" Press={()=>props.navigation.navigate("Login")} />
         <Btn bgColour='white' textColor={darkGreen} btnLabel="SignUp" Press={()=>props.navigation.navigate("Signup")} />
-    </Background>
+    </Background> 
   )
 }
 

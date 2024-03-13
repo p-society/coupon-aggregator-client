@@ -5,7 +5,11 @@ import { darkGreen } from "./constants";
 import Field from './Field';
 import Btn from './Btn';
 
-const Login = (props) => {
+const Login = (props: { navigation: { navigate: (arg0: string) => void; }; }) => {
+    function AlertStatic(arg0: string) {
+        throw new Error('Function not implemented.');
+    }
+
     return (
         <Background>
             <View style={{
@@ -39,41 +43,40 @@ const Login = (props) => {
                         fontWeight: 'bold',
                         marginBottom: 20
                     }}>Login to your account</Text>
-                    <Field placeholder="Email / Username" keyboardType={"email-address"} />
-                    <Field placeholder="Password" secureTextEntry={true} />
+                    <Field placeholder="Email / Username" keyboardType="email-address" />
+                    <Field placeholder="Password" secureTextEntry />
 
                     <View
                         style={{
                             alignItems: 'flex-end',
-                            width: 80 %
-                                paddingRignt: 16,
-                    marginBottom:200
-                }}>
-                    <Text style={{
-                        color: darkGreen,
-                        fontWeight: 'bold',
+                            width: '80%',
+                            marginBottom: 200
+                        }}>
+                        <Text style={{
+                            color: darkGreen,
+                            fontWeight: 'bold',
 
-                    }}>Forgot Password?</Text>
+                        }}>Forgot Password?</Text>
+                    </View>
+                    <Btn textColor='white' bgColour={darkGreen} btnLabel="Login" Press={() => AlertStatic("Logged in")} />
                 </View>
-                <Btn textColor='white' bgColour={darkGreen} btnLabel="Login" Press={() => Alert("Logged in")} />
-            </View>
-            <View
-                style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'center'
+                <View
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center'
 
-                }}
-            >
-                <Text style={{fontSize:16, fontWeight:"bold"}}>Don't have an accout?</Text>
-                <TouchableOpacity onPress={()=>props.navigation.navigate("Signup")}>
-                    <Text style={{color:darkGreen, fontWeight:'bold', fontSize:16  }}>Signup</Text>
-                </TouchableOpacity>
+                    }}
+                >
+                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>Don't have an account?</Text>
+                    <TouchableOpacity onPress={() => props.navigation.navigate("Signup")}>
+                        <Text style={{ color: darkGreen, fontWeight: 'bold', fontSize: 16 }}>Signup</Text>
+                    </TouchableOpacity>
 
+                </View>
             </View>
-        </View>
-    </Background >
-  )
+        </Background>
+    )
 }
 
 export default Login
