@@ -10,6 +10,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
+
   void login() {
     Navigator.pushNamed(context, "/dashboard");
   }
@@ -18,13 +19,45 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushNamed(context, "/signup");
   }
 
+  Widget customElevatedButton(String action, VoidCallback ontap, double buttonWidth) {
+    return SizedBox(
+      width: buttonWidth,
+      child: TextButton(
+        onPressed: ontap,
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all(const Color.fromARGB(249, 0, 0, 0)), // Corrected WidgetStateProperty to MaterialStateProperty
+          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 12)), // Corrected WidgetStateProperty to MaterialStateProperty
+        ),
+        child: Text(
+          action,
+          style: const TextStyle(
+            color: Color.fromARGB(249, 255, 255, 255),
+            fontSize: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double buttonWidth = screenWidth * 0.8;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
-      backgroundColor: Color.fromARGB(255, 203, 223, 226),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          "Login",
+          style: TextStyle(
+            color: Color.fromARGB(249, 0, 0, 0),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Padding(
-        
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -36,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.deepOrange,
+                      color: Colors.grey,
                     ),
                   ),
                   hintText: "E-mail id",
@@ -45,35 +78,43 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
-             SizedBox(
+            const SizedBox(height: 30),
+            SizedBox(
               width: 300,
               child: TextField(
                 controller: _pwdController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                    color: Colors.deepOrange,
-                  )),
-                  hintText: "password",
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: "Password",
                   contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                 ),
                 obscureText: true,
               ),
             ),
-            const SizedBox(
-              height: 30,
+            const SizedBox(height: 30),
+            customElevatedButton("Login", login, buttonWidth),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                TextButton(
+                  onPressed: signupNow,
+                  child: const Text("Signup Now"),
+                ),
+              ],
             ),
-            TextButton(onPressed: login, child: const Text('Login')),
-           /*  const SizedBox(
-              height: 30,
-            ), */
-           const SizedBox(
-              child: Text("Don't have an account?"),
-            ),
-            TextButton(onPressed: signupNow, child: const Text("Sign up now"))
           ],
         ),
       ),

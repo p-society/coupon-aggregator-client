@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/dashboard': (context) => DashboardScreen(),
         '/signup': (context) => SignupScreen(),
+        '/login':(context)=>LoginScreen(),
       },
     );
   }

@@ -4,25 +4,64 @@ class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
-  void loginNow() {
-    Navigator.pushNamed(context, "/login");
+  final _confirmPwdController = TextEditingController();
+
+  void login() {
+    Navigator.pushNamed(context, "/dashboard");
   }
 
-  void signup() {
-    Navigator.pushNamed(context, "/dashboard");
+  void signupNow() {
+    Navigator.pushNamed(context, "/signup");
+  }
+
+  Widget customElevatedButton(
+      String action, VoidCallback ontap, double buttonWidth) {
+    return SizedBox(
+      width: buttonWidth,
+      child: TextButton(
+        onPressed: ontap,
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all(const Color.fromARGB(249, 0,
+              0, 0)), // Corrected WidgetStateProperty to MaterialStateProperty
+          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(
+              vertical:
+                  12)), // Corrected WidgetStateProperty to MaterialStateProperty
+        ),
+        child: Text(
+          action,
+          style: const TextStyle(
+            color: Color.fromARGB(249, 255, 255, 255),
+            fontSize: 20,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double buttonWidth = screenWidth * 0.8;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Signup")),
-      backgroundColor: Color.fromARGB(255, 203, 223, 226),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          "Signup",
+          style: TextStyle(
+            color: Color.fromARGB(249, 0, 0, 0),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -35,7 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.deepOrange,
+                      color: Colors.grey,
                     ),
                   ),
                   hintText: "E-mail id",
@@ -44,54 +83,60 @@ class _SignupScreenState extends State<SignupScreen> {
                 keyboardType: TextInputType.emailAddress,
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
-             SizedBox(
-              width: 300,
-              child: TextField(
-                controller: _pwdController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                    color: Colors.deepOrange,
-                  )),
-                  hintText: "password",
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                ),
-                obscureText: true,
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             SizedBox(
               width: 300,
               child: TextField(
                 controller: _pwdController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                    color: Colors.deepOrange,
-                  )),
-                  hintText: "Confirm password",
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: "Password",
                   contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                 ),
                 obscureText: true,
               ),
             ),
-            const SizedBox(
-              height: 30,
+            const SizedBox(height: 30,),
+            SizedBox(
+              width: 300,
+              child: TextField(
+                controller: _confirmPwdController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: "Password",
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                ),
+                obscureText: true,
+              ),
             ),
-
-            TextButton(onPressed: signup, child: const Text('Signup')),
-            /* const SizedBox(
-              height: 30,
-            ), */
-           const SizedBox(
-              child: Text("Already have an account?"),
+            const SizedBox(height: 30),
+            customElevatedButton("Signup", signupNow, buttonWidth),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                TextButton(
+                  onPressed: login,
+                  child: const Text("Login now"),
+                ),
+              ],
             ),
-            TextButton(onPressed: loginNow, child: const Text("Login now"))
           ],
         ),
       ),

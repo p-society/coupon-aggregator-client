@@ -15,6 +15,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final TextEditingController costController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
+  
   String selectedFloor = 'Ground';
   String selectedVegNonveg = 'Veg';
   int breakfastCount = 0;
@@ -51,7 +52,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              
               DropdownButtonFormField<String>(
                 value: selectedFloor,
                 decoration: const InputDecoration(labelText: "Floor"),
@@ -152,8 +152,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             Container(
               width: 300,
-              padding: const  EdgeInsets.all(16),
-              child:  TextField(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
                 controller: dateController,
                 decoration: const InputDecoration(
                   labelText: 'Date',
@@ -161,7 +161,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   prefixIcon: Icon(Icons.calendar_today),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue),
-                    
                   ),
                 ),
                 readOnly: true,
@@ -170,10 +169,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
             ),
-           
-              const SizedBox(
-                height: 30,
-              ),
+            const SizedBox(
+              height: 30,
+            ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Card(
@@ -215,8 +213,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             const SizedBox(
-                        height: 30,
-                      ),
+              height: 30,
+            ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Card(
@@ -258,8 +256,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             const SizedBox(
-                        height: 30,
-                      ),
+              height: 30,
+            ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Card(
@@ -283,7 +281,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ],
                       ),
-                      
                       Row(
                         children: [
                           TextButton(
