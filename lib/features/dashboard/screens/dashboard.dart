@@ -1,20 +1,25 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
+import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  final TextEditingController costController = TextEditingController();
-  final TextEditingController userNameController = TextEditingController();
+class _DashboardScreenState extends State<DashboardScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
   final TextEditingController dateController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +27,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     breakfastCount = store.breakfastCount;
     lunchCount = store.lunchCount;
     dinnerCount = store.dinnerCount;
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _animationController.forward();
+    dateController.text = DateTime.now().toString().split(' ')[0];
   }
 
   Floor selectedFloor = Floor.ground;
@@ -29,8 +40,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int breakfastCount = 0;
   int lunchCount = 0;
   int dinnerCount = 0;
+  final costController = TextEditingController(text: '0');
 
-  Future<void> _selectDate() async {
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _selectDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
       firstDate: DateTime.now(),
@@ -49,264 +67,308 @@ class _DashboardScreenState extends State<DashboardScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Enter coupon details"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              DropdownButtonFormField<Floor>(
-                value: selectedFloor,
-                decoration: const InputDecoration(labelText: "Floor"),
-                items: Floor.values.map((Floor value) {
-                  return DropdownMenuItem<Floor>(
-                    value: value,
-                    child: Text(value.intoString()),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedFloor = newValue!;
-                  });
-                },
+        return Dialog(
+          backgroundColor: Colors.transparent, // Make background transparent
+          child: BackdropFilter(
+            filter:
+                ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Apply blur effect
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color:
+                    Colors.white.withOpacity(0.2), // Slightly opaque background
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white
+                      .withOpacity(0.3), // White border with slight opacity
+                  width: 1.5,
+                ),
               ),
-              DropdownButtonFormField<MealType>(
-                value: selectedMealType,
-                decoration: const InputDecoration(labelText: "Veg or Non-veg"),
-                items: MealType.values.map((MealType value) {
-                  return DropdownMenuItem<MealType>(
-                    value: value,
-                    child: Text(value.intoString()),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedMealType = newValue!;
-                  });
-                },
-              ),
-              TextFormField(
-                controller: costController,
-                decoration: const InputDecoration(labelText: "Cost"),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Submit"),
-              onPressed: () {
-                Floor floor = selectedFloor;
-                MealType mealType = selectedMealType;
-                String cost = costController.text;
-                CouponModel model = CouponModel(
-                    floor: floor,
-                    mealTime: mealTimeType,
-                    mealType: mealType,
-                    cost: int.tryParse(cost) ?? 0);
-                dashboardStore.sellCoupon(model);
-                costController.clear();
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text(
+                    "Enter coupon details",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          Colors.white, // Text color set to white for contrast
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<Floor>(
+                    value: selectedFloor,
+                    decoration: InputDecoration(
+                      labelText: "Floor",
+                      labelStyle: TextStyle(
+                          color: Colors.white), // Label color set to white
+                    ),
+                    items: Floor.values.map((Floor value) {
+                      return DropdownMenuItem<Floor>(
+                        value: value,
+                        child: Text(
+                          value.intoString(),
+                          style: const TextStyle(
+                              color: Colors
+                                  .white), // Dropdown item color set to white
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedFloor = newValue!;
+                      });
+                    },
+                    dropdownColor: Colors.blueAccent,
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<MealType>(
+                    value: selectedMealType,
+                    decoration: const InputDecoration(
+                      labelText: "Veg or Non-veg",
+                      labelStyle: TextStyle(
+                          color: Colors.white), // Label color set to white
+                    ),
+                    items: MealType.values.map((MealType value) {
+                      return DropdownMenuItem<MealType>(
+                        value: value,
+                        child: Text(
+                          value.intoString(),
+                          style: TextStyle(
+                              color: Colors
+                                  .white), // Dropdown item color set to white
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedMealType = newValue!;
+                      });
+                    },
+                    dropdownColor:
+                        Colors.blueAccent, // Dropdown menu background color
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: costController,
+                    decoration: InputDecoration(
+                      labelText: "Cost",
+                      labelStyle: TextStyle(
+                          color: Colors.white), // Label color set to white
+                    ),
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                        color: Colors.white), // Input text color set to white
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: Text("Cancel"),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white
+                              .withOpacity(0.8), // Button text color
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Submit"),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white
+                              .withOpacity(0.8), // Button text color
+                        ),
+                        onPressed: () {
+                          Floor floor = selectedFloor;
+                          MealType mealType = selectedMealType;
+                          String cost = costController.text;
+                          CouponModel model = CouponModel(
+                              floor: floor,
+                              mealTime: mealTimeType,
+                              mealType: mealType,
+                              cost: int.tryParse(cost) ?? 0);
+                          dashboardStore.sellCoupon(model);
+                          costController.clear();
 
-                Navigator.of(context).pop();
-              },
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         );
       },
     );
   }
 
-  void breakfast() {
-    Navigator.pushNamed(context, "/breakfast.dart");
-  }
-
-  void lunch() {
-    Navigator.pushNamed(context, "/lunch.dart");
-  }
-
-  void dinner() {
-    Navigator.pushNamed(context, "/dinner.dart");
+  void navigateToViewScreen(MealTimeType mealTimeType) {
+    navigateToNextScreen(
+        nextScreen: ViewScreen(mealTimeType: mealTimeType), context: context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Coupon Availability"),
+        title: const Text('Coupon Availability'),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Center(
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.blueAccent.withOpacity(0.2),
+              Colors.white.withOpacity(1),
+            ],
+          ),
+        ),
         child: Column(
           children: [
-            const SizedBox(
-              height: 30,
-            ),
-            Container(
-              width: 300,
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                controller: dateController,
-                decoration: const InputDecoration(
-                  labelText: 'Date',
-                  filled: true,
-                  prefixIcon: Icon(Icons.calendar_today),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
-                  ),
-                ),
-                readOnly: true,
-                onTap: () {
-                  _selectDate();
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                color: Colors.white,
-                margin: const EdgeInsets.all(5),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Breakfast",
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          Observer(builder: (context) {
-                            final count = dashboardStore.breakfastCount;
-                            return Text(
-                              "Count: $count",
-                              style: const TextStyle(fontSize: 16),
-                            );
-                          }),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () =>
-                                input(context, MealTimeType.breakfast),
-                            child: const Icon(Icons.add),
-                          ),
-                          TextButton(
-                            onPressed: breakfast,
-                            child: const Text("View"),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildDatePicker(),
+                    const SizedBox(height: 24),
+                    Observer(builder: (context) {
+                      int count = dashboardStore.breakfastCount;
+                      return _buildMealCard('Breakfast', Icons.free_breakfast,
+                          count, MealTimeType.breakfast);
+                    }),
+                    const SizedBox(height: 16),
+                    Observer(builder: (context) {
+                      int count = dashboardStore.lunchCount;
+                      return _buildMealCard(
+                          'Lunch', Icons.restaurant, count, MealTimeType.lunch);
+                    }),
+                    const SizedBox(height: 16),
+                    Observer(builder: (context) {
+                      int count = dashboardStore.dinnerCount;
+                      return _buildMealCard('Dinner', Icons.nightlife, count,
+                          MealTimeType.dinner);
+                    }),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(
-              height: 30,
+            const Spacer(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDatePicker() {
+    return GestureDetector(
+      onTap: _selectDate,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                color: Colors.white,
-                margin: const EdgeInsets.all(5),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Lunch",
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          Observer(builder: (context) {
-                            final count = dashboardStore.lunchCount;
-                            return Text(
-                              "Count: $count",
-                              style: const TextStyle(fontSize: 16),
-                            );
-                          }),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () => input(context, MealTimeType.lunch),
-                            child: const Icon(Icons.add),
-                          ),
-                          TextButton(
-                            onPressed: lunch,
-                            child: const Text("View"),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                color: Colors.white,
-                margin: const EdgeInsets.all(5),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Dinner",
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          Observer(builder: (context) {
-                            final count = dashboardStore.dinnerCount;
-                            return Text(
-                              "Count: $count",
-                              style: const TextStyle(fontSize: 16),
-                            );
-                          }),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () =>
-                                input(context, MealTimeType.dinner),
-                            child: const Icon(Icons.add),
-                          ),
-                          TextButton(
-                            onPressed: dinner,
-                            child: const Text("View"),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                dateController.text,
+                style: const TextStyle(fontSize: 16),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMealCard(
+      String title, IconData icon, int count, MealTimeType mealType) {
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, 50 * (1 - _animationController.value)),
+          child: Opacity(
+            opacity: _animationController.value,
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(icon,
+                                size: 24,
+                                color: Theme.of(context).primaryColor),
+                            const SizedBox(width: 12),
+                            Text(title,
+                                style: Theme.of(context).textTheme.titleMedium),
+                          ],
+                        ),
+                        Observer(builder: (_) {
+                          return Text('Available : $count',
+                              style: Theme.of(context).textTheme.bodyMedium);
+                        }),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () => input(context, mealType),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Add'),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () => navigateToViewScreen(mealType),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
+                          child: const Text('View'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

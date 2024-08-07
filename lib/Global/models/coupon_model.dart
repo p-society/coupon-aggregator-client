@@ -5,6 +5,7 @@ class CouponModel {
   final MealType mealType;
   final MealTimeType mealTime;
   final int cost;
+  
 
   const CouponModel({
     required this.floor,

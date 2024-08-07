@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
+import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
