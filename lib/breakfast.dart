@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'coupon.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+
+import 'coupon.dart';
 
 class BreakfastScreen extends StatefulWidget {
   final List<Coupon> coupons;
@@ -22,7 +23,8 @@ class _BreakfastScreenState extends State<BreakfastScreen> {
 
   void getData() async {
     try {
-      var response = await Dio().get('https://jsonplaceholder.typicode.com/posts'); // Example URL
+      var response = await Dio()
+          .get('https://jsonplaceholder.typicode.com/posts'); // Example URL
       if (response.statusCode == 200) {
         setState(() {
           jsonList = response.data as List;

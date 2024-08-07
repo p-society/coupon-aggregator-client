@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
+import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
+import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,29 +17,40 @@ class _LoginScreenState extends State<LoginScreen> {
   final _pwdController = TextEditingController();
 
   void login() {
-    Navigator.pushNamed(context, "/dashboard");
+    authStore.userSignUp(userData: {});
+    // Navigator.pushNamed(context, "/dashboard");
   }
 
   void signupNow() {
-    Navigator.pushNamed(context, "/signup");
+    navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
   }
 
-  Widget customElevatedButton(String action, VoidCallback ontap, double buttonWidth) {
+  Widget customElevatedButton(
+      String action, VoidCallback ontap, double buttonWidth) {
     return SizedBox(
       width: buttonWidth,
       child: TextButton(
         onPressed: ontap,
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(const Color.fromARGB(249, 0, 0, 0)), // Corrected WidgetStateProperty to MaterialStateProperty
-          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 12)), // Corrected WidgetStateProperty to MaterialStateProperty
+          backgroundColor: WidgetStateProperty.all(const Color.fromARGB(249, 0,
+              0, 0)), // Corrected WidgetStateProperty to MaterialStateProperty
+          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(
+              vertical:
+                  12)), // Corrected WidgetStateProperty to MaterialStateProperty
         ),
-        child: Text(
-          action,
-          style: const TextStyle(
-            color: Color.fromARGB(249, 255, 255, 255),
-            fontSize: 20,
-          ),
-        ),
+        child: Observer(builder: (context) {
+          final isLoading = authStore.isLoading;
+          if (isLoading) {
+            return const AppLoader();
+          }
+          return Text(
+            action,
+            style: const TextStyle(
+              color: Color.fromARGB(249, 255, 255, 255),
+              fontSize: 20,
+            ),
+          );
+        }),
       ),
     );
   }

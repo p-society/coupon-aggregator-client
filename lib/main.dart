@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mess_mgmt/dashboard.dart';
-import 'package:mess_mgmt/login.dart';
-import 'package:mess_mgmt/signup.dart';
+import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
+import 'package:mess_mgmt/features/auth/screens/login.dart';
+import 'package:mess_mgmt/features/auth/screens/signup.dart';
 //import 'package:dio/dio.dart';
 
 void main() {
@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -22,9 +23,9 @@ class MyApp extends StatelessWidget {
       ),
       home: const LoginScreen(),
       routes: {
-        '/dashboard': (context) => DashboardScreen(),
-        '/signup': (context) => SignupScreen(),
-        '/login':(context)=>LoginScreen(),
+        '/dashboard': (context) =>const DashboardScreen(),
+        '/signup': (context) => const SignupScreen(),
+        '/login':(context)=>const LoginScreen(),
       },
     );
   }

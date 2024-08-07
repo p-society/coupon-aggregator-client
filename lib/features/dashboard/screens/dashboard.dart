@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'coupon.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/enums/enums.dart';
+import 'package:mess_mgmt/Global/models/coupon_model.dart';
+import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -9,41 +12,40 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  List<Coupon> breakfastCoupons = [];
-  List<Coupon> lunchCoupons = [];
-  List<Coupon> dinnerCoupons = [];
   final TextEditingController costController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
-  
-  String selectedFloor = 'Ground';
-  String selectedVegNonveg = 'Veg';
+  @override
+  void initState() {
+    super.initState();
+    final store = dashboardStore;
+    breakfastCount = store.breakfastCount;
+    lunchCount = store.lunchCount;
+    dinnerCount = store.dinnerCount;
+  }
+
+  Floor selectedFloor = Floor.ground;
+  MealType selectedMealType = MealType.nonVeg;
   int breakfastCount = 0;
   int lunchCount = 0;
   int dinnerCount = 0;
-  void addCoupon(Coupon coupon, String mealType) {
-    setState(() {
-      if (mealType == "Breakfast") {
-        breakfastCoupons.add(coupon);
-      } else if (mealType == "Lunch") {
-        lunchCoupons.add(coupon);
-      } else if (mealType == "Dinner") {
-        dinnerCoupons.add(coupon);
-      }
-    });
-  }
 
   Future<void> _selectDate() async {
-    DateTime? _picked = await showDatePicker(
-        context: context, firstDate: DateTime(2024), lastDate: DateTime.now());
-    if (_picked != null) {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 7),
+      ),
+    );
+    if (picked != null) {
       setState(() {
-        dateController.text = _picked.toString().split(" ")[0];
+        dateController.text = picked.toString().split(" ")[0];
       });
     }
   }
 
-  void input(BuildContext context, String mealType) {
+  void input(BuildContext context, MealTimeType mealTimeType) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -52,13 +54,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              DropdownButtonFormField<String>(
+              DropdownButtonFormField<Floor>(
                 value: selectedFloor,
                 decoration: const InputDecoration(labelText: "Floor"),
-                items: <String>['Ground', 'First'].map((String value) {
-                  return DropdownMenuItem<String>(
+                items: Floor.values.map((Floor value) {
+                  return DropdownMenuItem<Floor>(
                     value: value,
-                    child: Text(value),
+                    child: Text(value.intoString()),
                   );
                 }).toList(),
                 onChanged: (newValue) {
@@ -67,18 +69,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   });
                 },
               ),
-              DropdownButtonFormField<String>(
-                value: selectedVegNonveg,
+              DropdownButtonFormField<MealType>(
+                value: selectedMealType,
                 decoration: const InputDecoration(labelText: "Veg or Non-veg"),
-                items: <String>['Veg', 'Non-Veg'].map((String value) {
-                  return DropdownMenuItem<String>(
+                items: MealType.values.map((MealType value) {
+                  return DropdownMenuItem<MealType>(
                     value: value,
-                    child: Text(value),
+                    child: Text(value.intoString()),
                   );
                 }).toList(),
                 onChanged: (newValue) {
                   setState(() {
-                    selectedVegNonveg = newValue!;
+                    selectedMealType = newValue!;
                   });
                 },
               ),
@@ -99,22 +101,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
             TextButton(
               child: const Text("Submit"),
               onPressed: () {
-                String floor = selectedFloor;
-                String vegNonveg = selectedVegNonveg;
+                Floor floor = selectedFloor;
+                MealType mealType = selectedMealType;
                 String cost = costController.text;
-                print('Floor: $floor, Veg/Non-Veg: $vegNonveg, Cost: $cost');
-                setState(() {
-                  if (mealType == 'Breakfast') {
-                    breakfastCount++;
-                  }
-                  if (mealType == 'Lunch') {
-                    lunchCount++;
-                  }
-                  if (mealType == 'Dinner') {
-                    dinnerCount++;
-                  }
-                });
-                // Clear the text fields
+                CouponModel model = CouponModel(
+                    floor: floor,
+                    mealTime: mealTimeType,
+                    mealType: mealType,
+                    cost: int.tryParse(cost) ?? 0);
+                dashboardStore.sellCoupon(model);
                 costController.clear();
 
                 Navigator.of(context).pop();
@@ -189,16 +184,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             "Breakfast",
                             style: TextStyle(fontSize: 24),
                           ),
-                          Text(
-                            "Count: ${breakfastCoupons.length}",
-                            style: const TextStyle(fontSize: 16),
-                          ),
+                          Observer(builder: (context) {
+                            final count = dashboardStore.breakfastCount;
+                            return Text(
+                              "Count: $count",
+                              style: const TextStyle(fontSize: 16),
+                            );
+                          }),
                         ],
                       ),
                       Row(
                         children: [
                           TextButton(
-                            onPressed: () => input(context, 'Breakfast'),
+                            onPressed: () =>
+                                input(context, MealTimeType.breakfast),
                             child: const Icon(Icons.add),
                           ),
                           TextButton(
@@ -232,16 +231,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             "Lunch",
                             style: TextStyle(fontSize: 24),
                           ),
-                          Text(
-                            "Count: ${lunchCoupons.length}",
-                            style: const TextStyle(fontSize: 16),
-                          ),
+                          Observer(builder: (context) {
+                            final count = dashboardStore.lunchCount;
+                            return Text(
+                              "Count: $count",
+                              style: const TextStyle(fontSize: 16),
+                            );
+                          }),
                         ],
                       ),
                       Row(
                         children: [
                           TextButton(
-                            onPressed: () => input(context, 'Lunch'),
+                            onPressed: () => input(context, MealTimeType.lunch),
                             child: const Icon(Icons.add),
                           ),
                           TextButton(
@@ -275,16 +277,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             "Dinner",
                             style: TextStyle(fontSize: 24),
                           ),
-                          Text(
-                            "Count: ${dinnerCoupons.length}",
-                            style: const TextStyle(fontSize: 16),
-                          ),
+                          Observer(builder: (context) {
+                            final count = dashboardStore.dinnerCount;
+                            return Text(
+                              "Count: $count",
+                              style: const TextStyle(fontSize: 16),
+                            );
+                          }),
                         ],
                       ),
                       Row(
                         children: [
                           TextButton(
-                            onPressed: () => input(context, 'Dinner'),
+                            onPressed: () =>
+                                input(context, MealTimeType.dinner),
                             child: const Icon(Icons.add),
                           ),
                           TextButton(
