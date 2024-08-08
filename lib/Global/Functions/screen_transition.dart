@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+void navigateToNextScreen({
+  required Widget nextScreen,
+  required BuildContext context,
+}) {
+  Route createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0); // Start position (right side)
+        const end = Offset(0.0, 0.0); // End position (center screen)
+        const curve = Curves.easeInOut;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    );
+  }
+
+  Navigator.push(context, createRoute());
+}
