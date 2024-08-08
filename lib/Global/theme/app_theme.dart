@@ -35,4 +35,15 @@ class AppTheme {
       ),
     );
   }
+
+  static LinearGradient linearGradient() {
+    return LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.blueAccent.withOpacity(0.2),
+        Colors.white.withOpacity(1),
+      ],
+    );
+  }
 }

@@ -33,9 +33,9 @@ class GlassyListTile extends StatelessWidget {
           ),
           child: ListTile(
             contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-            title: Text(
-              "rahul",
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            title: const Text(
+              "Rahul",
               style: TextStyle(
                 color: Colors.white, // Title text color
                 fontWeight: FontWeight.bold,
@@ -43,8 +43,8 @@ class GlassyListTile extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              "Floor: ${coupon.floor}",
-              style: TextStyle(
+              "Floor: ${coupon.floor.intoString()}",
+              style: const TextStyle(
                 color: Colors.white70, // Subtitle text color
               ),
             ),
@@ -54,16 +54,16 @@ class GlassyListTile extends StatelessWidget {
               children: [
                 Text(
                   "Rs ${coupon.cost}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white, // Cost text color
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   coupon.mealType.intoString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white70, // Meal type text color
                     fontSize: 14,
                   ),

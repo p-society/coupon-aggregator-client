@@ -6,7 +6,7 @@ class AppLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CupertinoActivityIndicator(
-      color: Colors.blue,
+      // color: Colors.blue,
       radius: 15,
     );
   }

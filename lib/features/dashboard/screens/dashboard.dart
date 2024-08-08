@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
+import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
@@ -73,7 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             filter:
                 ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Apply blur effect
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color:
                     Colors.white.withOpacity(0.2), // Slightly opaque background
@@ -99,7 +100,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   const SizedBox(height: 16),
                   DropdownButtonFormField<Floor>(
                     value: selectedFloor,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Floor",
                       labelStyle: TextStyle(
                           color: Colors.white), // Label color set to white
@@ -135,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         value: value,
                         child: Text(
                           value.intoString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors
                                   .white), // Dropdown item color set to white
                         ),
@@ -152,21 +153,20 @@ class _DashboardScreenState extends State<DashboardScreen>
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: costController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Cost",
-                      labelStyle: TextStyle(
+                      labelStyle:  TextStyle(
                           color: Colors.white), // Label color set to white
                     ),
                     keyboardType: TextInputType.number,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white), // Input text color set to white
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        child: Text("Cancel"),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.white
                               .withOpacity(0.8), // Button text color
@@ -174,9 +174,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
+                        child:const  Text("Cancel"),
                       ),
                       TextButton(
-                        child: Text("Submit"),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.white
                               .withOpacity(0.8), // Button text color
@@ -195,6 +195,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
                           Navigator.of(context).pop();
                         },
+                        child:const Text("Submit"),
                       ),
                     ],
                   ),
@@ -215,21 +216,13 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Coupon Availability'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.blueAccent.withOpacity(0.2),
-              Colors.white.withOpacity(1),
-            ],
-          ),
+          gradient: AppTheme.linearGradient(),
         ),
         child: Column(
           children: [
