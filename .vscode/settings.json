@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Samarth Thaker/Flutter Projects/coupon_aggregator/linux"
+  "cmake.sourceDirectory": "C:/Samarth Thaker/Flutter Projects/coupon_aggregator/linux",
+  "dart.flutterSdkPath": ".fvm/versions/3.22.3"
 }
