@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
+import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
@@ -61,6 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _pwdController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double buttonWidth = 300;
     return Scaffold(
@@ -85,55 +93,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           'assets/lottie/login_lottie.json',
                         ),
                       ),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minHeight: 60.0,
-                          maxHeight: 80.0,
-                        ),
-                        child: SizedBox(
-                          width: 300,
-                          child: TextField(
-                            maxLines: null,
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.email,
-                                  color: AppTheme.lightTheme().primaryColor),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              hintText: "E-mail id",
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10.0,
-                                vertical: 5,
-                              ),
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                        ),
+                      CustomTextField(
+                        hintText: 'Email Id',
+                        controller: _emailController,
+                        type: TextInputType.emailAddress,
+                        icon: Icons.email,
+                        onChanged: (val) {},
                       ),
                       const SizedBox(height: 30),
-                      SizedBox(
-                        width: 300,
-                        child: TextField(
-                          controller: _pwdController,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.lock,
-                                color: AppTheme.lightTheme().primaryColor),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade400,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            hintText: "Password",
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                          ),
-                          obscureText: true,
-                        ),
+                      CustomTextField(
+                        hintText: 'Password',
+                        controller: _pwdController,
+                        type: TextInputType.visiblePassword,
+                        icon: Icons.lock,
+                        onChanged: (val) {},
+                        isPassword: true,
                       ),
                       const SizedBox(height: 30),
                       customElevatedButton("Login", login, buttonWidth),
