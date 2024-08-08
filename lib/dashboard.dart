@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'coupon.dart';
+import 'models/coupon.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

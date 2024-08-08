@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'coupon.dart';
+import 'models/coupon.dart';
 import 'package:dio/dio.dart';
 
 class LunchScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class _LunchScreenState extends State<LunchScreen> {
   List<dynamic>? jsonList;
 
   @override
-  void initState() {
+  /* void initState() {
     super.initState();
     getData();
   }
@@ -34,7 +34,7 @@ class _LunchScreenState extends State<LunchScreen> {
     } catch (e) {
       print(e);
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {

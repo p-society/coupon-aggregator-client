@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:mess_mgmt/utils/colors.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class NextLoginScreen extends StatefulWidget {
+  const NextLoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<NextLoginScreen> createState() => _NextSignupState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _NextSignupState extends State<NextLoginScreen> {
+  final _phoneNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
 
-  void login() {
-    Navigator.pushNamed(context, "/dashboard");
+  void getOTP() {
+    Navigator.pushNamed(context, "/otpVerificationScreen");
   }
 
-  void signupNow() {
-    Navigator.pushNamed(context, "/signup");
+  void loginNow() {
+    Navigator.pushNamed(context, "/login");
   }
 
-  Widget customElevatedButton(String action, VoidCallback ontap, double buttonWidth) {
+  Widget customElevatedButton(
+      String action, VoidCallback ontap, double buttonWidth) {
     return SizedBox(
       width: buttonWidth,
       child: TextButton(
         onPressed: ontap,
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(const Color.fromARGB(249, 0, 0, 0)), // Corrected WidgetStateProperty to MaterialStateProperty
-          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 12)), // Corrected WidgetStateProperty to MaterialStateProperty
+          backgroundColor: WidgetStateProperty.all(const Color.fromARGB(249, 0,
+              0, 0)), 
+          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(
+              vertical:
+                  12)),
         ),
         child: Text(
           action,
@@ -49,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Login",
+          "Signup",
           style: TextStyle(
             color: Color.fromARGB(249, 0, 0, 0),
             fontSize: 20,
@@ -95,14 +101,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
               ),
             ),
+            const SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+              width: 300,
+              child: TextField(
+                controller: _phoneNumberController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: "Phone Number",
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                ),
+              ),
+            ),
             const SizedBox(height: 30),
-            customElevatedButton("Login", login, buttonWidth),
+            const SizedBox(
+              height: 30,
+            ),
+            customElevatedButton("Get OTP", getOTP, buttonWidth),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Don't have an account?",
+                  "Already have an account?",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -110,8 +137,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(width: 10),
                 TextButton(
-                  onPressed: signupNow,
-                  child: const Text("Signup Now"),
+                  onPressed: loginNow,
+                  child: const Text(
+                    "Login Now",
+                    style: TextStyle(color: AppColor.backgroundColor),
+                  ),
                 ),
               ],
             ),

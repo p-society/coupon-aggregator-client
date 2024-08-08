@@ -1,47 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:mess_mgmt/auth/repository/auth_repo.dart';
+import 'package:mess_mgmt/auth/widgets/customLoginButton.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+import 'package:mess_mgmt/utils/colors.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
-  final _confirmPwdController = TextEditingController();
 
   void login() {
-    Navigator.pushNamed(context, "/dashboard");
+    // Navigator.pushNamed(context, "/dashboard");
   }
 
-  void signupNow() {
-    Navigator.pushNamed(context, "/signup");
-  }
-
-  Widget customElevatedButton(
-      String action, VoidCallback ontap, double buttonWidth) {
-    return SizedBox(
-      width: buttonWidth,
-      child: TextButton(
-        onPressed: ontap,
-        style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(const Color.fromARGB(249, 0,
-              0, 0)), // Corrected WidgetStateProperty to MaterialStateProperty
-          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(
-              vertical:
-                  12)), // Corrected WidgetStateProperty to MaterialStateProperty
-        ),
-        child: Text(
-          action,
-          style: const TextStyle(
-            color: Color.fromARGB(249, 255, 255, 255),
-            fontSize: 20,
-          ),
-        ),
-      ),
-    );
+  void signupNow() async {
+    // Navigator.pushNamed(context, "/signup");
+    await AuthRepository().authenticate();
   }
 
   @override
@@ -53,12 +33,15 @@ class _SignupScreenState extends State<SignupScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Signup",
-          style: TextStyle(
-            color: Color.fromARGB(249, 0, 0, 0),
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        title: const Padding(
+          padding: EdgeInsets.only(top: 25),
+          child: Text(
+            "Login",
+            style: TextStyle(
+              color: Color.fromARGB(249, 0, 0, 0),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -74,7 +57,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.grey,
+                      color: AppColor.borderColor,
                     ),
                   ),
                   hintText: "E-mail id",
@@ -91,24 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  hintText: "Password",
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                ),
-                obscureText: true,
-              ),
-            ),
-            const SizedBox(height: 30,),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                controller: _confirmPwdController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.grey,
+                      color: AppColor.borderColor,
                     ),
                   ),
                   hintText: "Password",
@@ -118,7 +84,8 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            customElevatedButton("Signup", signupNow, buttonWidth),
+            /* customElevatedButton("Login", login, buttonWidth), */
+            CustomButton(action: 'Login', onPressed: login),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -127,13 +94,17 @@ class _SignupScreenState extends State<SignupScreen> {
                   "Don't have an account?",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14,
+                    fontSize: 16,
                   ),
                 ),
                 const SizedBox(width: 10),
                 TextButton(
-                  onPressed: login,
-                  child: const Text("Login now"),
+                  onPressed: signupNow,
+                  child: const Text(
+                    "Signup Now",
+                    style: TextStyle(
+                        color: AppColor.backgroundColor, fontSize: 16),
+                  ),
                 ),
               ],
             ),

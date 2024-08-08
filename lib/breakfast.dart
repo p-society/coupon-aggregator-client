@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'coupon.dart';
+import 'models/coupon.dart';
 import 'package:dio/dio.dart';
 
 class BreakfastScreen extends StatefulWidget {
