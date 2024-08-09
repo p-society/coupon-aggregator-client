@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
   static Future<String?> authenticate() async {
     try {
-      String url = "http://20.81.43.214:3030/auth";
+      String url = dotenv.env['Authenticate_Url'] as String;
       Map<String, dynamic> data = {
         "strategy": "local",
         "email": "ERRT",
@@ -14,7 +15,6 @@ class AuthRepository {
       };
       Map<String, String> header = {
         "content-type": "application/json",
-        // "Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJpYXQiOjE3MjI3OTI0ODMsImV4cCI6MTcyMjg3ODg4MywiYXVkIjoiaHR0cHM6Ly95b3VyZG9tYWluLmNvbSIsImlzcyI6ImZlYXRoZXJzIiwic3ViIjoiNjZhZmI5NWZkMmJjM2E4ZmUzNmI0NGFjIiwianRpIjoiMTcwYTI4NTYtODdjYy00ODAxLWEwNTYtMzZmOTZlMWI1ZjdhIn0.RfaEawpP2CEZBgarB0xrGhh2h_NhWz5fTfdFqAHfoP4"
       };
       var res = await http.post(Uri.parse(url),
           body: jsonEncode(data), headers: header);
@@ -27,13 +27,15 @@ class AuthRepository {
     return null;
   }
 
-  static userRegister(  {required Map<String, dynamic> data}) async {
+  static Future<http.Response?> userRegister({
+    required Map<String, dynamic> data,
+  }) async {
     try {
-      String url = "http://20.81.43.214:3030/users";
+      String url = dotenv.env['User_Register_Url'] as String;
       var res = await http.post(Uri.parse(url), body: data);
-      print(res);
+      return res;
     } catch (e) {
-      print(e.toString());
+      throw Exception(e);
     }
   }
 }

@@ -39,6 +39,22 @@ mixin _$AuthStore on Auth, Store {
     });
   }
 
+  late final _$currentUserAtom =
+      Atom(name: 'Auth.currentUser', context: context);
+
+  @override
+  User? get currentUser {
+    _$currentUserAtom.reportRead();
+    return super.currentUser;
+  }
+
+  @override
+  set currentUser(User? value) {
+    _$currentUserAtom.reportWrite(value, super.currentUser, () {
+      super.currentUser = value;
+    });
+  }
+
   late final _$userLoginAsyncAction =
       AsyncAction('Auth.userLogin', context: context);
 
@@ -60,7 +76,8 @@ mixin _$AuthStore on Auth, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
-jwt: ${jwt}
+jwt: ${jwt},
+currentUser: ${currentUser}
     ''';
   }
 }
