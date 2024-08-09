@@ -6,28 +6,33 @@ import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
+import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
+import 'package:mess_mgmt/features/auth/screens/signup_screen_2.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
-import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreenOne extends StatefulWidget {
+  const SignupScreenOne({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignupScreenOneState createState() => _SignupScreenOneState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _pwdController = TextEditingController();
+class _SignupScreenOneState extends State<SignupScreenOne> {
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
 
   void login() {
-    authStore.userSignUp(userData: {});
-    navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
+    /* authStore.userSignUp(userData: {}); */
+    // Navigator.pushNamed(context, "/dashboard");
+    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
 
-  void signupNow() {
-    navigateAndPopToNextScreen(nextScreen: const SignupScreenOne(), context: context);
+  /* void signupNow() {
+    navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
+  }
+ */
+  void nextLoginScreen() {
+    navigateAndPopToNextScreen(nextScreen: const SignupScreenTwo(), context: context);
   }
 
   Widget customElevatedButton(
@@ -64,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _pwdController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 
@@ -95,29 +100,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       CustomTextField(
-                        hintText: 'Email Id',
-                        controller: _emailController,
-                        type: TextInputType.emailAddress,
-                        icon: Icons.email,
+                        hintText: 'First name',
+                        controller: _firstNameController,
+                        type: TextInputType.text,
+                        icon: Icons.person,
                         onChanged: (val) {},
                       ),
                       const SizedBox(height: 30),
                       CustomTextField(
-                        hintText: 'Password',
-                        controller: _pwdController,
+                        hintText: 'Last name',
+                        controller: _lastNameController,
                         type: TextInputType.visiblePassword,
-                        icon: Icons.lock,
+                        icon: Icons.person_2,
                         onChanged: (val) {},
-                        isPassword: true,
+                        
                       ),
                       const SizedBox(height: 30),
-                      customElevatedButton("Login", login, buttonWidth),
+                      customElevatedButton(
+                          "Next", nextLoginScreen, buttonWidth),
                       const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            "Don't have an account?",
+                            "Already have an account?",
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -125,8 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(width: 10),
                           TextButton(
-                            onPressed: signupNow,
-                            child: const Text("Signup Now"),
+                            onPressed: login,
+                            child: const Text("Login Now"),
                           ),
                         ],
                       ),

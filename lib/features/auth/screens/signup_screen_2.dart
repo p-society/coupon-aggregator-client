@@ -6,29 +6,40 @@ import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
+import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreenTwo extends StatefulWidget {
+  const SignupScreenTwo({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<SignupScreenTwo> createState() => _SignupScreenTwoState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
+class _SignupScreenTwoState extends State<SignupScreenTwo> {
+  final _phoneNumberController = TextEditingController();
   final _pwdController = TextEditingController();
-
+  final _confirmPasswordController = TextEditingController();
   void login() {
-    authStore.userSignUp(userData: {});
-    navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
+    /* authStore.userSignUp(userData: {}); */
+    // Navigator.pushNamed(context, "/dashboard");
+    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
 
   void signupNow() {
-    navigateAndPopToNextScreen(nextScreen: const SignupScreenOne(), context: context);
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) =>const DashboardScreen(),
+      ),
+      (r) => false,
+    );
+    // navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
   }
+
+  /* void nextLoginScreen() {
+    navigateToNextScreen(nextScreen: const SignupScreenTwo(), context: context);
+  } */
 
   Widget customElevatedButton(
       String action, VoidCallback ontap, double buttonWidth) {
@@ -64,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _phoneNumberController.dispose();
     _pwdController.dispose();
     super.dispose();
   }
@@ -95,10 +106,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       CustomTextField(
-                        hintText: 'Email Id',
-                        controller: _emailController,
-                        type: TextInputType.emailAddress,
-                        icon: Icons.email,
+                        hintText: 'Phone number',
+                        controller: _phoneNumberController,
+                        type: TextInputType.phone,
+                        icon: Icons.phone,
                         onChanged: (val) {},
                       ),
                       const SizedBox(height: 30),
@@ -111,13 +122,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         isPassword: true,
                       ),
                       const SizedBox(height: 30),
-                      customElevatedButton("Login", login, buttonWidth),
+                      CustomTextField(
+                        hintText: 'Confirm Password',
+                        controller: _confirmPasswordController,
+                        type: TextInputType.visiblePassword,
+                        icon: Icons.lock,
+                        onChanged: (val) {},
+                        isPassword: true,
+                      ),
+                      const SizedBox(height: 30),
+                      customElevatedButton("Sign up", signupNow, buttonWidth),
                       const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            "Don't have an account?",
+                            "Already have an account?",
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -125,8 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(width: 10),
                           TextButton(
-                            onPressed: signupNow,
-                            child: const Text("Signup Now"),
+                            onPressed: login,
+                            child: const Text("Login Now"),
                           ),
                         ],
                       ),
