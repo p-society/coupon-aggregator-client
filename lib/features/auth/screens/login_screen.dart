@@ -5,6 +5,7 @@ import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/auth/repository/auth_repo.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
 

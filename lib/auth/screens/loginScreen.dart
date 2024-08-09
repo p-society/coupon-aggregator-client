@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mess_mgmt/auth/repository/auth_repo.dart';
 import 'package:mess_mgmt/auth/widgets/customLoginButton.dart';
+import 'package:mess_mgmt/features/auth/auth_repo.dart';
 
 import 'package:mess_mgmt/utils/colors.dart';
 
@@ -16,12 +17,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final _pwdController = TextEditingController();
 
   void login() {
+    AuthRepository.authenticate();
     // Navigator.pushNamed(context, "/dashboard");
   }
 
   void signupNow() async {
     // Navigator.pushNamed(context, "/signup");
-    await AuthRepository().authenticate();
+    await AuthRepository.authenticate();
   }
 
   @override
