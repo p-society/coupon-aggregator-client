@@ -326,10 +326,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 style: Theme.of(context).textTheme.titleMedium),
                           ],
                         ),
-                        Observer(builder: (_) {
-                          return Text('Available : $count',
-                              style: Theme.of(context).textTheme.bodyMedium);
-                        }),
+                        Text('Available : $count',
+                            style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     ),
                     const SizedBox(height: 16),

@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
+import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
+import 'package:mess_mgmt/features/Networking/screens/network_screen.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
-import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
+import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,15 +25,29 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
 
-  void login() {
-    authStore.userSignUp(userData: {});
-    navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
+  void login() async {
+    print('sakfhakhfashf');
+    if (!isValidate(_emailController.text)) {
+      showMessage(message: "Enter Valid Email", context: context);
+      return;
+    }
+    Map<String, dynamic> data = {
+      "strategy": "local",
+      "email": _emailController.text.trim(),
+      "password": _pwdController.text.trim(),
+    };
+    print(data);
+    authStore.userLogin(_emailController.text.trim(),_pwdController.text.trim());
   }
 
   void signupNow() {
-    navigateAndPopToNextScreen(nextScreen: const SignupScreenOne(), context: context);
+    navigateAndPopToNextScreen(
+        nextScreen: const SignupScreenOne(), context: context);
   }
-
+void network() {
+    navigateAndPopToNextScreen(
+        nextScreen: const NetworkScreen(), context: context);
+  }
   Widget customElevatedButton(
       String action, VoidCallback ontap, double buttonWidth) {
     return SizedBox(
@@ -74,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
     double buttonWidth = 300;
     return Scaffold(
       appBar: const RoundedAppBar(),
+      drawer: const DashboardDrawer(),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),
@@ -102,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onChanged: (val) {},
                       ),
                       const SizedBox(height: 30),
-                      CustomTextField(
+                      CustomPwdTile(
                         hintText: 'Password',
                         controller: _pwdController,
                         type: TextInputType.visiblePassword,
@@ -129,8 +148,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text("Signup Now"),
                           ),
                         ],
+
                       ),
+                      customElevatedButton("Network", network, buttonWidth)
                     ],
+                    
                   ),
                 ),
               ),

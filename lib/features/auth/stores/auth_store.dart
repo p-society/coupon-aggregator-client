@@ -24,7 +24,26 @@ abstract class Auth with Store {
   @action
   Future userLogin(String email, String password) async {
     isLoading = true;
-    try {} catch (e) {
+    try {
+      final res = await AuthRepository.authenticate(
+        email: email,
+        password: password,
+      );
+      if (res != null && res.statusCode == 201) {
+        final data = jsonDecode(res.body);
+        final sp = await SharedPreferences.getInstance();
+        jwt = data['accessToken'];
+        if (jwt != null) {
+          sp.setString('JWT', jwt!);
+        }
+        currentUser = User.fromJson(data['user']);
+        final expire = data['payload']['exp'] as int;
+        await sp.setInt('exp', expire);
+      } else if (res != null && res.statusCode == 409) {
+        String error = jsonDecode(res.body)['message'];
+        currentUser = null;
+      }
+    } catch (e) {
       throw (e.toString());
     } finally {
       isLoading = false;
@@ -41,7 +60,6 @@ abstract class Auth with Store {
         final User user = User.fromJson(data);
         final sp = await SharedPreferences.getInstance();
         final userJson = jsonEncode(user.toJson());
-        print(userJson);
         final bool isComplete = await sp.setString('user', userJson);
         if (isComplete) {
           currentUser = user;

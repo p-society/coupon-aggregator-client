@@ -5,26 +5,26 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
-  static Future<String?> authenticate() async {
+  static Future<http.Response?> authenticate({
+    required String email,
+    required String password,
+  }) async {
     try {
       String url = dotenv.env['Authenticate_Url'] as String;
       Map<String, dynamic> data = {
         "strategy": "local",
-        "email": "ERRT",
-        "password": "ERRT@logerr.com"
+        "email": email,
+        "password": password,
       };
       Map<String, String> header = {
         "content-type": "application/json",
       };
       var res = await http.post(Uri.parse(url),
           body: jsonEncode(data), headers: header);
-
-      final dta = jsonDecode(res.body);
-      return dta['accessToken'];
+      return res;
     } catch (e) {
-      print(e.toString());
+      throw Exception(e);
     }
-    return null;
   }
 
   static Future<http.Response?> userRegister({

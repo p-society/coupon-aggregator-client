@@ -22,6 +22,7 @@ class SignupScreenOne extends StatefulWidget {
 class _SignupScreenOneState extends State<SignupScreenOne> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
 
   void login() {
     /* authStore.userSignUp(userData: {}); */
@@ -38,12 +39,21 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
       showMessage(message: 'Enter First Name', context: context);
       return;
     }
-    if(!isValidate(lName)){
+    if (!isValidate(lName)) {
       showMessage(message: 'Enter Last Name', context: context);
       return;
     }
+    if (!isValidate(_emailController.text)) {
+      showMessage(message: 'Enter Valid Email', context: context);
+      return;
+    }
     navigateAndPopToNextScreen(
-        nextScreen:  SignupScreenTwo(fName: fName!,lName: lName!,), context: context);
+        nextScreen: SignupScreenTwo(
+          fName: fName!,
+          lName: lName!,
+          email: _emailController.text,
+        ),
+        context: context);
   }
 
   Widget customElevatedButton(
@@ -130,6 +140,18 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                         controller: _lastNameController,
                         type: TextInputType.visiblePassword,
                         icon: Icons.person_outline,
+                        onChanged: (val) {
+                          setState(() {
+                            lName = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      CustomTextField(
+                        hintText: 'E-mail',
+                        controller: _emailController,
+                        type: TextInputType.emailAddress,
+                        icon: Icons.email,
                         onChanged: (val) {
                           setState(() {
                             lName = val;

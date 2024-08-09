@@ -11,16 +11,17 @@ import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
-import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
 
 class SignupScreenTwo extends StatefulWidget {
   const SignupScreenTwo({
     super.key,
     required this.fName,
     required this.lName,
+    required this.email,
   });
   final String fName;
   final String lName;
+  final String email;
   @override
   State<SignupScreenTwo> createState() => _SignupScreenTwoState();
 }
@@ -50,11 +51,14 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
           context: context);
       return;
     }
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const DashboardScreen(),
-      ),
-      (r) => false,
+    authStore.userSignUp(
+      userData: {
+        "fName": widget.fName,
+        "lName": widget.lName,
+        "email": widget.email,
+        "password": _pwdController.text.trim(),
+        "mobileNumber": _phoneNumberController.text.trim()
+      },
     );
   }
 
