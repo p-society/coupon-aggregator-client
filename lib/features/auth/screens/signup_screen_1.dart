@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_2.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
@@ -20,6 +22,7 @@ class SignupScreenOne extends StatefulWidget {
 class _SignupScreenOneState extends State<SignupScreenOne> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
 
   void login() {
     /* authStore.userSignUp(userData: {}); */
@@ -32,7 +35,25 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
   }
  */
   void nextLoginScreen() {
-    navigateAndPopToNextScreen(nextScreen: const SignupScreenTwo(), context: context);
+    if (!isValidate(fName)) {
+      showMessage(message: 'Enter First Name', context: context);
+      return;
+    }
+    if (!isValidate(lName)) {
+      showMessage(message: 'Enter Last Name', context: context);
+      return;
+    }
+    if (!isValidate(_emailController.text)) {
+      showMessage(message: 'Enter Valid Email', context: context);
+      return;
+    }
+    navigateAndPopToNextScreen(
+        nextScreen: SignupScreenTwo(
+          fName: fName!,
+          lName: lName!,
+          email: _emailController.text,
+        ),
+        context: context);
   }
 
   Widget customElevatedButton(
@@ -74,6 +95,9 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
     super.dispose();
   }
 
+  String? fName;
+  String? lName;
+
   @override
   Widget build(BuildContext context) {
     double buttonWidth = 300;
@@ -96,7 +120,7 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                       AspectRatio(
                         aspectRatio: 16 / 9,
                         child: LottieBuilder.asset(
-                          'assets/lottie/login_lottie.json',
+                          'assets/lottie/signup_anim.json',
                         ),
                       ),
                       CustomTextField(
@@ -104,16 +128,35 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                         controller: _firstNameController,
                         type: TextInputType.text,
                         icon: Icons.person,
-                        onChanged: (val) {},
+                        onChanged: (val) {
+                          setState(() {
+                            fName = val;
+                          });
+                        },
                       ),
                       const SizedBox(height: 30),
                       CustomTextField(
                         hintText: 'Last name',
                         controller: _lastNameController,
                         type: TextInputType.visiblePassword,
-                        icon: Icons.person_2,
-                        onChanged: (val) {},
-                        
+                        icon: Icons.person_outline,
+                        onChanged: (val) {
+                          setState(() {
+                            lName = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      CustomTextField(
+                        hintText: 'E-mail',
+                        controller: _emailController,
+                        type: TextInputType.emailAddress,
+                        icon: Icons.email,
+                        onChanged: (val) {
+                          setState(() {
+                            lName = val;
+                          });
+                        },
                       ),
                       const SizedBox(height: 30),
                       customElevatedButton(

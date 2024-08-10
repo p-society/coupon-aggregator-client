@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomPwdTile extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
   final TextInputType type;
   final IconData icon;
   final ValueChanged<String?> onChanged;
-  final bool isObscure;
-  final bool isPassword;
-  const CustomTextField({
+
+  const CustomPwdTile({
     super.key,
     required this.hintText,
     required this.controller,
     required this.type,
     required this.icon,
-    required this.onChanged,
-    this.isObscure = false,
-    this.isPassword = false,
+    required this.onChanged, required bool isPassword,
   });
 
   @override
+  _CustomPwdTileState createState() => _CustomPwdTileState();
+}
+
+class _CustomPwdTileState extends State<CustomPwdTile> {
+  bool isObscure = true;
+
+  void pwdVisibility() {
+    setState(() {
+      isObscure = !isObscure;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final suffixIcon = isPassword
-        ? IconButton(
-            icon: isObscure
-                ? const Icon(Icons.visibility)
-                : const Icon(
-                    Icons.visibility_outlined,
-                  ),
-            onPressed: () {},
-          )
-        : null;
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 60.0,
@@ -40,13 +40,12 @@ class CustomTextField extends StatelessWidget {
       child: SizedBox(
         width: 300,
         child: TextField(
-          maxLines: null,
           obscureText: isObscure,
-          controller: controller,
-          onChanged: onChanged,
+          controller: widget.controller,
+          onChanged: widget.onChanged,
           decoration: InputDecoration(
             prefixIcon: Icon(
-              icon,
+              widget.icon,
               color: AppTheme.lightTheme().primaryColor,
             ),
             border: OutlineInputBorder(
@@ -55,14 +54,19 @@ class CustomTextField extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(10),
             ),
-            hintText: hintText,
+            hintText: widget.hintText,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 10.0,
               vertical: 5,
             ),
-            suffixIcon: suffixIcon,
+            suffixIcon: IconButton(
+              icon: Icon(
+                isObscure ? Icons.visibility: Icons.visibility_off,
+              ),
+              onPressed: pwdVisibility,
+            ),
           ),
-          keyboardType: type,
+          keyboardType: widget.type,
         ),
       ),
     );

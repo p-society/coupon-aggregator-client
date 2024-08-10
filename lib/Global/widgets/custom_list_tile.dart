@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mess_mgmt/Global/enums/enums.dart';
-import 'package:mess_mgmt/Global/models/coupon_model.dart';
+import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 
 class GlassyListTile extends StatelessWidget {
-  final CouponModel coupon;
+  final CouponDataModel coupon;
   final int i;
 
   const GlassyListTile({
@@ -24,7 +23,7 @@ class GlassyListTile extends StatelessWidget {
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2), // Glass effect
+            color: Colors.white.withOpacity(0.2),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: Colors.white.withOpacity(0.3),
@@ -34,18 +33,18 @@ class GlassyListTile extends StatelessWidget {
           child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-            title: const Text(
-              "Rahul",
-              style: TextStyle(
-                color: Colors.white, // Title text color
+            title: Text(
+              coupon.createdBy?.fName ?? '',
+              style: const TextStyle(
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
             ),
             subtitle: Text(
-              "Floor: ${coupon.floor.intoString()}",
+              "Floor: ${coupon.couponFloor}",
               style: const TextStyle(
-                color: Colors.white70, // Subtitle text color
+                color: Colors.white70,
               ),
             ),
             trailing: Column(
@@ -53,18 +52,18 @@ class GlassyListTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Rs ${coupon.cost}",
+                  "Rs ${coupon.price}",
                   style: const TextStyle(
-                    color: Colors.white, // Cost text color
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  coupon.mealType.intoString(),
+                  coupon.isVeg ? 'Veg' : 'Non-Veg',
                   style: const TextStyle(
-                    color: Colors.white70, // Meal type text color
+                    color: Colors.white70,
                     fontSize: 14,
                   ),
                 ),

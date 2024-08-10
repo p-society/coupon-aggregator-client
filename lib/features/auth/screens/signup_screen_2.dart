@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
+import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
-import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
 
 class SignupScreenTwo extends StatefulWidget {
-  const SignupScreenTwo({super.key});
-
+  const SignupScreenTwo({
+    super.key,
+    required this.fName,
+    required this.lName,
+    required this.email,
+  });
+  final String fName;
+  final String lName;
+  final String email;
   @override
   State<SignupScreenTwo> createState() => _SignupScreenTwoState();
 }
@@ -20,7 +29,7 @@ class SignupScreenTwo extends StatefulWidget {
 class _SignupScreenTwoState extends State<SignupScreenTwo> {
   final _phoneNumberController = TextEditingController();
   final _pwdController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+
   void login() {
     /* authStore.userSignUp(userData: {}); */
     // Navigator.pushNamed(context, "/dashboard");
@@ -28,18 +37,30 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   }
 
   void signupNow() {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) =>const DashboardScreen(),
-      ),
-      (r) => false,
+    if (!isValidate(_phoneNumberController.text)) {
+      showMessage(message: 'Please Enter Valid Phone Number', context: context);
+      return;
+    }
+    if (!isValidate(_pwdController.text)) {
+      showMessage(message: 'Please Enter Password', context: context);
+      return;
+    }
+    if (_pwdController.text.length < 6) {
+      showMessage(
+          message: 'Password length should be greater than 6 characters.',
+          context: context);
+      return;
+    }
+    authStore.userSignUp(
+      userData: {
+        "fName": widget.fName,
+        "lName": widget.lName,
+        "email": widget.email,
+        "password": _pwdController.text.trim(),
+        "mobileNumber": _phoneNumberController.text.trim()
+      },
     );
-    // navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
   }
-
-  /* void nextLoginScreen() {
-    navigateToNextScreen(nextScreen: const SignupScreenTwo(), context: context);
-  } */
 
   Widget customElevatedButton(
       String action, VoidCallback ontap, double buttonWidth) {
@@ -102,7 +123,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                       AspectRatio(
                         aspectRatio: 16 / 9,
                         child: LottieBuilder.asset(
-                          'assets/lottie/login_lottie.json',
+                          'assets/lottie/signup_anim.json',
                         ),
                       ),
                       CustomTextField(
@@ -113,7 +134,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                         onChanged: (val) {},
                       ),
                       const SizedBox(height: 30),
-                      CustomTextField(
+                      CustomPwdTile(
                         hintText: 'Password',
                         controller: _pwdController,
                         type: TextInputType.visiblePassword,
@@ -122,34 +143,8 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                         isPassword: true,
                       ),
                       const SizedBox(height: 30),
-                      CustomTextField(
-                        hintText: 'Confirm Password',
-                        controller: _confirmPasswordController,
-                        type: TextInputType.visiblePassword,
-                        icon: Icons.lock,
-                        onChanged: (val) {},
-                        isPassword: true,
-                      ),
+                      customElevatedButton("Signup", signupNow, buttonWidth),
                       const SizedBox(height: 30),
-                      customElevatedButton("Sign up", signupNow, buttonWidth),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Already have an account?",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          TextButton(
-                            onPressed: login,
-                            child: const Text("Login Now"),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),

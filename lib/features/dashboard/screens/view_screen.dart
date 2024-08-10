@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
+import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/widgets/custom_list_tile.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
@@ -13,7 +14,7 @@ class ViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<CouponModel> list = [];
+    List<CouponDataModel> list = [];
     switch (mealTimeType) {
       case MealTimeType.breakfast:
         list = dashboardStore.breakfastList;

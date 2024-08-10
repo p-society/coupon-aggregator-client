@@ -45,17 +45,34 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
+  late final _$totalAvailableCouponAtom =
+      Atom(name: 'Dashboard.totalAvailableCoupon', context: context);
+
+  @override
+  int? get totalAvailableCoupon {
+    _$totalAvailableCouponAtom.reportRead();
+    return super.totalAvailableCoupon;
+  }
+
+  @override
+  set totalAvailableCoupon(int? value) {
+    _$totalAvailableCouponAtom.reportWrite(value, super.totalAvailableCoupon,
+        () {
+      super.totalAvailableCoupon = value;
+    });
+  }
+
   late final _$breakfastListAtom =
       Atom(name: 'Dashboard.breakfastList', context: context);
 
   @override
-  ObservableList<CouponModel> get breakfastList {
+  ObservableList<CouponDataModel> get breakfastList {
     _$breakfastListAtom.reportRead();
     return super.breakfastList;
   }
 
   @override
-  set breakfastList(ObservableList<CouponModel> value) {
+  set breakfastList(ObservableList<CouponDataModel> value) {
     _$breakfastListAtom.reportWrite(value, super.breakfastList, () {
       super.breakfastList = value;
     });
@@ -65,13 +82,13 @@ mixin _$DashboardStore on Dashboard, Store {
       Atom(name: 'Dashboard.lunchList', context: context);
 
   @override
-  ObservableList<CouponModel> get lunchList {
+  ObservableList<CouponDataModel> get lunchList {
     _$lunchListAtom.reportRead();
     return super.lunchList;
   }
 
   @override
-  set lunchList(ObservableList<CouponModel> value) {
+  set lunchList(ObservableList<CouponDataModel> value) {
     _$lunchListAtom.reportWrite(value, super.lunchList, () {
       super.lunchList = value;
     });
@@ -81,25 +98,101 @@ mixin _$DashboardStore on Dashboard, Store {
       Atom(name: 'Dashboard.dinnerList', context: context);
 
   @override
-  ObservableList<CouponModel> get dinnerList {
+  ObservableList<CouponDataModel> get dinnerList {
     _$dinnerListAtom.reportRead();
     return super.dinnerList;
   }
 
   @override
-  set dinnerList(ObservableList<CouponModel> value) {
+  set dinnerList(ObservableList<CouponDataModel> value) {
     _$dinnerListAtom.reportWrite(value, super.dinnerList, () {
       super.dinnerList = value;
     });
+  }
+
+  late final _$breakfastLimitAtom =
+      Atom(name: 'Dashboard.breakfastLimit', context: context);
+
+  @override
+  int get breakfastLimit {
+    _$breakfastLimitAtom.reportRead();
+    return super.breakfastLimit;
+  }
+
+  @override
+  set breakfastLimit(int value) {
+    _$breakfastLimitAtom.reportWrite(value, super.breakfastLimit, () {
+      super.breakfastLimit = value;
+    });
+  }
+
+  late final _$lunchLimitAtom =
+      Atom(name: 'Dashboard.lunchLimit', context: context);
+
+  @override
+  int get lunchLimit {
+    _$lunchLimitAtom.reportRead();
+    return super.lunchLimit;
+  }
+
+  @override
+  set lunchLimit(int value) {
+    _$lunchLimitAtom.reportWrite(value, super.lunchLimit, () {
+      super.lunchLimit = value;
+    });
+  }
+
+  late final _$dinnerLimitAtom =
+      Atom(name: 'Dashboard.dinnerLimit', context: context);
+
+  @override
+  int get dinnerLimit {
+    _$dinnerLimitAtom.reportRead();
+    return super.dinnerLimit;
+  }
+
+  @override
+  set dinnerLimit(int value) {
+    _$dinnerLimitAtom.reportWrite(value, super.dinnerLimit, () {
+      super.dinnerLimit = value;
+    });
+  }
+
+  late final _$fetchListCouponAsyncAction =
+      AsyncAction('Dashboard.fetchListCoupon', context: context);
+
+  @override
+  Future<dynamic> fetchListCoupon() {
+    return _$fetchListCouponAsyncAction.run(() => super.fetchListCoupon());
+  }
+
+  late final _$fetchBreakfastAsyncAction =
+      AsyncAction('Dashboard.fetchBreakfast', context: context);
+
+  @override
+  Future<dynamic> fetchBreakfast(int limit) {
+    return _$fetchBreakfastAsyncAction.run(() => super.fetchBreakfast(limit));
+  }
+
+  late final _$sellCouponAsyncAction =
+      AsyncAction('Dashboard.sellCoupon', context: context);
+
+  @override
+  Future<dynamic> sellCoupon(CouponModel model) {
+    return _$sellCouponAsyncAction.run(() => super.sellCoupon(model));
   }
 
   @override
   String toString() {
     return '''
 isLoading: ${isLoading},
+totalAvailableCoupon: ${totalAvailableCoupon},
 breakfastList: ${breakfastList},
 lunchList: ${lunchList},
 dinnerList: ${dinnerList},
+breakfastLimit: ${breakfastLimit},
+lunchLimit: ${lunchLimit},
+dinnerLimit: ${dinnerLimit},
 breakfastCount: ${breakfastCount},
 lunchCount: ${lunchCount},
 dinnerCount: ${dinnerCount}
