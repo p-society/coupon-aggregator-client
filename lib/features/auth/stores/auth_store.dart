@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:mess_mgmt/Global/models/user_model.dart';
+import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/auth/repository/auth_repo.dart';
+import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,12 +17,6 @@ abstract class Auth with Store {
   @observable
   bool isLoading = false;
 
-  @observable
-  String? jwt;
-
-  @observable
-  User? currentUser;
-
   @action
   Future userLogin(String email, String password) async {
     isLoading = true;
@@ -32,18 +28,22 @@ abstract class Auth with Store {
       if (res != null && res.statusCode == 201) {
         final data = jsonDecode(res.body);
         final sp = await SharedPreferences.getInstance();
-        jwt = data['accessToken'];
+        final jwt = data['accessToken'];
         if (jwt != null) {
           sp.setString('JWT', jwt!);
+          appState.jwt = jwt;
+          final userJson = data['user'];
+          appState.currentUser = User.fromJson(userJson);
+          final expire = data['authentication']['payload']['exp'] as int;
+          await sp.setInt('exp', expire);
+          await dashboardStore.fetchAllMeals();
         }
-        currentUser = User.fromJson(data['user']);
-        final expire = data['payload']['exp'] as int;
-        await sp.setInt('exp', expire);
       } else if (res != null && res.statusCode == 409) {
         String error = jsonDecode(res.body)['message'];
-        currentUser = null;
+        appState.currentUser = null;
       }
     } catch (e) {
+      print(e.toString());
       throw (e.toString());
     } finally {
       isLoading = false;
@@ -62,18 +62,28 @@ abstract class Auth with Store {
         final userJson = jsonEncode(user.toJson());
         final bool isComplete = await sp.setString('user', userJson);
         if (isComplete) {
-          currentUser = user;
+          appState.currentUser = user;
         } else {
-          currentUser = null;
+          appState.currentUser = null;
         }
       } else if (res != null && res.statusCode == 409) {
         String error = jsonDecode(res.body)['message'];
-        currentUser = null;
+        appState.currentUser = null;
       }
     } catch (e) {
       throw (e.toString());
     } finally {
       isLoading = false;
+    }
+  }
+
+  @action
+  Future logout() async {
+    final sp = await SharedPreferences.getInstance();
+    final isRemoved = await sp.remove('JWT');
+    if (isRemoved) {
+      appState.currentUser = null;
+      appState.jwt = null;
     }
   }
 }
