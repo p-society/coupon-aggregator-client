@@ -9,6 +9,7 @@ import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
+import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
@@ -105,7 +106,10 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   Widget build(BuildContext context) {
     double buttonWidth = 300;
     return Scaffold(
-      appBar: const RoundedAppBar(),
+       appBar: const WobbleAppBar(
+        title: "One more step",
+        color: Colors.white,
+      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),
@@ -123,7 +127,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                       AspectRatio(
                         aspectRatio: 16 / 9,
                         child: LottieBuilder.asset(
-                          'assets/lottie/signup_anim.json',
+                          'assets/lottie/login_lottie.json',
                         ),
                       ),
                       CustomTextField(

@@ -7,8 +7,10 @@ class NetworkScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: MediaQuery.of(context).size.height * 0.025),
@@ -18,15 +20,17 @@ class NetworkScreen extends StatelessWidget {
                 'assets/lottie/oops_anim.json',
               ),
             ),
-            const Text("Oops, please conect to the internet",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: Colors.black,
-            ),
+            const Text(
+              "Oops, please conect to the internet",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Colors.blueAccent,
+              ),
             ),
           ],
-        ),
+        )),
       ),
     );
   }

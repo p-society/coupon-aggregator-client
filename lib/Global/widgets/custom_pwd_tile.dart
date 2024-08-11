@@ -55,6 +55,7 @@ class _CustomPwdTileState extends State<CustomPwdTile> {
               borderRadius: BorderRadius.circular(10),
             ),
             hintText: widget.hintText,
+            hintStyle: TextStyle(fontSize: 18),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 10.0,
               vertical: 5,

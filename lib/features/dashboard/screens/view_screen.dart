@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/widgets/custom_list_tile.dart';
@@ -10,6 +11,7 @@ class ViewScreen extends StatelessWidget {
     required this.mealTimeType,
   });
   final MealTimeType mealTimeType;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,8 @@ class ViewScreen extends StatelessWidget {
       case MealTimeType.dinner:
         list = dashboardStore.dinnerList;
         break;
-    }
+    };
+   
     return Scaffold(
       appBar: AppBar(
         title: Text(mealTimeType.intoString()),
@@ -40,14 +43,33 @@ class ViewScreen extends StatelessWidget {
             ],
           ),
         ),
-        child: ListView.builder(
+        child:list.isEmpty? Padding(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: LottieBuilder.asset(
+                'assets/lottie/oops_anim.json',
+              ),
+            ),
+            const Text(
+              "Oops, please conect to the internet",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Colors.blueAccent,
+              ),
+            ),
+          ],
+        )),
+      ): ListView.builder(
           itemCount: list.length,
           itemBuilder: (context, index) {
-            /* ListTile(
-              title: const Text("SellerName : "),
-              subtitle: Text('Cost : ${list[index].cost}'),
-              trailing: Text(list[index].mealType.intoString()),
-            ); */
             return GlassyListTile(
               coupon: list[index],
               i: index,
