@@ -24,37 +24,6 @@ mixin _$AuthStore on Auth, Store {
     });
   }
 
-  late final _$jwtAtom = Atom(name: 'Auth.jwt', context: context);
-
-  @override
-  String? get jwt {
-    _$jwtAtom.reportRead();
-    return super.jwt;
-  }
-
-  @override
-  set jwt(String? value) {
-    _$jwtAtom.reportWrite(value, super.jwt, () {
-      super.jwt = value;
-    });
-  }
-
-  late final _$currentUserAtom =
-      Atom(name: 'Auth.currentUser', context: context);
-
-  @override
-  User? get currentUser {
-    _$currentUserAtom.reportRead();
-    return super.currentUser;
-  }
-
-  @override
-  set currentUser(User? value) {
-    _$currentUserAtom.reportWrite(value, super.currentUser, () {
-      super.currentUser = value;
-    });
-  }
-
   late final _$userLoginAsyncAction =
       AsyncAction('Auth.userLogin', context: context);
 
@@ -72,12 +41,17 @@ mixin _$AuthStore on Auth, Store {
         .run(() => super.userSignUp(userData: userData));
   }
 
+  late final _$logoutAsyncAction = AsyncAction('Auth.logout', context: context);
+
+  @override
+  Future<dynamic> logout() {
+    return _$logoutAsyncAction.run(() => super.logout());
+  }
+
   @override
   String toString() {
     return '''
-isLoading: ${isLoading},
-jwt: ${jwt},
-currentUser: ${currentUser}
+isLoading: ${isLoading}
     ''';
   }
 }
