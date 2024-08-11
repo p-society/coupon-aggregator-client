@@ -158,20 +158,14 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
-  late final _$fetchListCouponAsyncAction =
-      AsyncAction('Dashboard.fetchListCoupon', context: context);
+  late final _$fetchMealAsyncAction =
+      AsyncAction('Dashboard.fetchMeal', context: context);
 
   @override
-  Future<dynamic> fetchListCoupon() {
-    return _$fetchListCouponAsyncAction.run(() => super.fetchListCoupon());
-  }
-
-  late final _$fetchBreakfastAsyncAction =
-      AsyncAction('Dashboard.fetchBreakfast', context: context);
-
-  @override
-  Future<dynamic> fetchBreakfast(int limit) {
-    return _$fetchBreakfastAsyncAction.run(() => super.fetchBreakfast(limit));
+  Future<dynamic> fetchMeal(
+      {required MealTimeType type, required int mealLimit}) {
+    return _$fetchMealAsyncAction
+        .run(() => super.fetchMeal(type: type, mealLimit: mealLimit));
   }
 
   late final _$sellCouponAsyncAction =
@@ -180,6 +174,51 @@ mixin _$DashboardStore on Dashboard, Store {
   @override
   Future<dynamic> sellCoupon(CouponModel model) {
     return _$sellCouponAsyncAction.run(() => super.sellCoupon(model));
+  }
+
+  late final _$fetchAllMealsAsyncAction =
+      AsyncAction('Dashboard.fetchAllMeals', context: context);
+
+  @override
+  Future<dynamic> fetchAllMeals() {
+    return _$fetchAllMealsAsyncAction.run(() => super.fetchAllMeals());
+  }
+
+  late final _$DashboardActionController =
+      ActionController(name: 'Dashboard', context: context);
+
+  @override
+  void increaseLimit({required MealTimeType type}) {
+    final _$actionInfo = _$DashboardActionController.startAction(
+        name: 'Dashboard.increaseLimit');
+    try {
+      return super.increaseLimit(type: type);
+    } finally {
+      _$DashboardActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearMeal({required MealTimeType mealType}) {
+    final _$actionInfo =
+        _$DashboardActionController.startAction(name: 'Dashboard.clearMeal');
+    try {
+      return super.clearMeal(mealType: mealType);
+    } finally {
+      _$DashboardActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addMeal(
+      {required List<CouponDataModel> list, required MealTimeType type}) {
+    final _$actionInfo =
+        _$DashboardActionController.startAction(name: 'Dashboard.addMeal');
+    try {
+      return super.addMeal(list: list, type: type);
+    } finally {
+      _$DashboardActionController.endAction(_$actionInfo);
+    }
   }
 
   @override

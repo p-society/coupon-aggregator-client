@@ -198,11 +198,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 mealTime: mealTimeType,
                                 mealType: mealType,
                                 cost: int.tryParse(cost) ?? 0);
-                            // await dashboardStore.sellCoupon(model).then((_) {
-                            //   costController.clear();
-                            //   Navigator.of(context).pop();
-                            // });
-                            await dashboardStore.fetchBreakfast(100);
+                            await dashboardStore.sellCoupon(model).then((_) {
+                              costController.clear();
+                              Navigator.of(context).pop();
+                            });
                           },
                           child: const Text("Submit"),
                         ),

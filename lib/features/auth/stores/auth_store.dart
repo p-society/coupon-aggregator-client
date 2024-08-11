@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:mess_mgmt/Global/models/user_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/auth/repository/auth_repo.dart';
+import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +36,7 @@ abstract class Auth with Store {
           appState.currentUser = User.fromJson(userJson);
           final expire = data['authentication']['payload']['exp'] as int;
           await sp.setInt('exp', expire);
+          await dashboardStore.fetchAllMeals();
         }
       } else if (res != null && res.statusCode == 409) {
         String error = jsonDecode(res.body)['message'];

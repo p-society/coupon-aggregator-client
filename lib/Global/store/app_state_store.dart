@@ -30,7 +30,7 @@ abstract class _AppStateStore with Store {
     await dotenv.load(fileName: ".env");
     final sp = await SharedPreferences.getInstance();
     jwt = sp.getString('JWT');
-    // await dashboardStore.fetchListCoupon();
+    await dashboardStore.fetchAllMeals();
     }
   }
 
