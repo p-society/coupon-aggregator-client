@@ -8,6 +8,7 @@ import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
+import 'package:mess_mgmt/features/dashboard/screens/shimmerloading.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
@@ -224,6 +225,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
+    /* double widthFactor = MediaQuery.of(context).width; */
     return Scaffold(
       appBar: AppBar(
         title: const Text('Coupon Availability'),
@@ -276,6 +278,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
             ),
+            Shimmerloading(),
             const Spacer(),
           ],
         ),

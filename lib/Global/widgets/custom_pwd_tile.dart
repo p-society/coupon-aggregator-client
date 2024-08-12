@@ -7,15 +7,17 @@ class CustomPwdTile extends StatefulWidget {
   final TextInputType type;
   final IconData icon;
   final ValueChanged<String?> onChanged;
+  final FormFieldValidator? validator;
 
-  const CustomPwdTile({
-    super.key,
-    required this.hintText,
-    required this.controller,
-    required this.type,
-    required this.icon,
-    required this.onChanged, required bool isPassword,
-  });
+  const CustomPwdTile(
+      {super.key,
+      required this.hintText,
+      required this.controller,
+      required this.type,
+      required this.icon,
+      required this.onChanged,
+      required bool isPassword,
+      this.validator});
 
   @override
   _CustomPwdTileState createState() => _CustomPwdTileState();
@@ -39,7 +41,8 @@ class _CustomPwdTileState extends State<CustomPwdTile> {
       ),
       child: SizedBox(
         width: 300,
-        child: TextField(
+        child: TextFormField(
+          validator: widget.validator,
           obscureText: isObscure,
           controller: widget.controller,
           onChanged: widget.onChanged,
@@ -55,13 +58,14 @@ class _CustomPwdTileState extends State<CustomPwdTile> {
               borderRadius: BorderRadius.circular(10),
             ),
             hintText: widget.hintText,
+            hintStyle: TextStyle(fontSize: 18),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 10.0,
               vertical: 5,
             ),
             suffixIcon: IconButton(
               icon: Icon(
-                isObscure ? Icons.visibility: Icons.visibility_off,
+                isObscure ? Icons.visibility : Icons.visibility_off,
               ),
               onPressed: pwdVisibility,
             ),

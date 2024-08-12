@@ -5,9 +5,9 @@ import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
-import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
+import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_2.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
@@ -25,16 +25,13 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
   final _emailController = TextEditingController();
 
   void login() {
-    /* authStore.userSignUp(userData: {}); */
-    // Navigator.pushNamed(context, "/dashboard");
     navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
 
-  /* void signupNow() {
-    navigateToNextScreen(nextScreen: const DashboardScreen(), context: context);
-  }
- */
   void nextLoginScreen() {
+    final fName = _firstNameController.text.trim();
+    final lName = _lastNameController.text.trim();
+    final email = _emailController.text.trim();
     if (!isValidate(fName)) {
       showMessage(message: 'Enter First Name', context: context);
       return;
@@ -43,15 +40,15 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
       showMessage(message: 'Enter Last Name', context: context);
       return;
     }
-    if (!isValidate(_emailController.text)) {
+    if (!isValidate(email)) {
       showMessage(message: 'Enter Valid Email', context: context);
       return;
     }
     navigateAndPopToNextScreen(
         nextScreen: SignupScreenTwo(
-          fName: fName!,
-          lName: lName!,
-          email: _emailController.text,
+          fName: fName,
+          lName: lName,
+          email: email,
         ),
         context: context);
   }
@@ -92,6 +89,7 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -100,90 +98,107 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
 
   @override
   Widget build(BuildContext context) {
-    double buttonWidth = 300;
     return Scaffold(
-      appBar: const RoundedAppBar(),
+      appBar: const WobbleAppBar(
+        title: "Creating your account",
+        color: Colors.white,
+      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.025),
-                      AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: LottieBuilder.asset(
-                          'assets/lottie/signup_anim.json',
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  AspectRatio(
+                    aspectRatio: 1.2,
+                    child: LottieBuilder.asset(
+                      'assets/lottie/login_lottie.json',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    hintText: 'First name',
+                    controller: _firstNameController,
+                    type: TextInputType.text,
+                    icon: Icons.person,
+                    onChanged: (val) {},
+                  ),
+                  const SizedBox(height: 15),
+                  CustomTextField(
+                    hintText: 'Last name',
+                    controller: _lastNameController,
+                    type: TextInputType.text,
+                    icon: Icons.person_2_outlined,
+                    onChanged: (val) {},
+                  ),
+                  const SizedBox(height: 15),
+                  CustomTextField(
+                    hintText: 'E-mail id',
+                    controller: _emailController,
+                    type: TextInputType.emailAddress,
+                    icon: Icons.email,
+                    onChanged: (val) {},
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: nextLoginScreen,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.lightTheme().primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      CustomTextField(
-                        hintText: 'First name',
-                        controller: _firstNameController,
-                        type: TextInputType.text,
-                        icon: Icons.person,
-                        onChanged: (val) {
-                          setState(() {
-                            fName = val;
-                          });
-                        },
+                      child: Observer(builder: (context) {
+                        final isLoading = authStore.isLoading;
+                        if (isLoading) {
+                          return const AppLoader();
+                        }
+                        return Text(
+                          "Next",
+                          style: AppTheme.lightTheme()
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(fontSize: 20),
+                        );
+                      }),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Already have an account?",
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.6),
+                          fontSize: 14,
+                        ),
                       ),
-                      const SizedBox(height: 30),
-                      CustomTextField(
-                        hintText: 'Last name',
-                        controller: _lastNameController,
-                        type: TextInputType.visiblePassword,
-                        icon: Icons.person_outline,
-                        onChanged: (val) {
-                          setState(() {
-                            lName = val;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 30),
-                      CustomTextField(
-                        hintText: 'E-mail',
-                        controller: _emailController,
-                        type: TextInputType.emailAddress,
-                        icon: Icons.email,
-                        onChanged: (val) {
-                          setState(() {
-                            lName = val;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 30),
-                      customElevatedButton(
-                          "Next", nextLoginScreen, buttonWidth),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Already have an account?",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
+                      TextButton(
+                        onPressed: login,
+                        child: Text(
+                          "Login now",
+                          style: TextStyle(
+                            color: AppTheme.lightTheme().primaryColor,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(width: 10),
-                          TextButton(
-                            onPressed: login,
-                            child: const Text("Login Now"),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 10),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
