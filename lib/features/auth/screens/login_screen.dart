@@ -44,8 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
       showMessage(message: "Enter Valid Email", context: context);
       return;
     }
-
-    //adding functionality to check the internet connection
+    Map<String, dynamic> data = {
+      "strategy": "local",
+      "email": _emailController.text.trim(),
+      "password": _pwdController.text.trim(),
+    };
+    print(data);
+    // //adding functionality to check the internet connection
     bool hasConnection = await checkInternetConnection();
     if (!hasConnection) {
       showMessage(message: "Check Internet Connection", context: context);
@@ -53,8 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     //adding functionality to validate the user input
-    if (_formKey.currentState?.validate() ?? false) {
-      authStore.userLogin(
+    if (_formKey.currentState?.validate() ?? true) {
+      await authStore.userLogin(
         _emailController.text.trim(),
         _pwdController.text.trim(),
       );
