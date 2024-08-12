@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
@@ -6,9 +7,9 @@ import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
-import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
+import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
@@ -60,6 +61,34 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
         "mobileNumber": _phoneNumberController.text.trim()
       },
     );
+    showValidateDialog(context, Builder(builder: (context) => Container()));
+  }
+
+  void showValidateDialog(BuildContext context, Builder builder) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              backgroundColor:
+                  Colors.transparent, // Make background transparent
+              child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                      sigmaX: 10, sigmaY: 10), // Apply blur effect
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white
+                          .withOpacity(0.2), // Slightly opaque background
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(
+                            0.3), // White border with slight opacity
+                        width: 1.5,
+                      ),
+                    ),
+                    child: const Text("Account created"),
+                  )));
+        });
   }
 
   Widget customElevatedButton(
@@ -105,7 +134,10 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   Widget build(BuildContext context) {
     double buttonWidth = 300;
     return Scaffold(
-      appBar: const RoundedAppBar(),
+      appBar: const WobbleAppBar(
+        title: "One more step",
+        color: Colors.white,
+      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),
@@ -123,7 +155,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                       AspectRatio(
                         aspectRatio: 16 / 9,
                         child: LottieBuilder.asset(
-                          'assets/lottie/signup_anim.json',
+                          'assets/lottie/login_lottie.json',
                         ),
                       ),
                       CustomTextField(

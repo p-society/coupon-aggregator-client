@@ -43,7 +43,7 @@ dependencies:
   shared_preferences: ^2.3.1
   json_annotation: ^4.9.0
   http: ^1.2.2
-  connectivity_plus: ^6.0.5
+  shimmer: ^3.0.0
 
 
 dev_dependencies:
