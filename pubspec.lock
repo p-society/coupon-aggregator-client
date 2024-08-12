@@ -158,6 +158,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  connectivity_plus:
+    dependency: "direct main"
+    description:
+      name: connectivity_plus
+      sha256: "2056db5241f96cdc0126bd94459fc4cdc13876753768fc7a31c425e50a7177d0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.5"
+  connectivity_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: connectivity_plus_platform_interface
+      sha256: "42657c1715d48b167930d5f34d00222ac100475f73d10162ddf43e714932f204"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   convert:
     dependency: transitive
     description:
@@ -190,6 +206,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.6"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "365c771ac3b0e58845f39ec6deebc76e3276aa9922b0cc60840712094d9047ac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.10"
   fake_async:
     dependency: transitive
     description:
@@ -277,14 +301,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  google_fonts:
-    dependency: "direct main"
-    description:
-      name: google_fonts
-      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.1"
   graphs:
     dependency: transitive
     description:
@@ -461,6 +477,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  nm:
+    dependency: transitive
+    description:
+      name: nm
+      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   package_config:
     dependency: transitive
     description:
@@ -477,30 +501,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
-  path_provider:
-    dependency: transitive
-    description:
-      name: path_provider
-      sha256: fec0d61223fba3154d87759e3cc27fe2c8dc498f6386c6d6fc80d1afdd1bf378
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.4"
-  path_provider_android:
-    dependency: transitive
-    description:
-      name: path_provider_android
-      sha256: "490539678396d4c3c0b06efdaab75ae60675c3e0c66f72bc04c2e2c1e0e2abeb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.9"
-  path_provider_foundation:
-    dependency: transitive
-    description:
-      name: path_provider_foundation
-      sha256: f234384a3fdd67f989b4d54a5d73ca2a6c422fa55ae694381ae0f4375cd1ea16
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
   path_provider_linux:
     dependency: transitive
     description:
@@ -525,6 +525,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      sha256: c15605cd28af66339f8eb6fbe0e541bfe2d1b72d5825efc6598f3e0a31b9ad27
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.2"
   pinput:
     dependency: "direct main"
     description:
@@ -874,6 +882,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  xml:
+    dependency: transitive
+    description:
+      name: xml
+      sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.0"
   yaml:
     dependency: transitive
     description:

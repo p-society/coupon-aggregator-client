@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:mess_mgmt/Global/Functions/format_date.dart';
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_endpoints.dart';
@@ -9,6 +9,7 @@ import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mobx/mobx.dart';
+
 part 'dashboard_store.g.dart';
 
 final DashboardStore dashboardStore = DashboardStore();
@@ -16,8 +17,6 @@ final DashboardStore dashboardStore = DashboardStore();
 class DashboardStore = Dashboard with _$DashboardStore;
 
 abstract class Dashboard with Store {
-  //Observables instances :
-
   @observable
   bool isLoading = false;
 
@@ -44,6 +43,39 @@ abstract class Dashboard with Store {
   @observable
   int dinnerLimit = 10;
 
+  @observable
+  bool isFilterVeg = false;
+
+  @observable
+  bool isFilterNonVeg = false;
+
+  @observable
+  bool isFilterFirstFloor = false;
+
+  @observable
+  bool isFilterGroundFloor = false;
+
+  @observable
+  int totalBreakfastAvailable = 0;
+
+  @observable
+  int totalLunchAvailable = 0;
+
+  @observable
+  int totalDinnerAvailable = 0;
+
+  @observable
+  bool isLoadMore = false;
+
+  // @observable
+  // PaginationEnum breakfastPagination = PaginationEnum.initial;
+
+  // @observable
+  // PaginationEnum lunchPagination = PaginationEnum.initial;
+
+  // @observable
+  // PaginationEnum dinnerPagination = PaginationEnum.initial;
+
   // Computed getter methods :
 
   @computed
@@ -53,6 +85,27 @@ abstract class Dashboard with Store {
   @computed
   int get dinnerCount => dinnerList.length;
 
+  // @computed
+  // bool get isFilteredApplied {
+  //   if (isFilterFirstFloor ||
+  //       isFilterGroundFloor ||
+  //       isFilterNonVeg ||
+  //       isFilterVeg) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  // @computed
+  // ObservableList<CouponDataModel> get breakfastFilteredList {
+    
+  //   if (isFilteredApplied) {
+     
+  //     return applyFilter();
+  //   } else {
+  //     return breakfastList;
+  //   }
+  // }
   // Actions methods :
 
   // void sellCoupon(CouponDataModel coupon) {
@@ -70,6 +123,42 @@ abstract class Dashboard with Store {
   //     case "dinner":
   //       dinnerList.add(coupon);
   //   }
+  // }
+
+  // @action
+  // ObservableList<CouponDataModel> applyFilter() {
+  //   ObservableList<CouponDataModel> list = ObservableList<CouponDataModel>();
+  //   ObservableList<CouponDataModel> currentList =
+  //       ObservableList<CouponDataModel>.of(breakfastList);
+  //   if (isFilterFirstFloor) {
+  //     for (final model in currentList) {
+  //       if (model.couponFloor == 2) {
+  //         list.add(model);
+  //       }
+  //     }
+  //   }
+  //   if (isFilterGroundFloor) {
+  //     for (final model in currentList) {
+  //       if (model.couponFloor == 2) {
+  //         list.add(model);
+  //       }
+  //     }
+  //   }
+  //   if (isFilterNonVeg) {
+  //     for (final model in currentList) {
+  //       if (!model.isVeg) {
+  //         list.add(model);
+  //       }
+  //     }
+  //   }
+  //   if (isFilterVeg) {
+  //     for (final model in currentList) {
+  //       if (model.isVeg) {
+  //         list.add(model);
+  //       }
+  //     }
+  //   }
+  //   return list;
   // }
 
   @action
@@ -242,7 +331,60 @@ abstract class Dashboard with Store {
   // }
 
   @action
-  Future fetchMeal({required MealTimeType type,required int mealLimit}) async {
+  Future loadMore({required MealTimeType type}) async {
+    increaseLimit(type: type);
+    // changePagination(type: type, paginate: PaginationEnum.loading);
+    try {
+      await fetchMeal(type: type, mealLimit: getLimit(type: type));
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  // @action
+  // void setPaginate({required MealTimeType type}) {
+  //   switch (type) {
+  //     case MealTimeType.breakfast:
+  //       if (getLimit(type: type) >= totalBreakfastAvailable) {
+  //         changePagination(type: type, paginate: PaginationEnum.empty);
+  //       } else {
+  //         changePagination(type: type, paginate: PaginationEnum.initial);
+  //       }
+  //     case MealTimeType.lunch:
+  //       if (getLimit(type: type) >= totalLunchAvailable) {
+  //         changePagination(type: type, paginate: PaginationEnum.empty);
+  //       } else {
+  //         changePagination(type: type, paginate: PaginationEnum.initial);
+  //       }
+  //     case MealTimeType.dinner:
+  //       if (getLimit(type: type) >= totalDinnerAvailable) {
+  //         changePagination(type: type, paginate: PaginationEnum.empty);
+  //       } else {
+  //         changePagination(type: type, paginate: PaginationEnum.initial);
+  //       }
+  //   }
+  // }
+
+  // @action
+  // void changePagination({
+  //   required MealTimeType type,
+  //   required PaginationEnum paginate,
+  // }) {
+  //   switch (type) {
+  //     case MealTimeType.breakfast:
+  //       breakfastPagination = paginate;
+  //       break;
+  //     case MealTimeType.lunch:
+  //       lunchPagination = paginate;
+  //       break;
+  //     case MealTimeType.dinner:
+  //       dinnerPagination = paginate;
+  //       break;
+  //   }
+  // }
+
+  @action
+  Future fetchMeal({required MealTimeType type, required int mealLimit}) async {
     isLoading = true;
     try {
       final jwt = appState.jwt;
@@ -266,13 +408,15 @@ abstract class Dashboard with Store {
         final response = await http.get(url, headers: header);
         if (response.statusCode == 200) {
           List<dynamic> list = jsonDecode(response.body)['data'];
+          // print(jsonDecode(response.body)['total']);
           clearMeal(mealType: type);
           List<CouponDataModel> mealList = [];
           for (final doc in list) {
             // final jsonData = jsonEncode(doc);
             mealList.add(CouponDataModel.fromJson(doc));
           }
-          addMeal(list: mealList, type: type);
+          final total = jsonDecode(response.body)['total'] as int;
+          addMeal(list: mealList, type: type, total: total);
         }
       }
     } catch (e) {
@@ -299,34 +443,40 @@ abstract class Dashboard with Store {
 
   @action
   void addMeal(
-      {required List<CouponDataModel> list, required MealTimeType type}) {
+      {required List<CouponDataModel> list,
+      required MealTimeType type,
+      required int total}) {
     switch (type) {
       case MealTimeType.breakfast:
         breakfastList = ObservableList.of(list);
+        totalBreakfastAvailable = total;
         break;
       case MealTimeType.lunch:
         lunchList = ObservableList.of(list);
+        totalLunchAvailable = total;
         break;
       case MealTimeType.dinner:
         dinnerList = ObservableList.of(list);
+        totalDinnerAvailable = total;
         break;
     }
   }
-  
-  
+
   @action
   Future sellCoupon(CouponModel model) async {
     isLoading = true;
     try {
       final jwt = appState.jwt;
       if (jwt != null) {
-        String url = dotenv.env['Fetch_Coupon_Url'] as String;
-        Map<String, String> header = {
-          "content-type": "application/json",
-          "Authorization": "Bearer $jwt",
-        };
+        // String url = dotenv.env['Fetch_Coupon_Url'] as String;
+        // Map<String, String> header = {
+        //   "content-type": "application/json",
+        //   "Authorization": "Bearer $jwt",
+        // };
 
-        Uri uri = Uri.parse(url);
+        // Uri uri = Uri.parse(url);
+        Uri uri = ApiHelper.getUri(urlEndpoint: ApiEndpoints.listApiEndpoint);
+        final header = ApiHelper.getApiHeader(jwt: jwt);
         final Map<String, dynamic> body = {
           "couponType": model.mealTime.intoString(),
           "couponDate": formatCurrentDate(),
@@ -341,8 +491,9 @@ abstract class Dashboard with Store {
         );
 
         if (res.statusCode == 201) {
+          final mealLimit = getLimit(type: model.mealTime);
+          await fetchMeal(type: model.mealTime, mealLimit: mealLimit);
           // List<dynamic> list = jsonDecode(res.body)['data'];
-
           // for (final doc in list) {
           //   if (doc['couponType'] == 'lunch') {
           //     lunchList.add(CouponDataModel.fromJson(doc));
@@ -358,31 +509,30 @@ abstract class Dashboard with Store {
       throw Exception(e.toString());
     } finally {
       // await fetchListCoupon();
-      final mealLimit = getLimit(type: model.mealTime);
-      await fetchMeal(type: model.mealTime,mealLimit: mealLimit);
       isLoading = false;
     }
   }
 
-  int getLimit({required MealTimeType type}){
-    switch(type){
+  int getLimit({required MealTimeType type}) {
+    switch (type) {
       case MealTimeType.breakfast:
-      return breakfastLimit;
+        return breakfastLimit;
       case MealTimeType.lunch:
-      return lunchLimit;
+        return lunchLimit;
       case MealTimeType.dinner:
-      return dinnerLimit;
+        return dinnerLimit;
     }
   }
 
   @action
   Future fetchAllMeals() async {
     try {
-      await fetchMeal(type: MealTimeType.breakfast,mealLimit: breakfastLimit);
-      await fetchMeal(type: MealTimeType.lunch,mealLimit: lunchLimit);
-      await fetchMeal(type: MealTimeType.dinner,mealLimit: dinnerLimit);
+      await fetchMeal(type: MealTimeType.breakfast, mealLimit: breakfastLimit);
+      await fetchMeal(type: MealTimeType.lunch, mealLimit: lunchLimit);
+      await fetchMeal(type: MealTimeType.dinner, mealLimit: dinnerLimit);
     } catch (e) {
       throw Exception(e);
     }
   }
+
 }

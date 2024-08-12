@@ -148,7 +148,6 @@ void network() {
                             child: const Text("Signup Now"),
                           ),
                         ],
-
                       ),
                       customElevatedButton("Network", network, buttonWidth)
                     ],
