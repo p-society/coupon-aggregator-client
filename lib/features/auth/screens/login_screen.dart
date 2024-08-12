@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
@@ -29,14 +31,20 @@ class _LoginScreenState extends State<LoginScreen> {
       showMessage(message: "Enter Valid Email", context: context);
       return;
     }
+    showValidateDialog(context, Builder(builder: (context) => Container()));
+    await Future.delayed(const Duration(seconds: 2));
     Map<String, dynamic> data = {
       "strategy": "local",
       "email": _emailController.text.trim(),
       "password": _pwdController.text.trim(),
     };
+    
     print(data);
     authStore.userLogin(
         _emailController.text.trim(), _pwdController.text.trim());
+        
+    showValidateDialog(context, Builder(builder: (context) => Container()));
+    await Future.delayed(const Duration(seconds: 2));
   }
 
   void signupNow() {
@@ -49,6 +57,35 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _pwdController.dispose();
     super.dispose();
+  }
+
+  void showValidateDialog(BuildContext context, Builder builder) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          
+          return Dialog(
+            
+            backgroundColor: Colors.transparent, // Make background transparent
+          child: BackdropFilter(
+            filter:
+                ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Apply blur effect
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color:
+                    Colors.white.withOpacity(0.2), // Slightly opaque background
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white
+                      .withOpacity(0.3), // White border with slight opacity
+                  width: 1.5,
+                ),
+                
+              ),
+              child: const Text("Successfully logged in"),
+          )));
+        });
   }
 
   @override

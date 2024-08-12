@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
@@ -61,6 +62,34 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
         "mobileNumber": _phoneNumberController.text.trim()
       },
     );
+    showValidateDialog(context, Builder(builder: (context) => Container()));
+  }
+
+  void showValidateDialog(BuildContext context, Builder builder) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              backgroundColor:
+                  Colors.transparent, // Make background transparent
+              child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                      sigmaX: 10, sigmaY: 10), // Apply blur effect
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white
+                          .withOpacity(0.2), // Slightly opaque background
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(
+                            0.3), // White border with slight opacity
+                        width: 1.5,
+                      ),
+                    ),
+                    child: const Text("Account created"),
+                  )));
+        });
   }
 
   Widget customElevatedButton(
@@ -106,7 +135,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   Widget build(BuildContext context) {
     double buttonWidth = 300;
     return Scaffold(
-       appBar: const WobbleAppBar(
+      appBar: const WobbleAppBar(
         title: "One more step",
         color: Colors.white,
       ),
