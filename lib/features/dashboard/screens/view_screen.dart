@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
+import 'package:mess_mgmt/Global/enums/pagination_enum.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
-import 'package:mess_mgmt/Global/models/coupon_model.dart';
+import 'package:mess_mgmt/Global/widgets/custom_filter_dialog.dart';
 import 'package:mess_mgmt/Global/widgets/custom_list_tile.dart';
-import 'package:mess_mgmt/features/dashboard/screens/shimmerloading.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 class ViewScreen extends StatelessWidget {
@@ -32,6 +31,15 @@ class ViewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(mealTimeType.intoString()),
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              showFilterDialog(context: context);
+            },
+            label: const Text('Apply Filter'),
+            icon: const Icon(Icons.filter_list),
+          ),
+        ],
       ),
       body: DecoratedBox(
         decoration: BoxDecoration(
@@ -44,44 +52,21 @@ class ViewScreen extends StatelessWidget {
             ],
           ),
         ),
-        child: list.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.all(16),
-                child: Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.025),
-                    AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: LottieBuilder.asset(
-                        'assets/lottie/oops_anim.json',
-                      ),
-                    ),
-                    const Text(
-                      "Oops, please conect to the internet",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                  ],
-                )),
-              )
-            : ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, index) {
-                  return GlassyListTile(
-                    coupon: list[index],
-                    i: index,
-                  );
-                },
-              ),
-            
-      )
+        child: ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            /* ListTile(
+              title: const Text("SellerName : "),
+              subtitle: Text('Cost : ${list[index].cost}'),
+              trailing: Text(list[index].mealType.intoString()),
+            ); */
+            return GlassyListTile(
+              coupon: list[index],
+              i: index,
+            );
+          },
+        ),
+      ),
     );
   }
 }

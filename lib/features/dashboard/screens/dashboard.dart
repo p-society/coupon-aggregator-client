@@ -227,6 +227,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget build(BuildContext context) {
     /* double widthFactor = MediaQuery.of(context).width; */
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Coupon Availability'),
         backgroundColor: Theme.of(context).primaryColor,
@@ -258,19 +259,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                     _buildDatePicker(),
                     const SizedBox(height: 24),
                     Observer(builder: (context) {
-                      int count = dashboardStore.breakfastCount;
+                      int count = dashboardStore.totalBreakfastAvailable;
                       return _buildMealCard('Breakfast', Icons.free_breakfast,
                           count, MealTimeType.breakfast);
                     }),
                     const SizedBox(height: 16),
                     Observer(builder: (context) {
-                      int count = dashboardStore.lunchCount;
+                      int count = dashboardStore.totalLunchAvailable;
                       return _buildMealCard(
                           'Lunch', Icons.restaurant, count, MealTimeType.lunch);
                     }),
                     const SizedBox(height: 16),
                     Observer(builder: (context) {
-                      int count = dashboardStore.dinnerCount;
+                      int count = dashboardStore.totalDinnerAvailable;
                       return _buildMealCard('Dinner', Icons.nightlife, count,
                           MealTimeType.dinner);
                     }),
