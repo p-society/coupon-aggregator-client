@@ -13,6 +13,7 @@ import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,6 +25,20 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  Future<bool> checkInternetConnection() async {
+    try {
+      final response = await http.get(Uri.parse('https://www.google.com'));
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 
   void login() async {
     print('sakfhakhfashf');
@@ -40,11 +55,20 @@ class _LoginScreenState extends State<LoginScreen> {
     };
     
     print(data);
-    authStore.userLogin(
-        _emailController.text.trim(), _pwdController.text.trim());
-        
-    showValidateDialog(context, Builder(builder: (context) => Container()));
-    await Future.delayed(const Duration(seconds: 2));
+    // //adding functionality to check the internet connection
+    bool hasConnection = await checkInternetConnection();
+    if (!hasConnection) {
+      showMessage(message: "Check Internet Connection", context: context);
+      return;
+    }
+
+    //adding functionality to validate the user input
+    if (_formKey.currentState?.validate() ?? true) {
+      await authStore.userLogin(
+        _emailController.text.trim(),
+        _pwdController.text.trim(),
+      );
+    }
   }
 
   void signupNow() {
@@ -105,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20),
                   AspectRatio(
@@ -116,24 +140,37 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   CustomTextField(
-                    hintText: 'Enter email-id',
-                    controller: _emailController,
-                    type: TextInputType.emailAddress,
-                    icon: Icons.person,
-                    onChanged: (val) {},
-                  ),
+                      hintText: 'Enter email-id',
+                      controller: _emailController,
+                      type: TextInputType.emailAddress,
+                      icon: Icons.person,
+                      onChanged: (val) {},
+                      validator: (value) {
+                        if (!isValidate(value)) {
+                          return 'Enter a valid Email';
+                        }
+                        return null;
+                      }),
                   const SizedBox(height: 20),
                   CustomPwdTile(
-                    hintText: 'Password',
-                    controller: _pwdController,
-                    type: TextInputType.visiblePassword,
-                    icon: Icons.lock,
-                    onChanged: (val) {},
-                    isPassword: true,
-                  ),
+                      hintText: 'Password',
+                      controller: _pwdController,
+                      type: TextInputType.visiblePassword,
+                      icon: Icons.lock,
+                      onChanged: (val) {},
+                      isPassword: true,
+                      validator: (value) {
+                        //validator for minimum password length
+                        //to be customised according to need
+                        if (value == null || value.length < 6) {
+                          return 'password must be atleast 6 characters long';
+                        } else {
+                          return null;
+                        }
+                      }),
                   const SizedBox(height: 30),
                   SizedBox(
-                    width: double.infinity,
+                    width: 500,
                     child: ElevatedButton(
                       onPressed: login,
                       style: ElevatedButton.styleFrom(
