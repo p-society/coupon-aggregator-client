@@ -158,6 +158,144 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
+  late final _$isFilterVegAtom =
+      Atom(name: 'Dashboard.isFilterVeg', context: context);
+
+  @override
+  bool get isFilterVeg {
+    _$isFilterVegAtom.reportRead();
+    return super.isFilterVeg;
+  }
+
+  @override
+  set isFilterVeg(bool value) {
+    _$isFilterVegAtom.reportWrite(value, super.isFilterVeg, () {
+      super.isFilterVeg = value;
+    });
+  }
+
+  late final _$isFilterNonVegAtom =
+      Atom(name: 'Dashboard.isFilterNonVeg', context: context);
+
+  @override
+  bool get isFilterNonVeg {
+    _$isFilterNonVegAtom.reportRead();
+    return super.isFilterNonVeg;
+  }
+
+  @override
+  set isFilterNonVeg(bool value) {
+    _$isFilterNonVegAtom.reportWrite(value, super.isFilterNonVeg, () {
+      super.isFilterNonVeg = value;
+    });
+  }
+
+  late final _$isFilterFirstFloorAtom =
+      Atom(name: 'Dashboard.isFilterFirstFloor', context: context);
+
+  @override
+  bool get isFilterFirstFloor {
+    _$isFilterFirstFloorAtom.reportRead();
+    return super.isFilterFirstFloor;
+  }
+
+  @override
+  set isFilterFirstFloor(bool value) {
+    _$isFilterFirstFloorAtom.reportWrite(value, super.isFilterFirstFloor, () {
+      super.isFilterFirstFloor = value;
+    });
+  }
+
+  late final _$isFilterGroundFloorAtom =
+      Atom(name: 'Dashboard.isFilterGroundFloor', context: context);
+
+  @override
+  bool get isFilterGroundFloor {
+    _$isFilterGroundFloorAtom.reportRead();
+    return super.isFilterGroundFloor;
+  }
+
+  @override
+  set isFilterGroundFloor(bool value) {
+    _$isFilterGroundFloorAtom.reportWrite(value, super.isFilterGroundFloor, () {
+      super.isFilterGroundFloor = value;
+    });
+  }
+
+  late final _$totalBreakfastAvailableAtom =
+      Atom(name: 'Dashboard.totalBreakfastAvailable', context: context);
+
+  @override
+  int get totalBreakfastAvailable {
+    _$totalBreakfastAvailableAtom.reportRead();
+    return super.totalBreakfastAvailable;
+  }
+
+  @override
+  set totalBreakfastAvailable(int value) {
+    _$totalBreakfastAvailableAtom
+        .reportWrite(value, super.totalBreakfastAvailable, () {
+      super.totalBreakfastAvailable = value;
+    });
+  }
+
+  late final _$totalLunchAvailableAtom =
+      Atom(name: 'Dashboard.totalLunchAvailable', context: context);
+
+  @override
+  int get totalLunchAvailable {
+    _$totalLunchAvailableAtom.reportRead();
+    return super.totalLunchAvailable;
+  }
+
+  @override
+  set totalLunchAvailable(int value) {
+    _$totalLunchAvailableAtom.reportWrite(value, super.totalLunchAvailable, () {
+      super.totalLunchAvailable = value;
+    });
+  }
+
+  late final _$totalDinnerAvailableAtom =
+      Atom(name: 'Dashboard.totalDinnerAvailable', context: context);
+
+  @override
+  int get totalDinnerAvailable {
+    _$totalDinnerAvailableAtom.reportRead();
+    return super.totalDinnerAvailable;
+  }
+
+  @override
+  set totalDinnerAvailable(int value) {
+    _$totalDinnerAvailableAtom.reportWrite(value, super.totalDinnerAvailable,
+        () {
+      super.totalDinnerAvailable = value;
+    });
+  }
+
+  late final _$isLoadMoreAtom =
+      Atom(name: 'Dashboard.isLoadMore', context: context);
+
+  @override
+  bool get isLoadMore {
+    _$isLoadMoreAtom.reportRead();
+    return super.isLoadMore;
+  }
+
+  @override
+  set isLoadMore(bool value) {
+    _$isLoadMoreAtom.reportWrite(value, super.isLoadMore, () {
+      super.isLoadMore = value;
+    });
+  }
+
+  late final _$loadMoreAsyncAction =
+      AsyncAction('Dashboard.loadMore', context: context);
+
+  @override
+  Future<dynamic> loadMore({required MealTimeType type}) {
+    return _$loadMoreAsyncAction.run(() => super.loadMore(type: type));
+  }
+
   late final _$fetchMealAsyncAction =
       AsyncAction('Dashboard.fetchMeal', context: context);
 
@@ -211,11 +349,13 @@ mixin _$DashboardStore on Dashboard, Store {
 
   @override
   void addMeal(
-      {required List<CouponDataModel> list, required MealTimeType type}) {
+      {required List<CouponDataModel> list,
+      required MealTimeType type,
+      required int total}) {
     final _$actionInfo =
         _$DashboardActionController.startAction(name: 'Dashboard.addMeal');
     try {
-      return super.addMeal(list: list, type: type);
+      return super.addMeal(list: list, type: type, total: total);
     } finally {
       _$DashboardActionController.endAction(_$actionInfo);
     }
@@ -232,6 +372,14 @@ dinnerList: ${dinnerList},
 breakfastLimit: ${breakfastLimit},
 lunchLimit: ${lunchLimit},
 dinnerLimit: ${dinnerLimit},
+isFilterVeg: ${isFilterVeg},
+isFilterNonVeg: ${isFilterNonVeg},
+isFilterFirstFloor: ${isFilterFirstFloor},
+isFilterGroundFloor: ${isFilterGroundFloor},
+totalBreakfastAvailable: ${totalBreakfastAvailable},
+totalLunchAvailable: ${totalLunchAvailable},
+totalDinnerAvailable: ${totalDinnerAvailable},
+isLoadMore: ${isLoadMore},
 breakfastCount: ${breakfastCount},
 lunchCount: ${lunchCount},
 dinnerCount: ${dinnerCount}
