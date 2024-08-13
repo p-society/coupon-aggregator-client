@@ -5,7 +5,7 @@ on:
     pull_request:
         branches:
         - uiUpdate
-  
+        - main
 jobs:
    Build-Apk:
       runs-on: ubuntu-latest

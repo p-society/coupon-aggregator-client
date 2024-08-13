@@ -4,7 +4,6 @@ import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/dashboard/screens/dashboard.dart';
-import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

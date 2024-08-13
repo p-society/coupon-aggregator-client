@@ -27,10 +27,10 @@ abstract class _AppStateStore with Store {
   Future initialization() async {
     validateSession();
     if(!isExpire){
-    await dotenv.load(fileName: ".env");
-    final sp = await SharedPreferences.getInstance();
-    jwt = sp.getString('JWT');
-    await dashboardStore.fetchAllMeals();
+      await dotenv.load(fileName: ".env");
+      final sp = await SharedPreferences.getInstance();
+      jwt = sp.getString('JWT');
+      await dashboardStore.fetchAllMeals();
     }
   }
 

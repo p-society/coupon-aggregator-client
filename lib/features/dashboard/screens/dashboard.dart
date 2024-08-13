@@ -8,7 +8,6 @@ import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
-import 'package:mess_mgmt/features/dashboard/screens/shimmerloading.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
@@ -218,16 +217,29 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  void navigateToViewScreen(MealTimeType mealTimeType) {
+  void navigateToViewScreen() {
     navigateToNextScreen(
-        nextScreen: ViewScreen(mealTimeType: mealTimeType), context: context);
+      nextScreen: const ViewScreen(),
+      context: context,
+    );
+  }
+
+  int getCount(MealTimeType type) {
+    switch (type) {
+      case MealTimeType.breakfast:
+        return dashboardStore.totalBreakfastAvailable;
+      case MealTimeType.lunch:
+        return dashboardStore.totalLunchAvailable;
+      case MealTimeType.dinner:
+        return dashboardStore.totalDinnerAvailable;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     /* double widthFactor = MediaQuery.of(context).width; */
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Coupon Availability'),
         backgroundColor: Theme.of(context).primaryColor,
@@ -258,28 +270,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                   children: [
                     _buildDatePicker(),
                     const SizedBox(height: 24),
-                    Observer(builder: (context) {
-                      int count = dashboardStore.totalBreakfastAvailable;
-                      return _buildMealCard('Breakfast', Icons.free_breakfast,
-                          count, MealTimeType.breakfast);
-                    }),
-                    const SizedBox(height: 16),
-                    Observer(builder: (context) {
-                      int count = dashboardStore.totalLunchAvailable;
-                      return _buildMealCard(
-                          'Lunch', Icons.restaurant, count, MealTimeType.lunch);
-                    }),
-                    const SizedBox(height: 16),
-                    Observer(builder: (context) {
-                      int count = dashboardStore.totalDinnerAvailable;
-                      return _buildMealCard('Dinner', Icons.nightlife, count,
-                          MealTimeType.dinner);
-                    }),
+                    for (final e in MealTimeType.values) ...[
+                      Observer(builder: (context) {
+                        int count = getCount(e);
+                        return _buildMealCard(
+                            e.intoTitle(), e.getIcon(), count, e);
+                      }),
+                      const SizedBox(height: 16),
+                    ],
                   ],
                 ),
               ),
             ),
-            Shimmerloading(),
             const Spacer(),
           ],
         ),
@@ -369,7 +371,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                         OutlinedButton(
                           onPressed: () {
-                            navigateToViewScreen(mealType);
+                            dashboardStore.currentView = mealType;
+
+                            navigateToViewScreen();
                           },
                           style: OutlinedButton.styleFrom(
                             shape: RoundedRectangleBorder(

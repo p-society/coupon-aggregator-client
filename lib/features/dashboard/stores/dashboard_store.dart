@@ -67,6 +67,9 @@ abstract class Dashboard with Store {
   @observable
   bool isLoadMore = false;
 
+  @observable
+  MealTimeType currentView = MealTimeType.breakfast;
+
   // @observable
   // PaginationEnum breakfastPagination = PaginationEnum.initial;
 
@@ -85,6 +88,45 @@ abstract class Dashboard with Store {
   @computed
   int get dinnerCount => dinnerList.length;
 
+  @computed
+  List<CouponDataModel> get currentViewList {
+    switch (dashboardStore.currentView) {
+      case MealTimeType.breakfast:
+        return dashboardStore.applyFilter;
+
+      case MealTimeType.lunch:
+        return dashboardStore.lunchList;
+
+      case MealTimeType.dinner:
+        return dashboardStore.dinnerList;
+    }
+  }
+
+  @action
+  List<CouponDataModel> get applyFilter {
+    List<Function(CouponDataModel)> filters = [
+      if (!isFilterGroundFloor || !isFilterFirstFloor) ...[
+        if (!(!isFilterGroundFloor && !isFilterFirstFloor)) ...[
+          (CouponDataModel model) => isFilterGroundFloor
+              ? model.couponFloor == 1
+              : model.couponFloor == 2,
+        ],
+      ],
+      if (!isFilterVeg || !isFilterNonVeg) ...[
+        if (!(!isFilterVeg && !isFilterNonVeg)) ...[
+          (CouponDataModel model) => isFilterVeg ? model.isVeg : !model.isVeg,
+        ],
+      ],
+    ];
+
+    List<CouponDataModel> filteredMealList = breakfastList
+        .where((meal) => filters.every((filter) => filter(meal)))
+        .toList();
+
+    if ((isFilterFirstFloor && isFilterGroundFloor) ||
+        (isFilterVeg || isFilterNonVeg)) {}
+    return filteredMealList;
+  }
   // @computed
   // bool get isFilteredApplied {
   //   if (isFilterFirstFloor ||
@@ -98,9 +140,9 @@ abstract class Dashboard with Store {
 
   // @computed
   // ObservableList<CouponDataModel> get breakfastFilteredList {
-    
+
   //   if (isFilteredApplied) {
-     
+
   //     return applyFilter();
   //   } else {
   //     return breakfastList;
@@ -534,5 +576,4 @@ abstract class Dashboard with Store {
       throw Exception(e);
     }
   }
-
 }
