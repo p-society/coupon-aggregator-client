@@ -31,7 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
+  # The following adds the// ignore_for_file: depend_on_referenced_packages
+
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   mobx: ^2.3.3+2
@@ -44,12 +45,13 @@ dependencies:
   shared_preferences: ^2.3.1
   json_annotation: ^4.9.0
   http: ^1.2.2
+  shimmer: 
+  flutter_svg: 
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
