@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum MealTimeType {
   breakfast,
   lunch,
@@ -64,5 +66,26 @@ extension MealTimeTypeString on MealTimeType {
       case MealTimeType.dinner:
         return 'dinner';
     }
-  }
+
+   
+  } String intoTitle() {
+      switch (this) {
+        case MealTimeType.breakfast:
+          return 'Breakfast';
+        case MealTimeType.lunch:
+          return 'Lunch';
+        case MealTimeType.dinner:
+          return 'Dinner';
+      }
+    }
+    IconData getIcon(){
+      switch (this) {
+        case MealTimeType.breakfast:
+          return Icons.free_breakfast;
+        case MealTimeType.lunch:
+          return Icons.restaurant;
+        case MealTimeType.dinner:
+          return Icons.nightlife;
+      }
+    }
 }
