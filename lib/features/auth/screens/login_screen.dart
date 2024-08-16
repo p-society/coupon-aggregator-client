@@ -43,13 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
       showMessage(message: "Enter Valid Email", context: context);
       return;
     }
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
 
-    bool hasConnection = await checkInternetConnection();
-    if (!hasConnection) {
-      showMessage(message: "Check Internet Connection", context: context);
-      return;
-    }
+    // bool hasConnection = await checkInternetConnection();
+    // if (!hasConnection) {
+    //   showMessage(message: "Check Internet Connection", context: context);
+    //   return;
+    // }
     if (_formKey.currentState?.validate() ?? true) {
       await authStore.userLogin(
         _emailController.text.trim(),

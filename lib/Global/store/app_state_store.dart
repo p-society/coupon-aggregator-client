@@ -1,4 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mess_mgmt/Global/models/user_model.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mobx/mobx.dart';
@@ -25,12 +24,15 @@ abstract class _AppStateStore with Store {
 
   @action
   Future initialization() async {
-    validateSession();
-    if(!isExpire){
-      await dotenv.load(fileName: ".env");
+    await validateSession();
+    if (!isExpire) {
       final sp = await SharedPreferences.getInstance();
       jwt = sp.getString('JWT');
       await dashboardStore.fetchAllMeals();
+    } else {
+      jwt = null;
+      currentUser = null;
+      isExpire = false;
     }
   }
 

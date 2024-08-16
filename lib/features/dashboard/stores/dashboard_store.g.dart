@@ -28,6 +28,37 @@ mixin _$DashboardStore on Dashboard, Store {
   int get dinnerCount => (_$dinnerCountComputed ??=
           Computed<int>(() => super.dinnerCount, name: 'Dashboard.dinnerCount'))
       .value;
+  Computed<List<CouponDataModel>>? _$currentViewListComputed;
+
+  @override
+  List<CouponDataModel> get currentViewList => (_$currentViewListComputed ??=
+          Computed<List<CouponDataModel>>(() => super.currentViewList,
+              name: 'Dashboard.currentViewList'))
+      .value;
+  Computed<List<CouponDataModel>>? _$getBreakfastFilteredListComputed;
+
+  @override
+  List<CouponDataModel> get getBreakfastFilteredList =>
+      (_$getBreakfastFilteredListComputed ??= Computed<List<CouponDataModel>>(
+              () => super.getBreakfastFilteredList,
+              name: 'Dashboard.getBreakfastFilteredList'))
+          .value;
+  Computed<List<CouponDataModel>>? _$getLunchFilteredListComputed;
+
+  @override
+  List<CouponDataModel> get getLunchFilteredList =>
+      (_$getLunchFilteredListComputed ??= Computed<List<CouponDataModel>>(
+              () => super.getLunchFilteredList,
+              name: 'Dashboard.getLunchFilteredList'))
+          .value;
+  Computed<List<CouponDataModel>>? _$getDinnerFilteredListComputed;
+
+  @override
+  List<CouponDataModel> get getDinnerFilteredList =>
+      (_$getDinnerFilteredListComputed ??= Computed<List<CouponDataModel>>(
+              () => super.getDinnerFilteredList,
+              name: 'Dashboard.getDinnerFilteredList'))
+          .value;
 
   late final _$isLoadingAtom =
       Atom(name: 'Dashboard.isLoading', context: context);
@@ -288,6 +319,22 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
+  late final _$currentViewAtom =
+      Atom(name: 'Dashboard.currentView', context: context);
+
+  @override
+  MealTimeType get currentView {
+    _$currentViewAtom.reportRead();
+    return super.currentView;
+  }
+
+  @override
+  set currentView(MealTimeType value) {
+    _$currentViewAtom.reportWrite(value, super.currentView, () {
+      super.currentView = value;
+    });
+  }
+
   late final _$loadMoreAsyncAction =
       AsyncAction('Dashboard.loadMore', context: context);
 
@@ -380,9 +427,14 @@ totalBreakfastAvailable: ${totalBreakfastAvailable},
 totalLunchAvailable: ${totalLunchAvailable},
 totalDinnerAvailable: ${totalDinnerAvailable},
 isLoadMore: ${isLoadMore},
+currentView: ${currentView},
 breakfastCount: ${breakfastCount},
 lunchCount: ${lunchCount},
-dinnerCount: ${dinnerCount}
+dinnerCount: ${dinnerCount},
+currentViewList: ${currentViewList},
+getBreakfastFilteredList: ${getBreakfastFilteredList},
+getLunchFilteredList: ${getLunchFilteredList},
+getDinnerFilteredList: ${getDinnerFilteredList}
     ''';
   }
 }

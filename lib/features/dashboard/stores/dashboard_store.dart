@@ -70,17 +70,6 @@ abstract class Dashboard with Store {
   @observable
   MealTimeType currentView = MealTimeType.breakfast;
 
-  // @observable
-  // PaginationEnum breakfastPagination = PaginationEnum.initial;
-
-  // @observable
-  // PaginationEnum lunchPagination = PaginationEnum.initial;
-
-  // @observable
-  // PaginationEnum dinnerPagination = PaginationEnum.initial;
-
-  // Computed getter methods :
-
   @computed
   int get breakfastCount => breakfastList.length;
   @computed
@@ -92,18 +81,18 @@ abstract class Dashboard with Store {
   List<CouponDataModel> get currentViewList {
     switch (dashboardStore.currentView) {
       case MealTimeType.breakfast:
-        return dashboardStore.applyFilter;
+        return dashboardStore.getBreakfastFilteredList;
 
       case MealTimeType.lunch:
-        return dashboardStore.lunchList;
+        return dashboardStore.getLunchFilteredList;
 
       case MealTimeType.dinner:
-        return dashboardStore.dinnerList;
+        return dashboardStore.getDinnerFilteredList;
     }
   }
 
-  @action
-  List<CouponDataModel> get applyFilter {
+  @computed
+  List<CouponDataModel> get getBreakfastFilteredList {
     List<Function(CouponDataModel)> filters = [
       if (!isFilterGroundFloor || !isFilterFirstFloor) ...[
         if (!(!isFilterGroundFloor && !isFilterFirstFloor)) ...[
@@ -123,86 +112,56 @@ abstract class Dashboard with Store {
         .where((meal) => filters.every((filter) => filter(meal)))
         .toList();
 
-    if ((isFilterFirstFloor && isFilterGroundFloor) ||
-        (isFilterVeg || isFilterNonVeg)) {}
     return filteredMealList;
   }
-  // @computed
-  // bool get isFilteredApplied {
-  //   if (isFilterFirstFloor ||
-  //       isFilterGroundFloor ||
-  //       isFilterNonVeg ||
-  //       isFilterVeg) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
-  // @computed
-  // ObservableList<CouponDataModel> get breakfastFilteredList {
+  @computed
+  List<CouponDataModel> get getLunchFilteredList {
+    List<Function(CouponDataModel)> filters = [
+      if (!isFilterGroundFloor || !isFilterFirstFloor) ...[
+        if (!(!isFilterGroundFloor && !isFilterFirstFloor)) ...[
+          (CouponDataModel model) => isFilterGroundFloor
+              ? model.couponFloor == 1
+              : model.couponFloor == 2,
+        ],
+      ],
+      if (!isFilterVeg || !isFilterNonVeg) ...[
+        if (!(!isFilterVeg && !isFilterNonVeg)) ...[
+          (CouponDataModel model) => isFilterVeg ? model.isVeg : !model.isVeg,
+        ],
+      ],
+    ];
 
-  //   if (isFilteredApplied) {
+    List<CouponDataModel> filteredMealList = lunchList
+        .where((meal) => filters.every((filter) => filter(meal)))
+        .toList();
+    return filteredMealList;
+  }
 
-  //     return applyFilter();
-  //   } else {
-  //     return breakfastList;
-  //   }
-  // }
-  // Actions methods :
+  @computed
+  List<CouponDataModel> get getDinnerFilteredList {
+    List<Function(CouponDataModel)> filters = [
+      if (!isFilterGroundFloor || !isFilterFirstFloor) ...[
+        if (!(!isFilterGroundFloor && !isFilterFirstFloor)) ...[
+          (CouponDataModel model) => isFilterGroundFloor
+              ? model.couponFloor == 1
+              : model.couponFloor == 2,
+        ],
+      ],
+      if (!isFilterVeg || !isFilterNonVeg) ...[
+        if (!(!isFilterVeg && !isFilterNonVeg)) ...[
+          (CouponDataModel model) => isFilterVeg ? model.isVeg : !model.isVeg,
+        ],
+      ],
+    ];
 
-  // void sellCoupon(CouponDataModel coupon) {
-  //   switch (coupon.couponType) {
-  //     // case MealTimeType.breakfast:
-  //     //   breakfastList.add(coupon);
-  //     // case MealTimeType.lunch:
-  //     //   lunchList.add(coupon);
-  //     // case MealTimeType.dinner:
-  //     //   dinnerList.add(coupon);
-  //     case "breakfast":
-  //       breakfastList.add(coupon);
-  //     case "lunch":
-  //       lunchList.add(coupon);
-  //     case "dinner":
-  //       dinnerList.add(coupon);
-  //   }
-  // }
+    List<CouponDataModel> filteredMealList = dinnerList
+        .where((meal) => filters.every((filter) => filter(meal)))
+        .toList();
 
-  // @action
-  // ObservableList<CouponDataModel> applyFilter() {
-  //   ObservableList<CouponDataModel> list = ObservableList<CouponDataModel>();
-  //   ObservableList<CouponDataModel> currentList =
-  //       ObservableList<CouponDataModel>.of(breakfastList);
-  //   if (isFilterFirstFloor) {
-  //     for (final model in currentList) {
-  //       if (model.couponFloor == 2) {
-  //         list.add(model);
-  //       }
-  //     }
-  //   }
-  //   if (isFilterGroundFloor) {
-  //     for (final model in currentList) {
-  //       if (model.couponFloor == 2) {
-  //         list.add(model);
-  //       }
-  //     }
-  //   }
-  //   if (isFilterNonVeg) {
-  //     for (final model in currentList) {
-  //       if (!model.isVeg) {
-  //         list.add(model);
-  //       }
-  //     }
-  //   }
-  //   if (isFilterVeg) {
-  //     for (final model in currentList) {
-  //       if (model.isVeg) {
-  //         list.add(model);
-  //       }
-  //     }
-  //   }
-  //   return list;
-  // }
-
+    return filteredMealList;
+  }
+  
   @action
   void increaseLimit({required MealTimeType type}) {
     switch (type) {
@@ -218,164 +177,9 @@ abstract class Dashboard with Store {
     }
   }
 
-  // @action
-  // Future fetchListCoupon() async {
-  //   isLoading = true;
-  //   try {
-  //     final jwt = appState.jwt;
-  //     if (jwt != null) {
-  //       String url = dotenv.env['Fetch_Coupon_Url'] as String;
-  //       Map<String, String> header = {
-  //         "content-type": "application/json",
-  //         "Authorization": "Bearer $jwt",
-  //       };
-
-  //       Uri uri = Uri.parse(url);
-
-  //       final res = await http.get(uri, headers: header);
-  //       if (res.statusCode == 200) {
-  //         List<dynamic> list = jsonDecode(res.body)['data'];
-  //         print('fetched List of Coupon');
-  //         print(res.body);
-  //         breakfastList.clear();
-  //         lunchList.clear();
-  //         dinnerList.clear();
-  //         for (final doc in list) {
-  //           if (doc['couponType'] == 'lunch') {
-  //             lunchList.add(CouponDataModel.fromJson(doc));
-  //           } else if (doc['couponType'] == 'dinner') {
-  //             dinnerList.add(CouponDataModel.fromJson(doc));
-  //           } else {
-  //             breakfastList.add(CouponDataModel.fromJson(doc));
-  //           }
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   } finally {
-  //     isLoading = false;
-  //   }
-  // }
-
-  // @action
-  // Future fetchBreakfast() async {
-  //   isLoading = true;
-  //   try {
-  //     final jwt = appState.jwt;
-  //     if (jwt != null) {
-  //       // String baseUrl = dotenv.env['Base_URL'] as String;
-  //       // Map<String, String> header = {
-  //       //   "content-type": "application/json",
-  //       //   "Authorization": "Bearer $jwt",
-  //       // };
-  //       Map<String, dynamic> queryParams = {
-  //         '\$limit': breakfastLimit.toString(),
-  //         'couponType': 'breakfast',
-  //         '\$populate': 'createdBy',
-  //       };
-  //       // final Uri url = Uri.parse('$baseUrl/list-coupon')
-  //       //     .replace(queryParameters: queryParams);
-  //       final url = ApiHelper.getUri(
-  //           queryParams: queryParams,
-  //           urlEndpoint: ApiEndpoints.listApiEndpoint);
-  //       final header = ApiHelper.getApiHeader(jwt: jwt);
-  //       final response = await http.get(url, headers: header);
-  //       if (response.statusCode == 200) {
-  //         List<dynamic> list = jsonDecode(response.body)['data'];
-  //         breakfastList.clear();
-  //         for (final doc in list) {
-  //           final jsonData = jsonEncode(doc);
-  //           breakfastList.add(CouponDataModel.fromJson(doc));
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   } finally {
-  //     isLoading = false;
-  //   }
-  // }
-  // @action
-  // Future fetchLunch() async {
-  //   isLoading = true;
-  //   try {
-  //     final jwt = appState.jwt;
-  //     if (jwt != null) {
-  //       // String baseUrl = dotenv.env['Base_URL'] as String;
-  //       // Map<String, String> header = {
-  //       //   "content-type": "application/json",
-  //       //   "Authorization": "Bearer $jwt",
-  //       // };
-  //       Map<String, dynamic> queryParams = {
-  //         '\$limit': lunchLimit.toString(),
-  //         'couponType': 'lunch',
-  //         '\$populate': 'createdBy',
-  //       };
-  //       // final Uri url = Uri.parse('$baseUrl/list-coupon')
-  //       //     .replace(queryParameters: queryParams);
-  //       final url = ApiHelper.getUri(
-  //           queryParams: queryParams, urlEndpoint: 'list-coupon');
-  //       final header = ApiHelper.getApiHeader(jwt: jwt);
-  //       final response = await http.get(url, headers: header);
-  //       if (response.statusCode == 200) {
-  //         List<dynamic> list = jsonDecode(response.body)['data'];
-  //         lunchList.clear();
-  //         for (final doc in list) {
-  //           final jsonData = jsonEncode(doc);
-  //           lunchList.add(CouponDataModel.fromJson(doc));
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   } finally {
-  //     isLoading = false;
-  //   }
-  // }
-
-  // @action
-  // Future fetchDinner() async {
-  //   isLoading = true;
-  //   try {
-  //     final jwt = appState.jwt;
-  //     if (jwt != null) {
-  //       // String baseUrl = dotenv.env['Base_URL'] as String;
-  //       // Map<String, String> header = {
-  //       //   "content-type": "application/json",
-  //       //   "Authorization": "Bearer $jwt",
-  //       // };
-  //       Map<String, dynamic> queryParams = {
-  //         '\$limit': dinnerLimit.toString(),
-  //         'couponType': 'dinner',
-  //         '\$populate': 'createdBy',
-  //       };
-  //       // final Uri url = Uri.parse('$baseUrl/list-coupon')
-  //       //     .replace(queryParameters: queryParams);
-  //       final url = ApiHelper.getUri(
-  //           queryParams: queryParams, urlEndpoint: 'list-coupon');
-  //       final header = ApiHelper.getApiHeader(jwt: jwt);
-  //       final response = await http.get(url, headers: header);
-  //       if (response.statusCode == 200) {
-  //         List<dynamic> list = jsonDecode(response.body)['data'];
-  //         dinnerList.clear();
-  //         for (final doc in list) {
-  //           final jsonData = jsonEncode(doc);
-  //           dinnerList.add(CouponDataModel.fromJson(doc));
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   } finally {
-  //     isLoading = false;
-  //   }
-  // }
-
   @action
   Future loadMore({required MealTimeType type}) async {
     increaseLimit(type: type);
-    // changePagination(type: type, paginate: PaginationEnum.loading);
     try {
       await fetchMeal(type: type, mealLimit: getLimit(type: type));
     } catch (e) {
@@ -383,67 +187,20 @@ abstract class Dashboard with Store {
     }
   }
 
-  // @action
-  // void setPaginate({required MealTimeType type}) {
-  //   switch (type) {
-  //     case MealTimeType.breakfast:
-  //       if (getLimit(type: type) >= totalBreakfastAvailable) {
-  //         changePagination(type: type, paginate: PaginationEnum.empty);
-  //       } else {
-  //         changePagination(type: type, paginate: PaginationEnum.initial);
-  //       }
-  //     case MealTimeType.lunch:
-  //       if (getLimit(type: type) >= totalLunchAvailable) {
-  //         changePagination(type: type, paginate: PaginationEnum.empty);
-  //       } else {
-  //         changePagination(type: type, paginate: PaginationEnum.initial);
-  //       }
-  //     case MealTimeType.dinner:
-  //       if (getLimit(type: type) >= totalDinnerAvailable) {
-  //         changePagination(type: type, paginate: PaginationEnum.empty);
-  //       } else {
-  //         changePagination(type: type, paginate: PaginationEnum.initial);
-  //       }
-  //   }
-  // }
-
-  // @action
-  // void changePagination({
-  //   required MealTimeType type,
-  //   required PaginationEnum paginate,
-  // }) {
-  //   switch (type) {
-  //     case MealTimeType.breakfast:
-  //       breakfastPagination = paginate;
-  //       break;
-  //     case MealTimeType.lunch:
-  //       lunchPagination = paginate;
-  //       break;
-  //     case MealTimeType.dinner:
-  //       dinnerPagination = paginate;
-  //       break;
-  //   }
-  // }
-
+  
   @action
   Future fetchMeal({required MealTimeType type, required int mealLimit}) async {
     isLoading = true;
     try {
       final jwt = appState.jwt;
       if (jwt != null) {
-        // String baseUrl = dotenv.env['Base_URL'] as String;
-        // Map<String, String> header = {
-        //   "content-type": "application/json",
-        //   "Authorization": "Bearer $jwt",
-        // };
+       
         Map<String, dynamic> queryParams = {
           '\$limit': mealLimit.toString(),
           'couponType': type.intoString(),
           '\$populate': 'createdBy',
         };
-        // final Uri url = Uri.parse('$baseUrl/list-coupon')
-        //     .replace(queryParameters: queryParams);
-        final url = ApiHelper.getUri(
+          final url = ApiHelper.getUri(
             queryParams: queryParams,
             urlEndpoint: ApiEndpoints.listApiEndpoint);
         final header = ApiHelper.getApiHeader(jwt: jwt);
@@ -454,7 +211,6 @@ abstract class Dashboard with Store {
           clearMeal(mealType: type);
           List<CouponDataModel> mealList = [];
           for (final doc in list) {
-            // final jsonData = jsonEncode(doc);
             mealList.add(CouponDataModel.fromJson(doc));
           }
           final total = jsonDecode(response.body)['total'] as int;
@@ -510,14 +266,7 @@ abstract class Dashboard with Store {
     try {
       final jwt = appState.jwt;
       if (jwt != null) {
-        // String url = dotenv.env['Fetch_Coupon_Url'] as String;
-        // Map<String, String> header = {
-        //   "content-type": "application/json",
-        //   "Authorization": "Bearer $jwt",
-        // };
-
-        // Uri uri = Uri.parse(url);
-        Uri uri = ApiHelper.getUri(urlEndpoint: ApiEndpoints.listApiEndpoint);
+          Uri uri = ApiHelper.getUri(urlEndpoint: ApiEndpoints.listApiEndpoint);
         final header = ApiHelper.getApiHeader(jwt: jwt);
         final Map<String, dynamic> body = {
           "couponType": model.mealTime.intoString(),
@@ -535,22 +284,12 @@ abstract class Dashboard with Store {
         if (res.statusCode == 201) {
           final mealLimit = getLimit(type: model.mealTime);
           await fetchMeal(type: model.mealTime, mealLimit: mealLimit);
-          // List<dynamic> list = jsonDecode(res.body)['data'];
-          // for (final doc in list) {
-          //   if (doc['couponType'] == 'lunch') {
-          //     lunchList.add(CouponDataModel.fromJson(doc));
-          //   } else if (doc['couponType'] == 'dinner') {
-          //     dinnerList.add(CouponDataModel.fromJson(doc));
-          //   } else {
-          //     breakfastList.add(CouponDataModel.fromJson(doc));
-          //   }
-          // }
+         
         }
       }
     } catch (e) {
       throw Exception(e.toString());
     } finally {
-      // await fetchListCoupon();
       isLoading = false;
     }
   }
