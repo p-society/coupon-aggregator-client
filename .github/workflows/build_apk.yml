@@ -1,0 +1,32 @@
+on:
+    push:
+      branches:
+        - main
+        - uiUpdate
+    pull_request:
+        branches:
+        - uiUpdate
+        - main
+jobs:
+   Build-Apk:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check-Repository
+          uses: actions/checkout@v1
+        
+        - name: Set up .env file
+          run: echo "Base_URL=${{ secrets.BASE_URL }}" > .env
+
+        - name: Set-Up-Flutter
+          uses: subosito/flutter-action@v1
+          with:
+            flutter-version: '3.24.0'
+        
+        - name: Clean-Gradle-Build
+          run: flutter clean
+        
+        - name: Get-Dependencies
+          run: flutter pub get
+  
+        - name: Build-Apk
+          run: flutter build apk --release

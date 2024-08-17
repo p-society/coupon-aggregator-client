@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String?> onChanged;
   final bool isObscure;
   final bool isPassword;
+  final FormFieldValidator? validator;
   const CustomTextField({
     super.key,
     required this.hintText,
@@ -18,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     required this.onChanged,
     this.isObscure = false,
     this.isPassword = false,
+    this.validator,
   });
 
   @override
@@ -39,7 +41,8 @@ class CustomTextField extends StatelessWidget {
       ),
       child: SizedBox(
         width: 300,
-        child: TextField(
+        child: TextFormField(
+          validator: validator,
           maxLines: null,
           obscureText: isObscure,
           controller: controller,
@@ -56,6 +59,7 @@ class CustomTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             hintText: hintText,
+            hintStyle: const TextStyle(fontSize: 18),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 10.0,
               vertical: 5,
