@@ -64,6 +64,9 @@ abstract class Auth with Store {
           appState.jwt = jwt;
           final userJson = data['user'];
           appState.currentUser = User.fromJson(userJson);
+          final userJsonString = jsonEncode(userJson);
+          // print(userJsonString);
+          sp.setString('userJsonString', userJsonString);
           print(appState.currentUser?.id);
           final expire = data['authentication']['payload']['exp'] as int;
           isSuccessfullyLoggedin = true;
@@ -96,13 +99,13 @@ abstract class Auth with Store {
   Future userSignUp() async {
     isLoading = true;
     try {
-      final res = await AuthRepository.userRegister(data: { 
+      final res = await AuthRepository.userRegister(data: {
         "fName": fName,
         "lName": lName,
         "email": email,
         "password": password,
         "mobileNumber": mobileNumber,
-     });
+      });
       if (res != null && res.statusCode == 201) {
         // final Map<String, dynamic> data = jsonDecode(res.body);
         // final User user = User.fromJson(data);

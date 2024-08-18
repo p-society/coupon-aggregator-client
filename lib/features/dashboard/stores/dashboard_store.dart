@@ -292,6 +292,25 @@ abstract class Dashboard with Store {
     }
   }
 
+  @action
+  void deleteCouponLocally({required CouponDataModel coupon}) {
+    switch (mealTimeTypeMap[coupon.couponType]) {
+      case MealTimeType.breakfast:
+        breakfastList.removeWhere((c) => c.id == coupon.id);
+        totalBreakfastAvailable -= 1;
+        break;
+      case MealTimeType.lunch:
+        lunchList.removeWhere((c) => c.id == coupon.id);
+        totalLunchAvailable -= 1;
+        break;
+      case MealTimeType.dinner:
+        dinnerList.removeWhere((c) => c.id == coupon.id);
+        totalDinnerAvailable -= 1;
+        break;
+      case null:
+    }
+  }
+
   int getLimit({required MealTimeType type}) {
     switch (type) {
       case MealTimeType.breakfast:

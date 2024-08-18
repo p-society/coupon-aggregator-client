@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/User%20Profile/screens/user_coupon_list_screen.dart';
-
 import '../../auth/stores/auth_store.dart';
 
 class DashboardDrawer extends StatelessWidget {
@@ -49,9 +48,11 @@ class DashboardDrawer extends StatelessWidget {
             title: const Text('Settings'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const CouponListScreen(),),);
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CouponListScreen(),
+                ),
+              );
             },
           ),
           ListTile(
