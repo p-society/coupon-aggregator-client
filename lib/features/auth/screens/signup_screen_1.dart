@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
-import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
-import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
-import 'package:mess_mgmt/features/auth/screens/signup_screen_2.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
+
+import '../enums/auth_enum.dart';
 
 class SignupScreenOne extends StatefulWidget {
   const SignupScreenOne({super.key});
@@ -20,12 +19,13 @@ class SignupScreenOne extends StatefulWidget {
 }
 
 class _SignupScreenOneState extends State<SignupScreenOne> {
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _firstNameController = TextEditingController(text: authStore.fName);
+  final _lastNameController = TextEditingController(text: authStore.lName);
+  final _emailController = TextEditingController(text: authStore.email);
 
   void login() {
-    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
+    // navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
+    authStore.navigateToAuthScreenScreen(AuthScreens.loginScreen);
   }
 
   void nextLoginScreen() {
@@ -44,13 +44,7 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
       showMessage(message: 'Enter Valid Email', context: context);
       return;
     }
-    navigateAndPopToNextScreen(
-        nextScreen: SignupScreenTwo(
-          fName: fName,
-          lName: lName,
-          email: email,
-        ),
-        context: context);
+    authStore.navigateToAuthScreenScreen(AuthScreens.signUpScreen2);
   }
 
   Widget customElevatedButton(
@@ -112,7 +106,7 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 10),
                   AspectRatio(
@@ -127,7 +121,9 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                     controller: _firstNameController,
                     type: TextInputType.text,
                     icon: Icons.person,
-                    onChanged: (val) {},
+                    onChanged: (val) {
+                      authStore.fName = _firstNameController.text.trim();
+                    },
                   ),
                   const SizedBox(height: 15),
                   CustomTextField(
@@ -135,7 +131,9 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                     controller: _lastNameController,
                     type: TextInputType.text,
                     icon: Icons.person_2_outlined,
-                    onChanged: (val) {},
+                    onChanged: (val) {
+                      authStore.lName = _lastNameController.text.trim();
+                    },
                   ),
                   const SizedBox(height: 15),
                   CustomTextField(
@@ -143,7 +141,9 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                     controller: _emailController,
                     type: TextInputType.emailAddress,
                     icon: Icons.email,
-                    onChanged: (val) {},
+                    onChanged: (val) {
+                      authStore.email = _emailController.text.trim();
+                    },
                   ),
                   const SizedBox(height: 20),
                   SizedBox(

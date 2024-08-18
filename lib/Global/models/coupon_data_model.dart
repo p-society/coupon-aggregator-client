@@ -5,7 +5,7 @@ part 'coupon_data_model.g.dart';
 
 @JsonSerializable()
 class CouponDataModel {
-  // final String _id;
+  final String id;
   final String? couponType; // "lunch"
   final String? couponDate; // "2024-07-06T00:00:00.000Z",
   final int? price; // 50,
@@ -16,7 +16,7 @@ class CouponDataModel {
   final String? createdAt; //"2024-07-06T15:21:51.074Z",
   final User? createdBy;
   CouponDataModel({
-    // required this._id,
+    required this.id,
     required this.couponType,
     required this.couponDate,
     required this.price,

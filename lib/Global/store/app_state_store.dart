@@ -1,4 +1,5 @@
 import 'package:mess_mgmt/Global/models/user_model.dart';
+import 'package:mess_mgmt/features/auth/error%20handling/auth_error.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,9 @@ abstract class _AppStateStore with Store {
   @observable
   User? currentUser;
 
+  @observable
+  AuthError? authError;
+  
   @action
   Future initialization() async {
     await validateSession();

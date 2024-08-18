@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
+import 'package:mess_mgmt/features/User%20Profile/screens/user_coupon_list_screen.dart';
+
+import '../../auth/stores/auth_store.dart';
 
 class DashboardDrawer extends StatelessWidget {
   const DashboardDrawer({super.key});
@@ -39,23 +42,23 @@ class DashboardDrawer extends StatelessWidget {
             title: const Text('Home'),
             onTap: () {
               Navigator.pop(context);
-              // Handle navigation or action
             },
           ),
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
-              Navigator.pop(context);
-              // Handle navigation or action
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CouponListScreen(),),);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.contact_page),
-            title: const Text('Contact Us'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
             onTap: () {
-              Navigator.pop(context);
-              // Handle navigation or action
+              authStore.logout();
             },
           ),
           ListTile(
@@ -63,7 +66,6 @@ class DashboardDrawer extends StatelessWidget {
             title: const Text('About'),
             onTap: () {
               Navigator.pop(context);
-              // Handle navigation or action
             },
           ),
         ],
