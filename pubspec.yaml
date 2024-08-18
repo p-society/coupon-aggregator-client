@@ -45,7 +45,7 @@ dependencies:
   json_annotation: ^4.9.0
   http: ^1.2.2
   shimmer: ^3.0.0
-
+  flutter_svg:
 
 dev_dependencies:
   flutter_test:
