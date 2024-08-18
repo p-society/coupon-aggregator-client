@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum MealTimeType {
   breakfast,
   lunch,
@@ -23,6 +25,15 @@ extension FloorString on Floor {
         return 'Ground';
     }
   }
+
+  int intoInt() {
+    switch (this) {
+      case Floor.first:
+        return 2;
+      case Floor.ground:
+        return 1;
+    }
+  }
 }
 
 extension MealTypeString on MealType {
@@ -34,17 +45,47 @@ extension MealTypeString on MealType {
         return 'Non-Veg';
     }
   }
+
+  bool intoBool() {
+    switch (this) {
+      case MealType.veg:
+        return true;
+      case MealType.nonVeg:
+        return false;
+    }
+  }
 }
 
 extension MealTimeTypeString on MealTimeType {
   String intoString() {
     switch (this) {
       case MealTimeType.breakfast:
-        return 'Breakfast';
+        return 'breakfast';
       case MealTimeType.lunch:
-        return 'Lunch';
+        return 'lunch';
       case MealTimeType.dinner:
-        return 'Dinner';
+        return 'dinner';
     }
-  }
+
+   
+  } String intoTitle() {
+      switch (this) {
+        case MealTimeType.breakfast:
+          return 'Breakfast';
+        case MealTimeType.lunch:
+          return 'Lunch';
+        case MealTimeType.dinner:
+          return 'Dinner';
+      }
+    }
+    IconData getIcon(){
+      switch (this) {
+        case MealTimeType.breakfast:
+          return Icons.free_breakfast;
+        case MealTimeType.lunch:
+          return Icons.restaurant;
+        case MealTimeType.dinner:
+          return Icons.nightlife;
+      }
+    }
 }

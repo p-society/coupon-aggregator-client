@@ -6,8 +6,11 @@ import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
+import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
+import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -30,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     dinnerCount = store.dinnerCount;
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 1000),
     );
     _animationController.forward();
     dateController.text = DateTime.now().toString().split(' ')[0];
@@ -155,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     controller: costController,
                     decoration: const InputDecoration(
                       labelText: "Cost",
-                      labelStyle:  TextStyle(
+                      labelStyle: TextStyle(
                           color: Colors.white), // Label color set to white
                     ),
                     keyboardType: TextInputType.number,
@@ -163,42 +166,48 @@ class _DashboardScreenState extends State<DashboardScreen>
                         color: Colors.white), // Input text color set to white
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white
-                              .withOpacity(0.8), // Button text color
+                  Observer(builder: (context) {
+                    final isLoading = dashboardStore.isLoading;
+                    if (isLoading) {
+                      return const Center(child: AppLoader());
+                    }
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white
+                                .withOpacity(0.8), // Button text color
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Cancel"),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child:const  Text("Cancel"),
-                      ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white
-                              .withOpacity(0.8), // Button text color
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white
+                                .withOpacity(0.8), // Button text color
+                          ),
+                          onPressed: () async {
+                            Floor floor = selectedFloor;
+                            MealType mealType = selectedMealType;
+                            String cost = costController.text;
+                            CouponModel model = CouponModel(
+                                floor: floor,
+                                mealTime: mealTimeType,
+                                mealType: mealType,
+                                cost: int.tryParse(cost) ?? 0);
+                            await dashboardStore.sellCoupon(model).then((_) {
+                              costController.clear();
+                              Navigator.of(context).pop();
+                            });
+                          },
+                          child: const Text("Submit"),
                         ),
-                        onPressed: () {
-                          Floor floor = selectedFloor;
-                          MealType mealType = selectedMealType;
-                          String cost = costController.text;
-                          CouponModel model = CouponModel(
-                              floor: floor,
-                              mealTime: mealTimeType,
-                              mealType: mealType,
-                              cost: int.tryParse(cost) ?? 0);
-                          dashboardStore.sellCoupon(model);
-                          costController.clear();
-
-                          Navigator.of(context).pop();
-                        },
-                        child:const Text("Submit"),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                 ],
               ),
             ),
@@ -208,18 +217,44 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  void navigateToViewScreen(MealTimeType mealTimeType) {
+  void navigateToViewScreen() {
     navigateToNextScreen(
-        nextScreen: ViewScreen(mealTimeType: mealTimeType), context: context);
+      nextScreen: const ViewScreen(),
+      context: context,
+    );
+  }
+
+  int getCount(MealTimeType type) {
+    switch (type) {
+      case MealTimeType.breakfast:
+        return dashboardStore.totalBreakfastAvailable;
+      case MealTimeType.lunch:
+        return dashboardStore.totalLunchAvailable;
+      case MealTimeType.dinner:
+        return dashboardStore.totalDinnerAvailable;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    /* double widthFactor = MediaQuery.of(context).width; */
     return Scaffold(
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Coupon Availability'),
         backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton.filled(
+            onPressed: () {
+              authStore.logout();
+            },
+            icon: const Icon(
+              Icons.logout_outlined,
+            ),
+          ),
+        ],
       ),
+      drawer: const DashboardDrawer(),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),
@@ -235,23 +270,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                   children: [
                     _buildDatePicker(),
                     const SizedBox(height: 24),
-                    Observer(builder: (context) {
-                      int count = dashboardStore.breakfastCount;
-                      return _buildMealCard('Breakfast', Icons.free_breakfast,
-                          count, MealTimeType.breakfast);
-                    }),
-                    const SizedBox(height: 16),
-                    Observer(builder: (context) {
-                      int count = dashboardStore.lunchCount;
-                      return _buildMealCard(
-                          'Lunch', Icons.restaurant, count, MealTimeType.lunch);
-                    }),
-                    const SizedBox(height: 16),
-                    Observer(builder: (context) {
-                      int count = dashboardStore.dinnerCount;
-                      return _buildMealCard('Dinner', Icons.nightlife, count,
-                          MealTimeType.dinner);
-                    }),
+                    for (final e in MealTimeType.values) ...[
+                      Observer(builder: (context) {
+                        int count = getCount(e);
+                        return _buildMealCard(
+                            e.intoTitle(), e.getIcon(), count, e);
+                      }),
+                      const SizedBox(height: 16),
+                    ],
                   ],
                 ),
               ),
@@ -344,7 +370,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                           ),
                         ),
                         OutlinedButton(
-                          onPressed: () => navigateToViewScreen(mealType),
+                          onPressed: () {
+                            dashboardStore.currentView = mealType;
+
+                            navigateToViewScreen();
+                          },
                           style: OutlinedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
