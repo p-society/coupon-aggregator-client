@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/dialogs/edit_coupon_dialog.dart';
 import 'package:mess_mgmt/Global/effects/shimmer_effect.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/features/User%20Profile/store/user_profile_store.dart';
 import 'package:mess_mgmt/features/User%20Profile/widgets/confirm_delete_dialog.dart';
+import 'package:mobx/mobx.dart';
 
 class CouponListScreen extends StatelessWidget {
   const CouponListScreen({super.key});
@@ -12,29 +14,42 @@ class CouponListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     userProfileStore.getSellingCouponList();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Meal Coupons'),
-        
-      ),
-      body: Observer(builder: (context) {
-        final coupons = userProfileStore.userSellingCouponsList;
-        final isLoading = userProfileStore.isLoading;
-        if (isLoading) {
-          return Column(children: [
-            ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-            ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-            ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-          ]);
-        }
-        return ListView.builder(
-          itemCount: coupons.length,
-          itemBuilder: (context, index) {
-            final coupon = coupons[index];
-            return UserSellingCouponWidget(coupon: coupon);
-          },
-        );
+    return ReactionBuilder(
+      builder: ((_) {
+        return autorun((_) {});
       }),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('My Meal Coupons'),
+        ),
+        body: Observer(
+          builder: (context) {
+            final coupons = userProfileStore.userSellingCouponsList;
+            final isLoading = userProfileStore.isLoading;
+            if (isLoading) {
+              return const SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                  ],
+                ),
+              );
+            }
+            return ListView.builder(
+              itemCount: coupons.length,
+              itemBuilder: (context, index) {
+                final coupon = coupons[index];
+                return UserSellingCouponWidget(coupon: coupon);
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -141,16 +156,17 @@ class UserSellingCouponWidget extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if(coupon.status != "expire")
             IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () {
-                // Handle edit action
+                showEditCouponDialog(context: context, coupon: coupon);
               },
             ),
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
-                showConfirmDeleteDialog(context,coupon: coupon);
+                showConfirmDeleteDialog(context, coupon: coupon);
               },
             ),
           ],

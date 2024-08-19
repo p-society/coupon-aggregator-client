@@ -9,7 +9,6 @@ import 'package:mess_mgmt/Global/store/app_state_store.dart';
 class UserProfileRepo {
   static Future<http.Response> getUserCouponList() async {
     final header = ApiHelper.getApiHeader(jwt: appState.jwt);
-    print("User id is : : ${appState.currentUser?.id}");
     final uri = ApiHelper.getUri(
         urlEndpoint: ApiEndpoints.listApiEndpoint,
         queryParams: {
@@ -17,8 +16,6 @@ class UserProfileRepo {
           "createdBy": appState.currentUser!.id,
         });
     final response = await http.get(uri, headers: header);
-    print(response.statusCode);
-    print(response.body);
     return response;
   }
 
@@ -28,8 +25,6 @@ class UserProfileRepo {
       urlEndpoint: "${ApiEndpoints.listApiEndpoint}/$couponId",
     );
     final response = await http.delete(uri, headers: header);
-    print(response.statusCode);
-    print(response.body);
     return response;
   }
 
@@ -39,10 +34,16 @@ class UserProfileRepo {
     final uri = ApiHelper.getUri(
       urlEndpoint: "${ApiEndpoints.listApiEndpoint}/${coupon.id}",
     );
-    final body = coupon.toJson();
-    final response = await http.patch(uri, headers: header,body: body);
-    print(response.statusCode);
-    print(response.body);
+    final body = {
+      "couponType": coupon.couponType,
+      "price": coupon.price,
+      "couponFloor": coupon.couponFloor,
+      "isVeg": coupon.isVeg,
+      "status": coupon.status,
+      // "deleted": false,
+    };
+    final response =
+        await http.patch(uri, headers: header, body: jsonEncode(body));
     return response;
   }
 }

@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
+
 import 'package:mess_mgmt/Global/models/user_model.dart';
 
 part 'coupon_data_model.g.dart';
@@ -34,4 +36,30 @@ class CouponDataModel {
   factory CouponDataModel.fromJson(Map<String, dynamic> json) =>
       _$CouponDataModelFromJson(json);
   Map<String, dynamic> toJson() => _$CouponDataModelToJson(this);
+
+  CouponDataModel copyWith({
+    String? id,
+    String? couponType,
+    String? couponDate,
+    int? price,
+    int? couponFloor,
+    bool? isVeg,
+    String? status,
+    bool? deleted,
+    String? createdAt,
+    User? createdBy,
+  }) {
+    return CouponDataModel(
+      id: id ?? this.id,
+      couponType: couponType ?? this.couponType,
+      couponDate: couponDate ?? this.couponDate,
+      price: price ?? this.price,
+      couponFloor: couponFloor ?? this.couponFloor,
+      isVeg: isVeg ?? this.isVeg,
+      status: status ?? this.status,
+      deleted: deleted ?? this.deleted,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+    );
+  }
 }

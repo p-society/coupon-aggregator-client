@@ -7,7 +7,6 @@ import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
@@ -239,11 +238,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget build(BuildContext context) {
     /* double widthFactor = MediaQuery.of(context).width; */
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Coupon Availability'),
         backgroundColor: Theme.of(context).primaryColor,
-        
       ),
       drawer: const DashboardDrawer(),
       body: DecoratedBox(
@@ -343,8 +341,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 style: Theme.of(context).textTheme.titleMedium),
                           ],
                         ),
-                        Text('Available : $count',
-                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          'Available : $count',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -352,12 +352,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton.icon(
-                          onPressed: () => input(context, mealType),
+                          onPressed: () => input(
+                            context,
+                            mealType,
+                          ),
                           icon: const Icon(Icons.add),
                           label: const Text('Sell'),
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
+                              borderRadius: BorderRadius.circular(
+                                20,
+                              ),
+                            ),
                           ),
                         ),
                         OutlinedButton(
@@ -368,9 +374,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                           },
                           style: OutlinedButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
+                              borderRadius: BorderRadius.circular(
+                                20,
+                              ),
+                            ),
                           ),
-                          child: const Text('View'),
+                          child: const Text(
+                            'View',
+                          ),
                         ),
                       ],
                     ),

@@ -19,6 +19,12 @@ abstract class UserProfile with Store {
   @observable
   bool isLoading = false;
 
+  @observable
+  bool isLoadingLocally = false;
+
+  @observable
+  bool canDialogPop = false;
+
   @action
   Future getSellingCouponList() async {
     isLoading = true;
@@ -26,7 +32,6 @@ abstract class UserProfile with Store {
       final response = await UserProfileRepo.getUserCouponList();
 
       final jsonList = jsonDecode(response.body)['data'];
-      print(jsonList);
       if (response.statusCode == 200) {
         List<CouponDataModel> list = [];
         for (final doc in jsonList) {
@@ -45,20 +50,46 @@ abstract class UserProfile with Store {
   Future deleteCoupon({
     required CouponDataModel coupon,
   }) async {
-    isLoading = true;
+    isLoadingLocally = true;
     try {
       final response = await UserProfileRepo.deleteCoupon(couponId: coupon.id);
-
-      final jsonList = jsonDecode(response.body);
-      print(jsonList);
       if (response.statusCode == 200) {
         userSellingCouponsList.removeWhere((c) => c.id == coupon.id);
         dashboardStore.deleteCouponLocally(coupon: coupon);
+        isLoadingLocally = false;
+        canDialogPop = true;
       } else {}
     } catch (e) {
       throw Exception(e.toString());
     } finally {
-      isLoading = false;
+      isLoadingLocally = false;
     }
+  }
+
+  @action
+  Future updateCoupon({
+    required CouponDataModel coupon,
+  }) async {
+    isLoadingLocally = true;
+    try {
+      final response = await UserProfileRepo.updateCoupon(coupon: coupon);
+      if (response.statusCode == 200) {
+        updateCouponLocally(coupon: coupon);
+        isLoadingLocally = false;
+        canDialogPop = true;
+      } else {}
+    }
+     catch (e) {
+      throw Exception(e.toString());
+    } finally {
+      isLoadingLocally = false;
+    }
+  }
+
+  @action
+  void updateCouponLocally({required CouponDataModel coupon}) {
+    final index = userSellingCouponsList.indexWhere((c) => c.id == coupon.id);
+    userSellingCouponsList[index] = coupon;
+    dashboardStore.updateCouponLocally(coupon: coupon);
   }
 }

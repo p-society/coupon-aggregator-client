@@ -42,6 +42,38 @@ mixin _$UserProfileStore on UserProfile, Store {
     });
   }
 
+  late final _$isLoadingLocallyAtom =
+      Atom(name: 'UserProfile.isLoadingLocally', context: context);
+
+  @override
+  bool get isLoadingLocally {
+    _$isLoadingLocallyAtom.reportRead();
+    return super.isLoadingLocally;
+  }
+
+  @override
+  set isLoadingLocally(bool value) {
+    _$isLoadingLocallyAtom.reportWrite(value, super.isLoadingLocally, () {
+      super.isLoadingLocally = value;
+    });
+  }
+
+  late final _$canDialogPopAtom =
+      Atom(name: 'UserProfile.canDialogPop', context: context);
+
+  @override
+  bool get canDialogPop {
+    _$canDialogPopAtom.reportRead();
+    return super.canDialogPop;
+  }
+
+  @override
+  set canDialogPop(bool value) {
+    _$canDialogPopAtom.reportWrite(value, super.canDialogPop, () {
+      super.canDialogPop = value;
+    });
+  }
+
   late final _$getSellingCouponListAsyncAction =
       AsyncAction('UserProfile.getSellingCouponList', context: context);
 
@@ -60,11 +92,36 @@ mixin _$UserProfileStore on UserProfile, Store {
         .run(() => super.deleteCoupon(coupon: coupon));
   }
 
+  late final _$updateCouponAsyncAction =
+      AsyncAction('UserProfile.updateCoupon', context: context);
+
+  @override
+  Future<dynamic> updateCoupon({required CouponDataModel coupon}) {
+    return _$updateCouponAsyncAction
+        .run(() => super.updateCoupon(coupon: coupon));
+  }
+
+  late final _$UserProfileActionController =
+      ActionController(name: 'UserProfile', context: context);
+
+  @override
+  void updateCouponLocally({required CouponDataModel coupon}) {
+    final _$actionInfo = _$UserProfileActionController.startAction(
+        name: 'UserProfile.updateCouponLocally');
+    try {
+      return super.updateCouponLocally(coupon: coupon);
+    } finally {
+      _$UserProfileActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 userSellingCouponsList: ${userSellingCouponsList},
-isLoading: ${isLoading}
+isLoading: ${isLoading},
+isLoadingLocally: ${isLoadingLocally},
+canDialogPop: ${canDialogPop}
     ''';
   }
 }

@@ -420,6 +420,17 @@ mixin _$DashboardStore on Dashboard, Store {
   }
 
   @override
+  void updateCouponLocally({required CouponDataModel coupon}) {
+    final _$actionInfo = _$DashboardActionController.startAction(
+        name: 'Dashboard.updateCouponLocally');
+    try {
+      return super.updateCouponLocally(coupon: coupon);
+    } finally {
+      _$DashboardActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoading: ${isLoading},

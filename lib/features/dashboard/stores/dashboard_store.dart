@@ -311,6 +311,36 @@ abstract class Dashboard with Store {
     }
   }
 
+  @action
+  void updateCouponLocally({
+    required CouponDataModel coupon,
+  }) {
+    switch (mealTimeTypeMap[coupon.couponType]) {
+      case MealTimeType.breakfast:
+        final i = breakfastList.indexWhere((c) => c.id == coupon.id);
+        if (i == -1) {
+          break;
+        }
+        breakfastList[i] = coupon;
+        break;
+      case MealTimeType.lunch:
+        final i = lunchList.indexWhere((c) => c.id == coupon.id);
+        if (i == -1) {
+          break;
+        }
+        lunchList[i] = coupon;
+        break;
+      case MealTimeType.dinner:
+        final i = dinnerList.indexWhere((c) => c.id == coupon.id);
+        if (i == -1) {
+          break;
+        }
+        dinnerList[i] = coupon;
+        break;
+      case null:
+    }
+  }
+
   int getLimit({required MealTimeType type}) {
     switch (type) {
       case MealTimeType.breakfast:

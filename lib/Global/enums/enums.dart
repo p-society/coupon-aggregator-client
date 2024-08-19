@@ -6,12 +6,6 @@ enum MealTimeType {
   dinner,
 }
 
-const Map<String, MealTimeType> mealTimeTypeMap = {
-  'breakfast': MealTimeType.breakfast,
-  'lunch': MealTimeType.lunch,
-  'dinner': MealTimeType.dinner,
-};
-
 enum MealType {
   veg,
   nonVeg,
@@ -22,10 +16,39 @@ enum Floor {
   ground,
 }
 
+enum CouponStatus {
+  active,
+  sold,
+  expired,
+}
+
+const Map<String, MealTimeType> mealTimeTypeMap = {
+  'breakfast': MealTimeType.breakfast,
+  'lunch': MealTimeType.lunch,
+  'dinner': MealTimeType.dinner,
+};
+
+const Map<String, CouponStatus> couponStatusMap = {
+  'active': CouponStatus.active,
+  'sold': CouponStatus.sold,
+};
 const Map<int, Floor> floorMap = {
   1: Floor.ground,
   2: Floor.first,
 };
+
+extension CouponStatusExtension on CouponStatus {
+  String intoString() {
+    switch (this) {
+      case CouponStatus.active:
+        return "active";
+      case CouponStatus.expired:
+        return "expired";
+      case CouponStatus.sold:
+        return "sold";
+    }
+  }
+}
 
 extension FloorString on Floor {
   String intoString() {
