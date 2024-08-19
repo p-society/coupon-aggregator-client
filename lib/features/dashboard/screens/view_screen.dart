@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
-import 'package:mess_mgmt/Global/enums/pagination_enum.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/Global/widgets/custom_filter_dialog.dart';
 import 'package:mess_mgmt/Global/widgets/custom_list_tile.dart';
@@ -8,11 +8,9 @@ import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 class ViewScreen extends StatelessWidget {
-  const ViewScreen({
-    super.key,
-    required this.mealTimeType,
-  });
-  final MealTimeType mealTimeType;
+  const ViewScreen({super.key});
+  
+  get mealTimeType => null;
 
   @override
   Widget build(BuildContext context) {
@@ -28,63 +26,12 @@ class ViewScreen extends StatelessWidget {
         list = dashboardStore.dinnerList;
         break;
     }
-    AppBar customAppBar(
-        BuildContext context, String mealTimeType, Function showFilterDialog) {
-      return AppBar(
-        title: Text(
-          mealTimeType,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 20.0,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Colors.blueAccent, Colors.lightBlue],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20.0),
-              bottomRight: Radius.circular(20.0),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blueAccent.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: () {
-              showFilterDialog(context: context);
-            },
-            label: const Text(
-              'Apply Filter',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-            ),
-            icon: const Icon(
-              Icons.filter_list,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      );
-    }
 
     return Scaffold(
-      /* appBar: AppBar(
-        title: Text(mealTimeType.intoString()),
-        backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Observer(builder: (context) {
+          return Text(dashboardStore.currentView.intoTitle());
+        }),
         actions: [
           TextButton.icon(
             onPressed: () {
@@ -96,8 +43,8 @@ class ViewScreen extends StatelessWidget {
             ),
           ),
         ],
-      ), */
-      appBar: customAppBar(context, mealTimeType.intoString(), showFilterDialog),
+      ), 
+      //appBar: WobbleAppBar(context, mealTimeType.intoString(), showFilterDialog),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -109,20 +56,23 @@ class ViewScreen extends StatelessWidget {
             ],
           ),
         ),
-        child: ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            /* ListTile(
-              title: const Text("SellerName : "),
-              subtitle: Text('Cost : ${list[index].cost}'),
-              trailing: Text(list[index].mealType.intoString()),
-            ); */
-            return GlassyListTile(
-              coupon: list[index],
-              i: index,
-            );
-          },
-        ),
+        child: Observer(builder: (context) {
+          final list = dashboardStore.currentViewList;
+          return ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              /* ListTile(
+                  title: const Text("SellerName : "),
+                  subtitle: Text('Cost : ${list[index].cost}'),
+                  trailing: Text(list[index].mealType.intoString()),
+                ); */
+              return GlassyListTile(
+                coupon: list[index],
+                i: index,
+              );
+            },
+          );
+        }),
       ),
     );
   }

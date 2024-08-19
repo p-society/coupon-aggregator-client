@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
@@ -13,7 +12,6 @@ import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
-import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,22 +38,21 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void login() async {
    void login() async {
     print('sakfhakhfashf');
     if (!isValidate(_emailController.text)) {
       showMessage(message: "Enter Valid Email", context: context);
       return;
     }
-    
-    
+    //showValidateDialog(context, Builder(builder: (context) => Container()));
+    await Future.delayed(const Duration(seconds: 2));
     Map<String, dynamic> data = {
       "strategy": "local",
       "email": _emailController.text.trim(),
       "password": _pwdController.text.trim(),
     };
     
-    showValidateDialog(context, Builder(builder: (context) => Container()));
-    await Future.delayed(const Duration(seconds: 2));
     print(data);
     // //adding functionality to check the internet connection
     bool hasConnection = await checkInternetConnection();
@@ -84,35 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _pwdController.dispose();
     super.dispose();
-  }
-
-  void showValidateDialog(BuildContext context, Builder builder) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          
-          return Dialog(
-            
-            backgroundColor: Colors.transparent, // Make background transparent
-          child: BackdropFilter(
-            filter:
-                ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Apply blur effect
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color:
-                    Colors.white.withOpacity(0.2), // Slightly opaque background
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white
-                      .withOpacity(0.3), // White border with slight opacity
-                  width: 1.5,
-                ),
-                
-              ),
-              child: const Text("Successfully logged in"),
-          )));
-        });
   }
 
   @override
@@ -229,5 +197,14 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  
+  
+}
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
