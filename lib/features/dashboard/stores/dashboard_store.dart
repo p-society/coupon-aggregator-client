@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:mess_mgmt/Global/Functions/format_date.dart';
@@ -8,6 +9,7 @@ import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
+import 'package:mess_mgmt/features/auth/error%20handling/auth_error.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pinput/pinput.dart';
 
@@ -164,7 +166,7 @@ abstract class Dashboard with Store {
 
     return filteredMealList;
   }
-  
+
   @action
   void increaseLimit({required MealTimeType type}) {
     switch (type) {
@@ -183,34 +185,27 @@ abstract class Dashboard with Store {
   @action
   Future loadMore({required MealTimeType type}) async {
     increaseLimit(type: type);
-    try {
-      await fetchMeal(type: type, mealLimit: getLimit(type: type));
-    } catch (e) {
-      throw Exception(e);
-    }
+    await fetchMeal(type: type, mealLimit: getLimit(type: type));
   }
 
-  
   @action
   Future fetchMeal({required MealTimeType type, required int mealLimit}) async {
     isLoading = true;
     try {
       final jwt = appState.jwt;
       if (jwt != null) {
-       
         Map<String, dynamic> queryParams = {
           '\$limit': mealLimit.toString(),
           'couponType': type.intoString(),
           '\$populate': 'createdBy',
         };
-          final url = ApiHelper.getUri(
+        final url = ApiHelper.getUri(
             queryParams: queryParams,
             urlEndpoint: ApiEndpoints.listApiEndpoint);
         final header = ApiHelper.getApiHeader(jwt: jwt);
         final response = await http.get(url, headers: header);
         if (response.statusCode == 200) {
           List<dynamic> list = jsonDecode(response.body)['data'];
-          // print(jsonDecode(response.body)['total']);
           clearMeal(mealType: type);
           List<CouponDataModel> mealList = [];
           for (final doc in list) {
@@ -220,8 +215,12 @@ abstract class Dashboard with Store {
           addMeal(list: mealList, type: type, total: total);
         }
       }
+    } on SocketException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } on http.ClientException {
+      appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
-      throw Exception(e.toString());
+      appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
     }
@@ -269,7 +268,7 @@ abstract class Dashboard with Store {
     try {
       final jwt = appState.jwt;
       if (jwt != null) {
-          Uri uri = ApiHelper.getUri(urlEndpoint: ApiEndpoints.listApiEndpoint);
+        Uri uri = ApiHelper.getUri(urlEndpoint: ApiEndpoints.listApiEndpoint);
         final header = ApiHelper.getApiHeader(jwt: jwt);
         final Map<String, dynamic> body = {
           "couponType": model.mealTime.intoString(),
@@ -287,13 +286,61 @@ abstract class Dashboard with Store {
         if (res.statusCode == 201) {
           final mealLimit = getLimit(type: model.mealTime);
           await fetchMeal(type: model.mealTime, mealLimit: mealLimit);
-         
         }
       }
     } catch (e) {
       throw Exception(e.toString());
     } finally {
       isLoading = false;
+    }
+  }
+
+  @action
+  void deleteCouponLocally({required CouponDataModel coupon}) {
+    switch (mealTimeTypeMap[coupon.couponType]) {
+      case MealTimeType.breakfast:
+        breakfastList.removeWhere((c) => c.id == coupon.id);
+        totalBreakfastAvailable -= 1;
+        break;
+      case MealTimeType.lunch:
+        lunchList.removeWhere((c) => c.id == coupon.id);
+        totalLunchAvailable -= 1;
+        break;
+      case MealTimeType.dinner:
+        dinnerList.removeWhere((c) => c.id == coupon.id);
+        totalDinnerAvailable -= 1;
+        break;
+      case null:
+    }
+  }
+
+  @action
+  void updateCouponLocally({
+    required CouponDataModel coupon,
+  }) {
+    switch (mealTimeTypeMap[coupon.couponType]) {
+      case MealTimeType.breakfast:
+        final i = breakfastList.indexWhere((c) => c.id == coupon.id);
+        if (i == -1) {
+          break;
+        }
+        breakfastList[i] = coupon;
+        break;
+      case MealTimeType.lunch:
+        final i = lunchList.indexWhere((c) => c.id == coupon.id);
+        if (i == -1) {
+          break;
+        }
+        lunchList[i] = coupon;
+        break;
+      case MealTimeType.dinner:
+        final i = dinnerList.indexWhere((c) => c.id == coupon.id);
+        if (i == -1) {
+          break;
+        }
+        dinnerList[i] = coupon;
+        break;
+      case null:
     }
   }
 

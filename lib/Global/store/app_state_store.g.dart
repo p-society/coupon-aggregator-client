@@ -72,6 +72,22 @@ mixin _$AppState on _AppStateStore, Store {
     });
   }
 
+  late final _$authErrorAtom =
+      Atom(name: '_AppStateStore.authError', context: context);
+
+  @override
+  AuthError? get authError {
+    _$authErrorAtom.reportRead();
+    return super.authError;
+  }
+
+  @override
+  set authError(AuthError? value) {
+    _$authErrorAtom.reportWrite(value, super.authError, () {
+      super.authError = value;
+    });
+  }
+
   late final _$initializationAsyncAction =
       AsyncAction('_AppStateStore.initialization', context: context);
 
@@ -94,7 +110,8 @@ mixin _$AppState on _AppStateStore, Store {
 jwt: ${jwt},
 isLoading: ${isLoading},
 isExpire: ${isExpire},
-currentUser: ${currentUser}
+currentUser: ${currentUser},
+authError: ${authError}
     ''';
   }
 }

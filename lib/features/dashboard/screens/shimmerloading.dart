@@ -9,7 +9,7 @@ class Shimmerloading extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: Colors.white,
       highlightColor: Colors.transparent,
-       child: Card(
+      child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -60,11 +60,6 @@ class Shimmerloading extends StatelessWidget {
           ),
         ),
       ),
-
-    
-
- );
-
-    
+    );
   }
 }

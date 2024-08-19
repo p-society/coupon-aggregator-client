@@ -409,6 +409,28 @@ mixin _$DashboardStore on Dashboard, Store {
   }
 
   @override
+  void deleteCouponLocally({required CouponDataModel coupon}) {
+    final _$actionInfo = _$DashboardActionController.startAction(
+        name: 'Dashboard.deleteCouponLocally');
+    try {
+      return super.deleteCouponLocally(coupon: coupon);
+    } finally {
+      _$DashboardActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void updateCouponLocally({required CouponDataModel coupon}) {
+    final _$actionInfo = _$DashboardActionController.startAction(
+        name: 'Dashboard.updateCouponLocally');
+    try {
+      return super.updateCouponLocally(coupon: coupon);
+    } finally {
+      _$DashboardActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoading: ${isLoading},

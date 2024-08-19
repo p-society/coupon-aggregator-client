@@ -24,6 +24,130 @@ mixin _$AuthStore on Auth, Store {
     });
   }
 
+  late final _$authErrorAtom = Atom(name: 'Auth.authError', context: context);
+
+  @override
+  AuthError? get authError {
+    _$authErrorAtom.reportRead();
+    return super.authError;
+  }
+
+  @override
+  set authError(AuthError? value) {
+    _$authErrorAtom.reportWrite(value, super.authError, () {
+      super.authError = value;
+    });
+  }
+
+  late final _$isSuccessfullyLoggedinAtom =
+      Atom(name: 'Auth.isSuccessfullyLoggedin', context: context);
+
+  @override
+  bool get isSuccessfullyLoggedin {
+    _$isSuccessfullyLoggedinAtom.reportRead();
+    return super.isSuccessfullyLoggedin;
+  }
+
+  @override
+  set isSuccessfullyLoggedin(bool value) {
+    _$isSuccessfullyLoggedinAtom
+        .reportWrite(value, super.isSuccessfullyLoggedin, () {
+      super.isSuccessfullyLoggedin = value;
+    });
+  }
+
+  late final _$currentAuthScreenAtom =
+      Atom(name: 'Auth.currentAuthScreen', context: context);
+
+  @override
+  AuthScreens get currentAuthScreen {
+    _$currentAuthScreenAtom.reportRead();
+    return super.currentAuthScreen;
+  }
+
+  @override
+  set currentAuthScreen(AuthScreens value) {
+    _$currentAuthScreenAtom.reportWrite(value, super.currentAuthScreen, () {
+      super.currentAuthScreen = value;
+    });
+  }
+
+  late final _$fNameAtom = Atom(name: 'Auth.fName', context: context);
+
+  @override
+  String get fName {
+    _$fNameAtom.reportRead();
+    return super.fName;
+  }
+
+  @override
+  set fName(String value) {
+    _$fNameAtom.reportWrite(value, super.fName, () {
+      super.fName = value;
+    });
+  }
+
+  late final _$lNameAtom = Atom(name: 'Auth.lName', context: context);
+
+  @override
+  String get lName {
+    _$lNameAtom.reportRead();
+    return super.lName;
+  }
+
+  @override
+  set lName(String value) {
+    _$lNameAtom.reportWrite(value, super.lName, () {
+      super.lName = value;
+    });
+  }
+
+  late final _$emailAtom = Atom(name: 'Auth.email', context: context);
+
+  @override
+  String get email {
+    _$emailAtom.reportRead();
+    return super.email;
+  }
+
+  @override
+  set email(String value) {
+    _$emailAtom.reportWrite(value, super.email, () {
+      super.email = value;
+    });
+  }
+
+  late final _$passwordAtom = Atom(name: 'Auth.password', context: context);
+
+  @override
+  String get password {
+    _$passwordAtom.reportRead();
+    return super.password;
+  }
+
+  @override
+  set password(String value) {
+    _$passwordAtom.reportWrite(value, super.password, () {
+      super.password = value;
+    });
+  }
+
+  late final _$mobileNumberAtom =
+      Atom(name: 'Auth.mobileNumber', context: context);
+
+  @override
+  String get mobileNumber {
+    _$mobileNumberAtom.reportRead();
+    return super.mobileNumber;
+  }
+
+  @override
+  set mobileNumber(String value) {
+    _$mobileNumberAtom.reportWrite(value, super.mobileNumber, () {
+      super.mobileNumber = value;
+    });
+  }
+
   late final _$userLoginAsyncAction =
       AsyncAction('Auth.userLogin', context: context);
 
@@ -36,9 +160,8 @@ mixin _$AuthStore on Auth, Store {
       AsyncAction('Auth.userSignUp', context: context);
 
   @override
-  Future<dynamic> userSignUp({required Map<String, dynamic> userData}) {
-    return _$userSignUpAsyncAction
-        .run(() => super.userSignUp(userData: userData));
+  Future<dynamic> userSignUp() {
+    return _$userSignUpAsyncAction.run(() => super.userSignUp());
   }
 
   late final _$logoutAsyncAction = AsyncAction('Auth.logout', context: context);
@@ -48,10 +171,32 @@ mixin _$AuthStore on Auth, Store {
     return _$logoutAsyncAction.run(() => super.logout());
   }
 
+  late final _$AuthActionController =
+      ActionController(name: 'Auth', context: context);
+
+  @override
+  void navigateToAuthScreenScreen(AuthScreens authScreen) {
+    final _$actionInfo = _$AuthActionController.startAction(
+        name: 'Auth.navigateToAuthScreenScreen');
+    try {
+      return super.navigateToAuthScreenScreen(authScreen);
+    } finally {
+      _$AuthActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
-isLoading: ${isLoading}
+isLoading: ${isLoading},
+authError: ${authError},
+isSuccessfullyLoggedin: ${isSuccessfullyLoggedin},
+currentAuthScreen: ${currentAuthScreen},
+fName: ${fName},
+lName: ${lName},
+email: ${email},
+password: ${password},
+mobileNumber: ${mobileNumber}
     ''';
   }
 }

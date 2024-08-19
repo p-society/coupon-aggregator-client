@@ -8,6 +8,7 @@ part of 'coupon_data_model.dart';
 
 CouponDataModel _$CouponDataModelFromJson(Map<String, dynamic> json) =>
     CouponDataModel(
+      id: json['_id'] as String,
       couponType: json['couponType'] as String?,
       couponDate: json['couponDate'] as String?,
       price: (json['price'] as num?)?.toInt(),
@@ -23,6 +24,7 @@ CouponDataModel _$CouponDataModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$CouponDataModelToJson(CouponDataModel instance) =>
     <String, dynamic>{
+      '_id': instance.id,
       'couponType': instance.couponType,
       'couponDate': instance.couponDate,
       'price': instance.price,
