@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_endpoints.dart';
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_helper.dart';
