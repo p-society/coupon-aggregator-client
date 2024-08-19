@@ -73,46 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     
   } 
-/* void login() async {
-  print('Starting login process...');
-  
-  if (!isValidate(_emailController.text)) {
-    showMessage(message: "Enter Valid Email", context: context);
-    return;
-  }
-
-  Map<String, dynamic> data = {
-    "strategy": "local",
-    "email": _emailController.text.trim(),
-    "password": _pwdController.text.trim(),
-  };
-
-  // Displaying the validation dialog before the login process
-  /* showValidateDialog(context, Builder(builder: (context) => Container())); */
-  await Future.delayed(const Duration(seconds: 2));
-  print(data);
-
-  // Checking internet connection
-  bool hasConnection = await checkInternetConnection();
-  if (!hasConnection) {
-    showMessage(message: "Check Internet Connection", context: context);
-    return;
-  }
-
-  // Validating user input and attempting login
-  if (_formKey.currentState?.validate() ?? true) {
-    await authStore.userLogin(
-      _emailController.text.trim(),
-      _pwdController.text.trim(),
-    );
-    
-    // Displaying the success message after successful login
-    showValidateDialog(context, Builder(builder: (context) => Container()));
-    
-    // Keep the success message visible for 2 seconds
-    await Future.delayed(const Duration(seconds: 2));
-  }
-} */
 
   void signupNow() {
     navigateAndPopToNextScreen(
@@ -206,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         //validator for minimum password length
                         //to be customised according to need
                         if (value == null || value.length < 6) {
-                          return 'password must be atleast 6 characters long';
+                          return 'Password must be atleast 6 characters long';
                         } else {
                           return null;
                         }

@@ -9,6 +9,7 @@ import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pinput/pinput.dart';
 
 part 'dashboard_store.g.dart';
 
@@ -33,6 +34,8 @@ abstract class Dashboard with Store {
   @observable
   ObservableList<CouponDataModel> dinnerList =
       ObservableList<CouponDataModel>();
+    @observable
+    ObservableList<CouponDataModel> userList = ObservableList<CouponDataModel>();
 
   @observable
   int breakfastLimit = 10;
@@ -84,7 +87,8 @@ abstract class Dashboard with Store {
   int get lunchCount => lunchList.length;
   @computed
   int get dinnerCount => dinnerList.length;
-
+  @computed
+  int get userCount => userList.length;
   // @computed
   // bool get isFilteredApplied {
   //   if (isFilterFirstFloor ||
@@ -98,9 +102,9 @@ abstract class Dashboard with Store {
 
   // @computed
   // ObservableList<CouponDataModel> get breakfastFilteredList {
-    
+
   //   if (isFilteredApplied) {
-     
+
   //     return applyFilter();
   //   } else {
   //     return breakfastList;
@@ -534,5 +538,4 @@ abstract class Dashboard with Store {
       throw Exception(e);
     }
   }
-
 }

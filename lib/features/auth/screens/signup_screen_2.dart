@@ -62,6 +62,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
       },
     );
     showValidateDialog(context, Builder(builder: (context) => Container()));
+    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
 
   void showValidateDialog(BuildContext context, Builder builder) {

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
+import 'package:mess_mgmt/Global/models/user_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
+import 'package:mess_mgmt/features/dashboard/screens/mycoupon_screen.dart';
 
 class DashboardDrawer extends StatelessWidget {
-  const DashboardDrawer({super.key});
-
+  DashboardDrawer({super.key});
+  final User = appState.currentUser;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -64,6 +67,14 @@ class DashboardDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               // Handle navigation or action
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.token_sharp),
+            title: const Text('My coupons'),
+            onTap: () {
+              navigateToNextScreen(
+                  nextScreen: const MyCouponScreen(), context: context);
             },
           ),
         ],

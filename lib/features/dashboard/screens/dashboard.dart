@@ -247,7 +247,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ],
       ),
-      drawer: const DashboardDrawer(),
+      drawer:  DashboardDrawer(),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),

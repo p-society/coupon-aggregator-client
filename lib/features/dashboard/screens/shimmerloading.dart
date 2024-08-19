@@ -65,6 +65,6 @@ class Shimmerloading extends StatelessWidget {
 
  );
 
-    ;
+    
   }
 }
