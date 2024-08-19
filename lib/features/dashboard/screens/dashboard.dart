@@ -25,8 +25,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   final TextEditingController dateController = TextEditingController();
 
   @override
+  
   void initState() {
     super.initState();
+    
     final store = dashboardStore;
     breakfastCount = store.breakfastCount;
     lunchCount = store.lunchCount;
@@ -37,7 +39,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
     _animationController.forward();
     dateController.text = DateTime.now().toString().split(' ')[0];
+     
   }
+
+  
 
   Floor selectedFloor = Floor.ground;
   MealType selectedMealType = MealType.nonVeg;
@@ -254,7 +259,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ],
       ),
-      drawer: const DashboardDrawer(),
+      drawer:  DashboardDrawer(),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),
