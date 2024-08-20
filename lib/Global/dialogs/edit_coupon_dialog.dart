@@ -75,165 +75,168 @@ class _DialogWidgetState extends State<DialogWidget> {
               width: 1.5,
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Text(
-                "Enter coupon details",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white, // Text color set to white for contrast
-                ),
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<Floor>(
-                value: selectedFloor,
-                decoration: const InputDecoration(
-                  labelText: "Floor",
-                  labelStyle: TextStyle(
-                    color: Colors.white,
-                  ), // Label color set to white
-                ),
-                items: Floor.values.map((Floor value) {
-                  return DropdownMenuItem<Floor>(
-                    value: value,
-                    child: Text(
-                      value.intoString(),
-                      style: const TextStyle(
-                          color:
-                              Colors.white), // Dropdown item color set to white
-                    ),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedFloor = newValue!;
-                  });
-                },
-                dropdownColor: Colors.blueAccent,
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<MealType>(
-                value: selectedMealType,
-                decoration: const InputDecoration(
-                  labelText: "Veg or Non-veg",
-                  labelStyle: TextStyle(
-                    color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Text(
+                  "Enter coupon details",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // Text color set to white for contrast
                   ),
                 ),
-                items: MealType.values.map((MealType value) {
-                  return DropdownMenuItem<MealType>(
-                    value: value,
-                    child: Text(
-                      value.intoString(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedMealType = newValue!;
-                  });
-                },
-                dropdownColor: Colors.blueAccent,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: costController,
-                decoration: const InputDecoration(
-                  labelText: "Cost",
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
-                keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Coupon Status',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Wrap(
-                spacing: 10,
-                runSpacing: 5,
-                children: [
-                  FilterChip.elevated(
-                    selected: couponStatus == CouponStatus.active,
-                    label: Text(CouponStatus.active.intoString()),
-                    onSelected: (val) {
-                      if (val) {
-                        couponStatus = CouponStatus.active;
-                        setState(() {});
-                      }
-                    },
+                const SizedBox(height: 16),
+                DropdownButtonFormField<Floor>(
+                  value: selectedFloor,
+                  decoration: const InputDecoration(
+                    labelText: "Floor",
+                    labelStyle: TextStyle(
+                      color: Colors.white,
+                    ), // Label color set to white
                   ),
-                  FilterChip.elevated(
-                    selected: couponStatus == CouponStatus.sold,
-                    label: Text(CouponStatus.sold.intoString()),
-                    onSelected: (val) {
-                      if (val) {
-                        couponStatus = CouponStatus.sold;
-                        setState(() {});
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Observer(builder: (context) {
-                final isLoadingLoally = userProfileStore.isLoadingLocally;
-                if (isLoadingLoally) {
-                  return const Center(child: AppLoader());
-                }
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ReactionBuilder(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.white.withOpacity(0.8),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("Cancel"),
-                        ),
-                        builder: (context) {
-                          return autorun((_) {
-                            final canDialogPop = userProfileStore.canDialogPop;
-                            if (canDialogPop) {
-                              Navigator.pop(context);
-                            }
-                          });
-                        }),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white.withOpacity(0.8),
+                  items: Floor.values.map((Floor value) {
+                    return DropdownMenuItem<Floor>(
+                      value: value,
+                      child: Text(
+                        value.intoString(),
+                        style: const TextStyle(
+                            color: Colors
+                                .white), // Dropdown item color set to white
                       ),
-                      onPressed: () async {
-                        Floor floor = selectedFloor;
-                        MealType mealType = selectedMealType;
-                        String cost = costController.text;
-                        final model = widget.coupon.copyWith(
-                          price: int.parse(cost),
-                          couponType: mealTimeType.intoString(),
-                          isVeg: mealType.intoBool(),
-                          couponFloor: floor.intoInt(),
-                          status: couponStatus.intoString(),
-                        );
-                        userProfileStore.updateCoupon(coupon: model);
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedFloor = newValue!;
+                    });
+                  },
+                  dropdownColor: Colors.blueAccent,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<MealType>(
+                  value: selectedMealType,
+                  decoration: const InputDecoration(
+                    labelText: "Veg or Non-veg",
+                    labelStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  items: MealType.values.map((MealType value) {
+                    return DropdownMenuItem<MealType>(
+                      value: value,
+                      child: Text(
+                        value.intoString(),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedMealType = newValue!;
+                    });
+                  },
+                  dropdownColor: Colors.blueAccent,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: costController,
+                  decoration: const InputDecoration(
+                    labelText: "Cost",
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Coupon Status',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 5,
+                  children: [
+                    FilterChip.elevated(
+                      selected: couponStatus == CouponStatus.active,
+                      label: Text(CouponStatus.active.intoString()),
+                      onSelected: (val) {
+                        if (val) {
+                          couponStatus = CouponStatus.active;
+                          setState(() {});
+                        }
                       },
-                      child: const Text("Submit"),
+                    ),
+                    FilterChip.elevated(
+                      selected: couponStatus == CouponStatus.sold,
+                      label: Text(CouponStatus.sold.intoString()),
+                      onSelected: (val) {
+                        if (val) {
+                          couponStatus = CouponStatus.sold;
+                          setState(() {});
+                        }
+                      },
                     ),
                   ],
-                );
-              }),
-            ],
+                ),
+                const SizedBox(height: 16),
+                Observer(builder: (context) {
+                  final isLoadingLoally = userProfileStore.isLoadingLocally;
+                  if (isLoadingLoally) {
+                    return const Center(child: AppLoader());
+                  }
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ReactionBuilder(
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white.withOpacity(0.8),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("Cancel"),
+                          ),
+                          builder: (context) {
+                            return autorun((_) {
+                              final canDialogPop =
+                                  userProfileStore.canDialogPop;
+                              if (canDialogPop) {
+                                Navigator.pop(context);
+                              }
+                            });
+                          }),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white.withOpacity(0.8),
+                        ),
+                        onPressed: () async {
+                          Floor floor = selectedFloor;
+                          MealType mealType = selectedMealType;
+                          String cost = costController.text;
+                          final model = widget.coupon.copyWith(
+                            price: int.parse(cost),
+                            couponType: mealTimeType.intoString(),
+                            isVeg: mealType.intoBool(),
+                            couponFloor: floor.intoInt(),
+                            status: couponStatus.intoString(),
+                          );
+                          userProfileStore.updateCoupon(coupon: model);
+                        },
+                        child: const Text("Submit"),
+                      ),
+                    ],
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),
