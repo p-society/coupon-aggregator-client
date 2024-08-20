@@ -28,7 +28,6 @@ void navigateToNextScreen({
   Navigator.push(context, createRoute());
 }
 
-
 void navigateAndPopToNextScreen({
   required Widget nextScreen,
   required BuildContext context,

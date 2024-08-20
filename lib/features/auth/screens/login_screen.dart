@@ -38,24 +38,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login() async {
+   void login() async {
+    print('sakfhakhfashf');
     if (!isValidate(_emailController.text)) {
       showMessage(message: "Enter Valid Email", context: context);
       return;
     }
-    // await Future.delayed(const Duration(seconds: 2));
+    //showValidateDialog(context, Builder(builder: (context) => Container()));
+    await Future.delayed(const Duration(seconds: 2));
+    Map<String, dynamic> data = {
+      "strategy": "local",
+      "email": _emailController.text.trim(),
+      "password": _pwdController.text.trim(),
+    };
+    
+    print(data);
+    // //adding functionality to check the internet connection
+    bool hasConnection = await checkInternetConnection();
+    if (!hasConnection) {
+      showMessage(message: "Check Internet Connection", context: context);
+      return;
+    }
 
-    // bool hasConnection = await checkInternetConnection();
-    // if (!hasConnection) {
-    //   showMessage(message: "Check Internet Connection", context: context);
-    //   return;
-    // }
+    //adding functionality to validate the user input
     if (_formKey.currentState?.validate() ?? true) {
       await authStore.userLogin(
         _emailController.text.trim(),
         _pwdController.text.trim(),
       );
     }
-  }
+    
+  } 
 
   void signupNow() {
     authStore.navigateToAuthScreenScreen(AuthScreens.signUpScreen1);
@@ -119,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         //validator for minimum password length
                         //to be customised according to need
                         if (value == null || value.length < 6) {
-                          return 'password must be atleast 6 characters long';
+                          return 'Password must be atleast 6 characters long';
                         } else {
                           return null;
                         }
@@ -182,5 +195,14 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  
+  
+}
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
