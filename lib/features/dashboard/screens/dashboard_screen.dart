@@ -243,7 +243,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         title: const Text('Coupon Availability'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      drawer: const DashboardDrawer(),
+      drawer:  DashboardDrawer(),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
-import 'package:mess_mgmt/Global/models/user_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
+import '../../User Profile/screens/user_coupon_list_screen.dart';
 import '../../auth/stores/auth_store.dart';
 
 class DashboardDrawer extends StatelessWidget {
-  DashboardDrawer({super.key});
-  final User = appState.currentUser;
+ const DashboardDrawer({super.key});
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -48,12 +46,12 @@ class DashboardDrawer extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => const CouponListScreen(),
-//                 ),
-//               );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CouponListScreen(),
+                ),
+              );
             },
           ),
           ListTile(
@@ -70,14 +68,7 @@ class DashboardDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.token_sharp),
-            title: const Text('My coupons'),
-            onTap: () {
-              navigateToNextScreen(
-                  nextScreen: const MyCouponScreen(), context: context);
-            },
-          ),
+          
         ],
       ),
     );

@@ -11,7 +11,6 @@ import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/auth/error%20handling/auth_error.dart';
 import 'package:mobx/mobx.dart';
-import 'package:pinput/pinput.dart';
 
 part 'dashboard_store.g.dart';
 
