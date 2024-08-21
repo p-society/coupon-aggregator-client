@@ -8,8 +8,8 @@ part of 'app_state_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
-mixin _$AppState on _AppStateStore, Store {
-  late final _$jwtAtom = Atom(name: '_AppStateStore.jwt', context: context);
+mixin _$AppState on AppStateStore, Store {
+  late final _$jwtAtom = Atom(name: 'AppStateStore.jwt', context: context);
 
   @override
   String? get jwt {
@@ -25,7 +25,7 @@ mixin _$AppState on _AppStateStore, Store {
   }
 
   late final _$isLoadingAtom =
-      Atom(name: '_AppStateStore.isLoading', context: context);
+      Atom(name: 'AppStateStore.isLoading', context: context);
 
   @override
   bool get isLoading {
@@ -41,7 +41,7 @@ mixin _$AppState on _AppStateStore, Store {
   }
 
   late final _$isExpireAtom =
-      Atom(name: '_AppStateStore.isExpire', context: context);
+      Atom(name: 'AppStateStore.isExpire', context: context);
 
   @override
   bool get isExpire {
@@ -57,7 +57,7 @@ mixin _$AppState on _AppStateStore, Store {
   }
 
   late final _$currentUserAtom =
-      Atom(name: '_AppStateStore.currentUser', context: context);
+      Atom(name: 'AppStateStore.currentUser', context: context);
 
   @override
   User? get currentUser {
@@ -73,7 +73,7 @@ mixin _$AppState on _AppStateStore, Store {
   }
 
   late final _$authErrorAtom =
-      Atom(name: '_AppStateStore.authError', context: context);
+      Atom(name: 'AppStateStore.authError', context: context);
 
   @override
   AuthError? get authError {
@@ -88,8 +88,24 @@ mixin _$AppState on _AppStateStore, Store {
     });
   }
 
+  late final _$canDialogPopAtom =
+      Atom(name: 'AppStateStore.canDialogPop', context: context);
+
+  @override
+  bool get canDialogPop {
+    _$canDialogPopAtom.reportRead();
+    return super.canDialogPop;
+  }
+
+  @override
+  set canDialogPop(bool value) {
+    _$canDialogPopAtom.reportWrite(value, super.canDialogPop, () {
+      super.canDialogPop = value;
+    });
+  }
+
   late final _$initializationAsyncAction =
-      AsyncAction('_AppStateStore.initialization', context: context);
+      AsyncAction('AppStateStore.initialization', context: context);
 
   @override
   Future<dynamic> initialization() {
@@ -97,7 +113,7 @@ mixin _$AppState on _AppStateStore, Store {
   }
 
   late final _$validateSessionAsyncAction =
-      AsyncAction('_AppStateStore.validateSession', context: context);
+      AsyncAction('AppStateStore.validateSession', context: context);
 
   @override
   Future<dynamic> validateSession() {
@@ -111,7 +127,8 @@ jwt: ${jwt},
 isLoading: ${isLoading},
 isExpire: ${isExpire},
 currentUser: ${currentUser},
-authError: ${authError}
+authError: ${authError},
+canDialogPop: ${canDialogPop}
     ''';
   }
 }

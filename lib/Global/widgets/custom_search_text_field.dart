@@ -6,8 +6,7 @@ class CustomSearchTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      // controller: controller,
-      onChanged: (val) {},
+            onChanged: (val) {},
       decoration: InputDecoration(
         hintText: 'Search By Name',
         hintStyle: Theme.of(context)

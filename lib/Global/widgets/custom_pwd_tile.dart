@@ -20,7 +20,7 @@ class CustomPwdTile extends StatefulWidget {
       this.validator});
 
   @override
-  _CustomPwdTileState createState() => _CustomPwdTileState();
+  State<CustomPwdTile> createState() => _CustomPwdTileState();
 }
 
 class _CustomPwdTileState extends State<CustomPwdTile> {

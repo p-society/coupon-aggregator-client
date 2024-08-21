@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
+
+import '../../../Global/theme/app_theme.dart';
 import '../../User Profile/screens/user_coupon_list_screen.dart';
 import '../../auth/stores/auth_store.dart';
 
 class DashboardDrawer extends StatelessWidget {
- const DashboardDrawer({super.key});
+  const DashboardDrawer({super.key});
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -13,8 +15,8 @@ class DashboardDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+            decoration: BoxDecoration(
+              color: AppTheme.lightTheme().appBarTheme.backgroundColor,
             ),
             child: Column(
               children: [
@@ -68,7 +70,6 @@ class DashboardDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          
         ],
       ),
     );

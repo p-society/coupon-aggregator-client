@@ -15,7 +15,7 @@ class UserProfileRepo {
           "\$populate": "createdBy",
           "createdBy": appState.currentUser!.id,
         });
-    final response = await http.get(uri, headers: header);
+    final response = await http.get(uri, headers: header).timeout(const Duration(seconds: 7,));
     return response;
   }
 
@@ -24,7 +24,7 @@ class UserProfileRepo {
     final uri = ApiHelper.getUri(
       urlEndpoint: "${ApiEndpoints.listApiEndpoint}/$couponId",
     );
-    final response = await http.delete(uri, headers: header);
+    final response = await http.delete(uri, headers: header).timeout(const Duration(seconds: 7,));
     return response;
   }
 
@@ -43,7 +43,7 @@ class UserProfileRepo {
       // "deleted": false,
     };
     final response =
-        await http.patch(uri, headers: header, body: jsonEncode(body));
+        await http.patch(uri, headers: header, body: jsonEncode(body)).timeout(const Duration(seconds: 7,));
     return response;
   }
 }

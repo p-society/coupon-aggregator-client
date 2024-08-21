@@ -6,7 +6,7 @@ import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
-import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
+import 'package:mess_mgmt/features/Networking/widgets/wobble_appbar.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
 import '../enums/auth_enum.dart';
@@ -15,7 +15,7 @@ class SignupScreenOne extends StatefulWidget {
   const SignupScreenOne({super.key});
 
   @override
-  _SignupScreenOneState createState() => _SignupScreenOneState();
+  State<SignupScreenOne> createState() => _SignupScreenOneState();
 }
 
 class _SignupScreenOneState extends State<SignupScreenOne> {
@@ -24,7 +24,6 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
   final _emailController = TextEditingController(text: authStore.email);
 
   void login() {
-    // navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
     authStore.navigateToAuthScreenScreen(AuthScreens.loginScreen);
   }
 

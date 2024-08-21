@@ -11,7 +11,7 @@ CouponDataModel _$CouponDataModelFromJson(Map<String, dynamic> json) =>
       id: json['_id'] as String,
       couponType: json['couponType'] as String?,
       couponDate: json['couponDate'] as String?,
-      price: (json['price'] as num?)?.toInt(),
+      price: (json['price'] as num).toInt(),
       couponFloor: (json['couponFloor'] as num?)?.toInt(),
       isVeg: json['isVeg'] as bool,
       status: json['status'] as String?,

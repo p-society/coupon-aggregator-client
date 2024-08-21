@@ -37,12 +37,12 @@ class MyApp extends StatelessWidget {
             builder: (context) {
               return autorun((_) {
                 final isLoading = authStore.isLoading;
-                final authError = authStore.authError;
+                final authError = appState.authError;
                 final isSuccess = authStore.isSuccessfullyLoggedin;
                 if (!isLoading && authError != null) {
                   showError(context, authError.errorDescription,
                       authError.errorString);
-                  authStore.authError = null;
+                  appState.authError = null;
                 }
                 if (isSuccess) {
                   showSuccessLogin(context);

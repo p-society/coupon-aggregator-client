@@ -14,7 +14,7 @@ class CustomSelectionDialog extends StatefulWidget {
   });
 
   @override
-  _CustomSelectionDialogState createState() => _CustomSelectionDialogState();
+  State<CustomSelectionDialog> createState() => _CustomSelectionDialogState();
 }
 
 class _CustomSelectionDialogState extends State<CustomSelectionDialog> {

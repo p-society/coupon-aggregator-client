@@ -78,8 +78,7 @@ class ContentBox extends StatelessWidget {
                     "Continue",
                     style: TextStyle(
                       fontSize: 18,
-                      // color: Colors.deepPurple,
-                    ),
+                                          ),
                   ),
                 ),
               ),

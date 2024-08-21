@@ -141,6 +141,22 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
+  late final _$userListAtom =
+      Atom(name: 'Dashboard.userList', context: context);
+
+  @override
+  ObservableList<CouponDataModel> get userList {
+    _$userListAtom.reportRead();
+    return super.userList;
+  }
+
+  @override
+  set userList(ObservableList<CouponDataModel> value) {
+    _$userListAtom.reportWrite(value, super.userList, () {
+      super.userList = value;
+    });
+  }
+
   late final _$breakfastLimitAtom =
       Atom(name: 'Dashboard.breakfastLimit', context: context);
 
@@ -319,6 +335,22 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
+  late final _$isCouponLoadedAtom =
+      Atom(name: 'Dashboard.isCouponLoaded', context: context);
+
+  @override
+  bool get isCouponLoaded {
+    _$isCouponLoadedAtom.reportRead();
+    return super.isCouponLoaded;
+  }
+
+  @override
+  set isCouponLoaded(bool value) {
+    _$isCouponLoadedAtom.reportWrite(value, super.isCouponLoaded, () {
+      super.isCouponLoaded = value;
+    });
+  }
+
   late final _$currentViewAtom =
       Atom(name: 'Dashboard.currentView', context: context);
 
@@ -351,6 +383,16 @@ mixin _$DashboardStore on Dashboard, Store {
       {required MealTimeType type, required int mealLimit}) {
     return _$fetchMealAsyncAction
         .run(() => super.fetchMeal(type: type, mealLimit: mealLimit));
+  }
+
+  late final _$fetchMealAllUseAsyncAction =
+      AsyncAction('Dashboard.fetchMealAllUse', context: context);
+
+  @override
+  Future<dynamic> fetchMealAllUse(
+      {required MealTimeType type, required int mealLimit}) {
+    return _$fetchMealAllUseAsyncAction
+        .run(() => super.fetchMealAllUse(type: type, mealLimit: mealLimit));
   }
 
   late final _$sellCouponAsyncAction =
@@ -438,6 +480,7 @@ totalAvailableCoupon: ${totalAvailableCoupon},
 breakfastList: ${breakfastList},
 lunchList: ${lunchList},
 dinnerList: ${dinnerList},
+userList: ${userList},
 breakfastLimit: ${breakfastLimit},
 lunchLimit: ${lunchLimit},
 dinnerLimit: ${dinnerLimit},
@@ -449,6 +492,7 @@ totalBreakfastAvailable: ${totalBreakfastAvailable},
 totalLunchAvailable: ${totalLunchAvailable},
 totalDinnerAvailable: ${totalDinnerAvailable},
 isLoadMore: ${isLoadMore},
+isCouponLoaded: ${isCouponLoaded},
 currentView: ${currentView},
 breakfastCount: ${breakfastCount},
 lunchCount: ${lunchCount},

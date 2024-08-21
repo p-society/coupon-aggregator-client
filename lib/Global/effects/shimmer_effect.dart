@@ -6,7 +6,7 @@ class ShimmerEffect extends StatefulWidget {
   const ShimmerEffect({super.key, required this.child});
 
   @override
-  _ShimmerEffectState createState() => _ShimmerEffectState();
+  State<ShimmerEffect> createState() => _ShimmerEffectState();
 }
 
 class _ShimmerEffectState extends State<ShimmerEffect> with SingleTickerProviderStateMixin {

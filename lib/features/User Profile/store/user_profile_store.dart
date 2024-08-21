@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:http/http.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
+import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/User%20Profile/repository/user_profile_repo.dart';
+import 'package:mess_mgmt/features/auth/error%20handling/auth_error.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mobx/mobx.dart';
 
@@ -22,25 +26,40 @@ abstract class UserProfile with Store {
   @observable
   bool isLoadingLocally = false;
 
+    
   @observable
-  bool canDialogPop = false;
+  bool isCouponLoaded = true;
 
   @action
-  Future getSellingCouponList() async {
+  Future fetchSellingCouponList() async {
     isLoading = true;
     try {
       final response = await UserProfileRepo.getUserCouponList();
 
       final jsonList = jsonDecode(response.body)['data'];
       if (response.statusCode == 200) {
+        isCouponLoaded = true;
         List<CouponDataModel> list = [];
         for (final doc in jsonList) {
           list.add(CouponDataModel.fromJson(doc));
         }
         userSellingCouponsList = ObservableList.of(list);
-      } else {}
+      } else {
+        isCouponLoaded = false;
+        appState.authError = const AuthErrorUnknownIssue();
+      }
+    } on SocketException {
+      appState.authError = const AuthErrorNetworkIssue();
+      isCouponLoaded = false;
+    } on ClientException {
+      isCouponLoaded = false;
+      appState.authError = const AuthErrorNetworkIssue();
+    } on TimeoutException {
+      isCouponLoaded = false;
+      appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
-      throw Exception(e.toString());
+      isCouponLoaded = false;
+      appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
     }
@@ -57,7 +76,7 @@ abstract class UserProfile with Store {
         userSellingCouponsList.removeWhere((c) => c.id == coupon.id);
         dashboardStore.deleteCouponLocally(coupon: coupon);
         isLoadingLocally = false;
-        canDialogPop = true;
+        appState.canDialogPop = true;
       } else {}
     } catch (e) {
       throw Exception(e.toString());
@@ -76,11 +95,18 @@ abstract class UserProfile with Store {
       if (response.statusCode == 200) {
         updateCouponLocally(coupon: coupon);
         isLoadingLocally = false;
-        canDialogPop = true;
-      } else {}
-    }
-     catch (e) {
-      throw Exception(e.toString());
+        appState.canDialogPop = true;
+      } else {
+        appState.authError = const AuthErrorUnknownIssue();
+      }
+    } on SocketException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } on ClientException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } on TimeoutException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } catch (e) {
+      appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoadingLocally = false;
     }

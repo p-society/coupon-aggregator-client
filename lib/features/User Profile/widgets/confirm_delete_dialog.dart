@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
+import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/User%20Profile/store/user_profile_store.dart';
 import 'package:mobx/mobx.dart';
 
@@ -10,7 +11,8 @@ showConfirmDeleteDialog(
   BuildContext context, {
   required CouponDataModel coupon,
 }) {
-  userProfileStore.canDialogPop = false;
+  appState.canDialogPop = false;
+
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -27,31 +29,31 @@ showConfirmDeleteDialog(
         actions: [
           Observer(builder: (context) {
             final isLoadingLocally = userProfileStore.isLoadingLocally;
-            if (isLoadingLocally) {
-              return const SizedBox();
-            }
             return Row(
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Cancel',
+                if (!isLoadingLocally)
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Cancel',
+                    ),
                   ),
-                ),
                 ReactionBuilder(
                   builder: (context) {
                     return autorun((_) {
-                      final canDialogPop = userProfileStore.canDialogPop;
+                      final canDialogPop = appState.canDialogPop;
                       if (canDialogPop) {
                         Navigator.pop(context);
                       }
                     });
                   },
                   child: ElevatedButton(
-                    onPressed: () {
-                      userProfileStore.deleteCoupon(coupon: coupon);
+                    onPressed: () async {
+                      if (!isLoadingLocally) {
+                        await userProfileStore.deleteCoupon(coupon: coupon);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

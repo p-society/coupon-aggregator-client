@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  static const Color primaryColor = Colors.blueAccent;
   static ThemeData lightTheme() {
     return ThemeData(
       scaffoldBackgroundColor: Colors.white,
-      primaryColor: Colors.blueAccent,
+      primaryColor: primaryColor,
       colorScheme: ColorScheme.fromSwatch().copyWith(
-        primary: Colors.blueAccent,
+        primary: primaryColor,
         secondary: Colors.lightBlueAccent,
+      ),
+      iconTheme: const IconThemeData(color: primaryColor),
+      appBarTheme: const AppBarTheme(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blueAccent,
       ),
       textTheme: const TextTheme(
         titleLarge: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),

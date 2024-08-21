@@ -6,7 +6,7 @@ class WobbleAppBar extends StatefulWidget implements PreferredSizeWidget {
   const WobbleAppBar({required this.title, required this.color, super.key});
 
   @override
-  _WobbleAppBarState createState() => _WobbleAppBarState();
+  State<WobbleAppBar> createState() => _WobbleAppBarState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
