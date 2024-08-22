@@ -46,6 +46,7 @@ dependencies:
   shimmer: ^3.0.0
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -75,6 +76,7 @@ flutter:
   assets:
     - assets/lottie/
     - .env
+    - assets/logo/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

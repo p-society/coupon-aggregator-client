@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:mess_mgmt/Global/Functions/format_date.dart';
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_endpoints.dart';
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_helper.dart';
@@ -35,8 +37,8 @@ abstract class Dashboard with Store {
   @observable
   ObservableList<CouponDataModel> dinnerList =
       ObservableList<CouponDataModel>();
-    @observable
-    ObservableList<CouponDataModel> userList = ObservableList<CouponDataModel>();
+  @observable
+  ObservableList<CouponDataModel> userList = ObservableList<CouponDataModel>();
 
   @observable
   int breakfastLimit = 10;
@@ -72,15 +74,20 @@ abstract class Dashboard with Store {
   bool isLoadMore = false;
 
   @observable
+  bool isCouponLoaded = true;
+
+  @observable
   MealTimeType currentView = MealTimeType.breakfast;
 
   @computed
   int get breakfastCount => breakfastList.length;
+
   @computed
   int get lunchCount => lunchList.length;
+
   @computed
   int get dinnerCount => dinnerList.length;
-  
+
   @computed
   List<CouponDataModel> get currentViewList {
     switch (dashboardStore.currentView) {
@@ -202,26 +209,88 @@ abstract class Dashboard with Store {
             queryParams: queryParams,
             urlEndpoint: ApiEndpoints.listApiEndpoint);
         final header = ApiHelper.getApiHeader(jwt: jwt);
-        final response = await http.get(url, headers: header);
+        final response = await http.get(url, headers: header).timeout(
+              const Duration(
+                seconds: 7,
+              ),
+            );
         if (response.statusCode == 200) {
+          isCouponLoaded = true;
           List<dynamic> list = jsonDecode(response.body)['data'];
           clearMeal(mealType: type);
           List<CouponDataModel> mealList = [];
           for (final doc in list) {
-            mealList.add(CouponDataModel.fromJson(doc));
+            final model = CouponDataModel.fromJson(doc);
+            mealList.add(model);
           }
+            mealList.sort((a, b) {
+              return a.price.compareTo(b.price);
+            });
           final total = jsonDecode(response.body)['total'] as int;
           addMeal(list: mealList, type: type, total: total);
+        } else {
+          isCouponLoaded = false;
+          appState.authError = const AuthErrorUnknownIssue();
         }
       }
     } on SocketException {
+      isCouponLoaded = false;
       appState.authError = const AuthErrorNetworkIssue();
     } on http.ClientException {
+      isCouponLoaded = false;
+
       appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
+      isCouponLoaded = false;
+
       appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
+    }
+  }
+
+  @action
+  Future fetchMealAllUse(
+      {required MealTimeType type, required int mealLimit}) async {
+    isLoading = true;
+    try {
+      final jwt = appState.jwt;
+      if (jwt != null) {
+        Map<String, dynamic> queryParams = {
+          '\$limit': mealLimit.toString(),
+          'couponType': type.intoString(),
+          '\$populate': 'createdBy',
+        };
+        final url = ApiHelper.getUri(
+            queryParams: queryParams,
+            urlEndpoint: ApiEndpoints.listApiEndpoint);
+        final header = ApiHelper.getApiHeader(jwt: jwt);
+        final response = await http.get(url, headers: header).timeout(
+              const Duration(
+                seconds: 7,
+              ),
+            );
+        if (response.statusCode == 200) {
+          isCouponLoaded = true;
+          List<dynamic> list = jsonDecode(response.body)['data'];
+          clearMeal(mealType: type);
+          List<CouponDataModel> mealList = [];
+          for (final doc in list) {
+            final model = CouponDataModel.fromJson(doc);
+            mealList.add(model);
+          }
+          final total = jsonDecode(response.body)['total'] as int;
+           mealList.sort((a, b) {
+              return a.price.compareTo(b.price);
+            });
+          addMeal(list: mealList, type: type, total: total);
+        } else {
+          isCouponLoaded = false;
+          appState.authError = const AuthErrorUnknownIssue();
+        }
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -241,10 +310,11 @@ abstract class Dashboard with Store {
   }
 
   @action
-  void addMeal(
-      {required List<CouponDataModel> list,
-      required MealTimeType type,
-      required int total}) {
+  void addMeal({
+    required List<CouponDataModel> list,
+    required MealTimeType type,
+    required int total,
+  }) {
     switch (type) {
       case MealTimeType.breakfast:
         breakfastList = ObservableList.of(list);
@@ -276,19 +346,30 @@ abstract class Dashboard with Store {
           "couponFloor": model.floor.intoInt(),
           "isVeg": model.mealType.intoBool(),
         };
-        final res = await http.post(
-          uri,
-          body: jsonEncode(body),
-          headers: header,
-        );
-
+        final res = await http
+            .post(
+              uri,
+              body: jsonEncode(body),
+              headers: header,
+            )
+            .timeout(const Duration(seconds: 6));
         if (res.statusCode == 201) {
+          isCouponLoaded = true;
           final mealLimit = getLimit(type: model.mealTime);
           await fetchMeal(type: model.mealTime, mealLimit: mealLimit);
+        } else {
+          isCouponLoaded = false;
+          appState.authError = const AuthErrorUnknownIssue();
         }
       }
+    } on SocketException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } on ClientException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } on TimeoutException {
+      appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
-      throw Exception(e.toString());
+      appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
     }
@@ -357,11 +438,25 @@ abstract class Dashboard with Store {
   @action
   Future fetchAllMeals() async {
     try {
-      await fetchMeal(type: MealTimeType.breakfast, mealLimit: breakfastLimit);
-      await fetchMeal(type: MealTimeType.lunch, mealLimit: lunchLimit);
-      await fetchMeal(type: MealTimeType.dinner, mealLimit: dinnerLimit);
+      await Future.wait([
+        fetchMealAllUse(
+            type: MealTimeType.breakfast, mealLimit: breakfastLimit),
+        fetchMealAllUse(type: MealTimeType.lunch, mealLimit: lunchLimit),
+        fetchMealAllUse(type: MealTimeType.dinner, mealLimit: dinnerLimit),
+      ]);
+    } on SocketException {
+      isCouponLoaded = false;
+      appState.authError = const AuthErrorNetworkIssue();
+    } on http.ClientException {
+      isCouponLoaded = false;
+
+      appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
-      throw Exception(e);
+      isCouponLoaded = false;
+
+      appState.authError = const AuthErrorUnknownIssue();
+    } finally {
+      isLoading = false;
     }
   }
 }

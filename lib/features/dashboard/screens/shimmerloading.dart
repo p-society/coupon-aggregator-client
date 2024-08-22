@@ -28,11 +28,9 @@ class Shimmerloading extends StatelessWidget {
                       Icon(Icons.circle,
                           size: 24, color: Theme.of(context).primaryColor),
                       const SizedBox(width: 12),
-                      // You can add Text widgets here if needed
-                    ],
+                                          ],
                   ),
-                  // You can add Text widgets here if needed
-                ],
+                                  ],
               ),
               const SizedBox(height: 16),
               Row(

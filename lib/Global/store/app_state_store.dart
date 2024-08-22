@@ -10,9 +10,9 @@ part 'app_state_store.g.dart';
 
 final AppState appState = AppState();
 
-class AppState = _AppStateStore with _$AppState;
+class AppState = AppStateStore with _$AppState;
 
-abstract class _AppStateStore with Store {
+abstract class AppStateStore with Store {
   @observable
   String? jwt;
 
@@ -27,6 +27,9 @@ abstract class _AppStateStore with Store {
 
   @observable
   AuthError? authError;
+
+  @observable
+  bool canDialogPop = false;
 
   @action
   Future initialization() async {

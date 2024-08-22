@@ -24,21 +24,6 @@ mixin _$AuthStore on Auth, Store {
     });
   }
 
-  late final _$authErrorAtom = Atom(name: 'Auth.authError', context: context);
-
-  @override
-  AuthError? get authError {
-    _$authErrorAtom.reportRead();
-    return super.authError;
-  }
-
-  @override
-  set authError(AuthError? value) {
-    _$authErrorAtom.reportWrite(value, super.authError, () {
-      super.authError = value;
-    });
-  }
-
   late final _$isSuccessfullyLoggedinAtom =
       Atom(name: 'Auth.isSuccessfullyLoggedin', context: context);
 
@@ -189,7 +174,6 @@ mixin _$AuthStore on Auth, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
-authError: ${authError},
 isSuccessfullyLoggedin: ${isSuccessfullyLoggedin},
 currentAuthScreen: ${currentAuthScreen},
 fName: ${fName},

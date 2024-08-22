@@ -23,8 +23,6 @@ abstract class Auth with Store {
   @observable
   bool isLoading = false;
 
-  @observable
-  AuthError? authError;
 
   @observable
   bool isSuccessfullyLoggedin = false;
@@ -65,9 +63,7 @@ abstract class Auth with Store {
           final userJson = data['user'];
           appState.currentUser = User.fromJson(userJson);
           final userJsonString = jsonEncode(userJson);
-          // print(userJsonString);
-          sp.setString('userJsonString', userJsonString);
-          print(appState.currentUser?.id);
+                    sp.setString('userJsonString', userJsonString);
           final expire = data['authentication']['payload']['exp'] as int;
           isSuccessfullyLoggedin = true;
           await sp.setInt('exp', expire);
@@ -76,20 +72,20 @@ abstract class Auth with Store {
       } else if (res != null && res.statusCode == 401) {
         String error = jsonDecode(res.body)['message'];
         if (error == "Invalid login") {
-          authError = const AuthErrorInvalidCredentails();
+          appState.authError = const AuthErrorInvalidCredentails();
         } else {
-          authError = const AuthErrorUnknownIssue();
+          appState.authError = const AuthErrorUnknownIssue();
         }
         appState.currentUser = null;
       }
     } on TimeoutException {
-      authError = const AuthErrorNetworkIssue();
+      appState.authError = const AuthErrorNetworkIssue();
     } on SocketException {
-      authError = const AuthErrorNetworkIssue();
+      appState.authError = const AuthErrorNetworkIssue();
     } on ClientException {
-      authError = const AuthErrorNetworkIssue();
+      appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
-      authError = const AuthErrorUnknownIssue();
+      appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
     }
@@ -107,23 +103,18 @@ abstract class Auth with Store {
         "mobileNumber": mobileNumber,
       });
       if (res != null && res.statusCode == 201) {
-        // final Map<String, dynamic> data = jsonDecode(res.body);
-        // final User user = User.fromJson(data);
-        // final sp = await SharedPreferences.getInstance();
-        // final userJson = jsonEncode(user.toJson());
-        // final bool isComplete = await sp.setString('user', userJson);
-        // if (isComplete) {
-        //   appState.currentUser = user;
-        // } else {
-        //   appState.currentUser = null;
-        // }
-        currentAuthScreen = AuthScreens.loginScreen;
+                                                                                        currentAuthScreen = AuthScreens.loginScreen;
       } else if (res != null && res.statusCode == 409) {
-        String error = jsonDecode(res.body)['message'];
         appState.currentUser = null;
       }
+    } on TimeoutException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } on SocketException {
+      appState.authError = const AuthErrorNetworkIssue();
+    } on ClientException {
+      appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
-      throw (e.toString());
+      appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
     }

@@ -10,7 +10,7 @@ class CouponDataModel {
   final String id;
   final String? couponType; // "lunch"
   final String? couponDate; // "2024-07-06T00:00:00.000Z",
-  final int? price; // 50,
+  final int price; // 50,
   final int? couponFloor; // 1,
   final bool isVeg; // true,
   final String? status; // "active",

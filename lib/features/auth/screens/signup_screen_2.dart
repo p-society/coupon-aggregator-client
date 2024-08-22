@@ -28,9 +28,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   final _pwdController = TextEditingController(text: authStore.password);
 
   void login() {
-    /* authStore.userSignUp(userData: {}); */
-    // Navigator.pushNamed(context, "/dashboard");
-    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
+        navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
 
   void signupNow() async {
@@ -56,20 +54,16 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-            backgroundColor: Colors.transparent, // Make background transparent
-            child: BackdropFilter(
+            backgroundColor: Colors.transparent,             child: BackdropFilter(
               filter:
-                  ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Apply blur effect
-              child: Container(
+                  ImageFilter.blur(sigmaX: 10, sigmaY: 10),               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white
-                      .withOpacity(0.2), // Slightly opaque background
-                  borderRadius: BorderRadius.circular(20),
+                      .withOpacity(0.2),                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: Colors.white
-                        .withOpacity(0.3), // White border with slight opacity
-                    width: 1.5,
+                        .withOpacity(0.3),                     width: 1.5,
                   ),
                 ),
                 child: const Text("Account created"),

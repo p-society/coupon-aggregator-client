@@ -58,29 +58,29 @@ mixin _$UserProfileStore on UserProfile, Store {
     });
   }
 
-  late final _$canDialogPopAtom =
-      Atom(name: 'UserProfile.canDialogPop', context: context);
+  late final _$isCouponLoadedAtom =
+      Atom(name: 'UserProfile.isCouponLoaded', context: context);
 
   @override
-  bool get canDialogPop {
-    _$canDialogPopAtom.reportRead();
-    return super.canDialogPop;
+  bool get isCouponLoaded {
+    _$isCouponLoadedAtom.reportRead();
+    return super.isCouponLoaded;
   }
 
   @override
-  set canDialogPop(bool value) {
-    _$canDialogPopAtom.reportWrite(value, super.canDialogPop, () {
-      super.canDialogPop = value;
+  set isCouponLoaded(bool value) {
+    _$isCouponLoadedAtom.reportWrite(value, super.isCouponLoaded, () {
+      super.isCouponLoaded = value;
     });
   }
 
-  late final _$getSellingCouponListAsyncAction =
-      AsyncAction('UserProfile.getSellingCouponList', context: context);
+  late final _$fetchSellingCouponListAsyncAction =
+      AsyncAction('UserProfile.fetchSellingCouponList', context: context);
 
   @override
-  Future<dynamic> getSellingCouponList() {
-    return _$getSellingCouponListAsyncAction
-        .run(() => super.getSellingCouponList());
+  Future<dynamic> fetchSellingCouponList() {
+    return _$fetchSellingCouponListAsyncAction
+        .run(() => super.fetchSellingCouponList());
   }
 
   late final _$deleteCouponAsyncAction =
@@ -121,7 +121,7 @@ mixin _$UserProfileStore on UserProfile, Store {
 userSellingCouponsList: ${userSellingCouponsList},
 isLoading: ${isLoading},
 isLoadingLocally: ${isLoadingLocally},
-canDialogPop: ${canDialogPop}
+isCouponLoaded: ${isCouponLoaded}
     ''';
   }
 }

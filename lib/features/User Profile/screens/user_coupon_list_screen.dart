@@ -1,44 +1,57 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/Error%20Screen/network_error_screen.dart';
 import 'package:mess_mgmt/Global/dialogs/edit_coupon_dialog.dart';
 import 'package:mess_mgmt/Global/effects/shimmer_effect.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/features/User%20Profile/store/user_profile_store.dart';
 import 'package:mess_mgmt/features/User%20Profile/widgets/confirm_delete_dialog.dart';
-import 'package:mobx/mobx.dart';
+
+import '../../../Global/theme/app_theme.dart';
 
 class CouponListScreen extends StatelessWidget {
   const CouponListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    userProfileStore.getSellingCouponList();
-    return ReactionBuilder(
-      builder: ((_) {
-        return autorun((_) {});
-      }),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('My Meal Coupons'),
+    userProfileStore.fetchSellingCouponList();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Meal Coupons'),
+      ),
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: AppTheme.linearGradient(),
         ),
-        body: Observer(
+        child: Observer(
           builder: (context) {
             final coupons = userProfileStore.userSellingCouponsList;
             final isLoading = userProfileStore.isLoading;
+            final isCouponLoaded = userProfileStore.isCouponLoaded;
             if (isLoading) {
               return const SingleChildScrollView(
                 child: Column(
                   children: [
-                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(
+                        child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(
+                        child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(
+                        child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(
+                        child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(
+                        child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(
+                        child: UserSellingCouponShimmerChildWidget()),
                   ],
                 ),
               );
+            }
+            if (!isLoading && !isCouponLoaded) {
+              return OfflineRetryPage(
+                  onRetry: userProfileStore.fetchSellingCouponList);
             }
             return ListView.builder(
               itemCount: coupons.length,
@@ -84,7 +97,7 @@ class CouponDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Price: \$${coupon.price?.toStringAsFixed(2)}',
+              'Price: \$${coupon.price.toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 10),
@@ -117,31 +130,40 @@ class UserSellingCouponWidget extends StatelessWidget {
     super.key,
     required this.coupon,
   });
+
   final CouponDataModel coupon;
+
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      child: ListTile(
-        title: Text(
-          '${coupon.couponType} - ${coupon.couponDate?.substring(0, 10)}',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        subtitle: Column(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '\$${coupon.price?.toStringAsFixed(2)}',
-              style: Theme.of(context).textTheme.bodyMedium,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '${coupon.couponType} - ${coupon.couponDate?.substring(0, 10)}',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Text(
-              'Floor: ${coupon.couponFloor}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            const SizedBox(height: 8),
             Row(
               children: [
                 if (coupon.isVeg) const Icon(Icons.eco, color: Colors.green),
-                const Spacer(),
+                const SizedBox(width: 8),
                 Text(
                   'Status: ${coupon.status}',
                   style: TextStyle(
@@ -151,34 +173,43 @@ class UserSellingCouponWidget extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 8),
+            Text(
+              '\$${coupon.price.toStringAsFixed(2)}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Floor: ${coupon.couponFloor}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (coupon.status != "expire")
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      showEditCouponDialog(
+                        context: context,
+                        coupon: coupon,
+                      );
+                    },
+                  ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    showConfirmDeleteDialog(
+                      context,
+                      coupon: coupon,
+                    );
+                  },
+                ),
+              ],
+            ),
           ],
         ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if(coupon.status != "expire")
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                showEditCouponDialog(context: context, coupon: coupon);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                showConfirmDeleteDialog(context, coupon: coupon);
-              },
-            ),
-          ],
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CouponDetailScreen(coupon: coupon),
-            ),
-          );
-        },
       ),
     );
   }
