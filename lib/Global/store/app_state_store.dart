@@ -37,6 +37,7 @@ abstract class AppStateStore with Store {
     if (!isExpire) {
       final sp = await SharedPreferences.getInstance();
       jwt = sp.getString('JWT');
+      print(jwt);
       final json = sp.getString('userJsonString');
       if (json != null) {
         currentUser = User.fromJson(jsonDecode(json));

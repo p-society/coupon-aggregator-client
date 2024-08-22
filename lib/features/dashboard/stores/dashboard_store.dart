@@ -14,6 +14,8 @@ import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/auth/error%20handling/auth_error.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../Global/enums/pagination_enum.dart';
+
 part 'dashboard_store.g.dart';
 
 final DashboardStore dashboardStore = DashboardStore();
@@ -70,6 +72,19 @@ abstract class Dashboard with Store {
   @observable
   int totalDinnerAvailable = 0;
 
+  @computed
+  int get currentViewPageTotal {
+    switch (currentView) {
+      case MealTimeType.breakfast:
+        return totalBreakfastAvailable;
+      case MealTimeType.lunch:
+        return totalLunchAvailable;
+
+      case MealTimeType.dinner:
+        return totalDinnerAvailable;
+    }
+  }
+
   @observable
   bool isLoadMore = false;
 
@@ -87,6 +102,17 @@ abstract class Dashboard with Store {
 
   @computed
   int get dinnerCount => dinnerList.length;
+
+  @observable
+  bool isPaginationLoading = false;
+
+  @computed
+  PaginationEnum get currentPagination {
+    if (dashboardStore.currentViewPageTotal == currentViewList.length) {
+      return PaginationEnum.empty;
+    }
+    return PaginationEnum.initial;
+  }
 
   @computed
   List<CouponDataModel> get currentViewList {
@@ -188,10 +214,66 @@ abstract class Dashboard with Store {
     }
   }
 
+  // @action
+  // Future loadMore({required MealTimeType type}) async {
+  //   increaseLimit(type: type);
+  //   await fetchMeal(type: type, mealLimit: getLimit(type: type));
+  // }
+
   @action
-  Future loadMore({required MealTimeType type}) async {
-    increaseLimit(type: type);
-    await fetchMeal(type: type, mealLimit: getLimit(type: type));
+  Future skipLoadMoreData() async {
+    isPaginationLoading = true;
+    try {
+      final jwt = appState.jwt;
+      if (jwt != null) {
+        Map<String, dynamic> queryParams = {
+          '\$limit': '10',
+          '\$skip': currentViewList.length.toString(),
+          'couponType': currentView.intoString(),
+          '\$populate': 'createdBy',
+        };
+        final url = ApiHelper.getUri(
+            queryParams: queryParams,
+            urlEndpoint: ApiEndpoints.listApiEndpoint);
+        final header = ApiHelper.getApiHeader(jwt: jwt);
+        final response = await http.get(url, headers: header).timeout(
+              const Duration(
+                seconds: 7,
+              ),
+            );
+        if (response.statusCode == 200) {
+          isCouponLoaded = true;
+          List<dynamic> list = jsonDecode(response.body)['data'];
+          final total = jsonDecode(response.body)['total'] as int;
+          print(total);
+          List<CouponDataModel> mealList = [];
+          for (final doc in list) {
+            final model = CouponDataModel.fromJson(doc);
+            mealList.add(model);
+          }
+          print("Length of t ${mealList.length}");
+          // mealList.sort((a, b) {
+          //   return a.price.compareTo(b.price);
+          // });
+          isPaginationLoading = false;
+          switch (currentView) {
+            case MealTimeType.breakfast:
+              breakfastList.addAll(mealList);
+            case MealTimeType.lunch:
+              lunchList.addAll(mealList);
+            case MealTimeType.dinner:
+              dinnerList.addAll(mealList);
+          }
+        } else {
+          // isCouponLoaded = false;
+          // appState.authError = const AuthErrorUnknownIssue();
+        }
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    } finally {
+      isPaginationLoading = false;
+    }
   }
 
   @action
@@ -209,11 +291,9 @@ abstract class Dashboard with Store {
             queryParams: queryParams,
             urlEndpoint: ApiEndpoints.listApiEndpoint);
         final header = ApiHelper.getApiHeader(jwt: jwt);
-        final response = await http.get(url, headers: header).timeout(
-              const Duration(
-                seconds: 7,
-              ),
-            );
+        final response = await http
+            .get(url, headers: header)
+            .timeout(const Duration(seconds: 7));
         if (response.statusCode == 200) {
           isCouponLoaded = true;
           List<dynamic> list = jsonDecode(response.body)['data'];
@@ -223,9 +303,9 @@ abstract class Dashboard with Store {
             final model = CouponDataModel.fromJson(doc);
             mealList.add(model);
           }
-            mealList.sort((a, b) {
-              return a.price.compareTo(b.price);
-            });
+          mealList.sort((a, b) {
+            return a.price.compareTo(b.price);
+          });
           final total = jsonDecode(response.body)['total'] as int;
           addMeal(list: mealList, type: type, total: total);
         } else {
@@ -280,9 +360,9 @@ abstract class Dashboard with Store {
             mealList.add(model);
           }
           final total = jsonDecode(response.body)['total'] as int;
-           mealList.sort((a, b) {
-              return a.price.compareTo(b.price);
-            });
+          mealList.sort((a, b) {
+            return a.price.compareTo(b.price);
+          });
           addMeal(list: mealList, type: type, total: total);
         } else {
           isCouponLoaded = false;
@@ -355,8 +435,35 @@ abstract class Dashboard with Store {
             .timeout(const Duration(seconds: 6));
         if (res.statusCode == 201) {
           isCouponLoaded = true;
-          final mealLimit = getLimit(type: model.mealTime);
-          await fetchMeal(type: model.mealTime, mealLimit: mealLimit);
+          // final jsonMap = jsonDecode(res.body);
+          // final model = CouponDataModel(
+          //   id: jsonMap["_id"] as String,
+          //   couponType: jsonMap["couponType"] as String,
+          //   couponDate: jsonMap["couponDate"] as String,
+          //   price: jsonMap["price"] as int,
+          //   couponFloor: jsonMap["ouponFloor"] as int,
+          //   isVeg: jsonMap["isVeg"] as bool,
+          //   status: jsonMap["status"] as String,
+          //   deleted: jsonMap["deleted"] as bool,
+          //   createdAt: jsonMap[" createdAt"] as String,
+          //   createdBy: appState.currentUser,
+          // );
+          // final mealLimit = getLimit(type: model.mealTime);
+          await fetchMeal(type: model.mealTime, mealLimit: getLimit(type: model.mealTime));
+          // switch (model.couponType) {
+          //   case "breakfast":
+          //     breakfastList.add(model);
+          //     totalBreakfastAvailable += 1;
+          //     break;
+          //   case "lunch":
+          //     lunchList.add(model);
+          //     totalLunchAvailable += 1;
+          //     break;
+          //   case "dinner":
+          //     dinnerList.add(model);
+          //     totalDinnerAvailable += 1;
+          //     break;
+          // }
         } else {
           isCouponLoaded = false;
           appState.authError = const AuthErrorUnknownIssue();
@@ -427,11 +534,11 @@ abstract class Dashboard with Store {
   int getLimit({required MealTimeType type}) {
     switch (type) {
       case MealTimeType.breakfast:
-        return breakfastLimit;
+        return breakfastCount;
       case MealTimeType.lunch:
-        return lunchLimit;
+        return lunchCount;
       case MealTimeType.dinner:
-        return dinnerLimit;
+        return dinnerCount;
     }
   }
 

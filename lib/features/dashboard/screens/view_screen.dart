@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
+import 'package:mess_mgmt/Global/enums/pagination_enum.dart';
 import 'package:mess_mgmt/Global/widgets/custom_filter_dialog.dart';
 import 'package:mess_mgmt/Global/widgets/custom_list_tile.dart';
+import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 import '../../../Global/Error Screen/network_error_screen.dart';
@@ -29,7 +31,7 @@ class ViewScreen extends StatelessWidget {
           ),
         ],
       ),
-            body: DecoratedBox(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -65,14 +67,34 @@ class ViewScreen extends StatelessWidget {
                 ]
               ],
             );
-                      } else if (!isLoading && !isCouponLoaded) {
+          } else if (!isLoading && !isCouponLoaded) {
             return OfflineRetryPage(onRetry: () {
               dashboardStore.fetchAllMeals();
             });
           }
+
           return ListView.builder(
+            key: const PageStorageKey<String>('listview_key'),
             itemCount: list.length,
             itemBuilder: (context, index) {
+              if (list.length - 1 == index) {
+                return Observer(builder: (context) {
+                  final isPaginationLoading =
+                      dashboardStore.isPaginationLoading;
+                  final pagination = dashboardStore.currentPagination;
+                  return Column(
+                    children: [
+                      GlassyListTile(
+                        coupon: list[index],
+                        i: index,
+                      ),
+                      if (!isPaginationLoading)
+                        pagination.getPaginationwidget(),
+                      if (isPaginationLoading) const AppLoader()
+                    ],
+                  );
+                });
+              }
               return GlassyListTile(
                 coupon: list[index],
                 i: index,
