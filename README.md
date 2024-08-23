@@ -1,7 +1,7 @@
 # C o u p o n - A g g r e g a t o r
 A perfect coupon selling solution.
 
-# S o m e - G l i m p s i s of the app
+# Some - Glimpses of the App
 
 
 # F u n c t i o n i n g
@@ -14,5 +14,7 @@ Student can sell his/her coupon so that other peer can buy/purchase it.
   State Management : **MobX** </br>
   Api handling : **Http**
 
+# Run Locally 
+
 # C o n t r i b u t i o n
-Contribution are welcomed. Feel free to ask any query regarding for any contribution.
+Contribution are welcome. Feel free to ask any query regarding for any contribution.
