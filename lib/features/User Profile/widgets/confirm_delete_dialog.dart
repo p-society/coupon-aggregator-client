@@ -32,7 +32,7 @@ showConfirmDeleteDialog(
             return Row(
               children: [
                 if (!isLoadingLocally)
-                  TextButton(
+                 TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },

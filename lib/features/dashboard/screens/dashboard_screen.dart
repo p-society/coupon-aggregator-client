@@ -51,6 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void dispose() {
     _animationController.dispose();
+    costController.dispose();
     super.dispose();
   }
 
@@ -73,6 +74,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        appState.canDialogPop = false;
+
         return Dialog(
           backgroundColor: Colors.transparent,
           child: BackdropFilter(
@@ -172,25 +175,32 @@ class _DashboardScreenState extends State<DashboardScreen>
                           },
                           child: const Text("Cancel"),
                         ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.white.withOpacity(0.8),
-                          ),
-                          onPressed: () async {
-                            Floor floor = selectedFloor;
-                            MealType mealType = selectedMealType;
-                            String cost = costController.text;
-                            CouponModel model = CouponModel(
-                                floor: floor,
-                                mealTime: mealTimeType,
-                                mealType: mealType,
-                                cost: int.tryParse(cost) ?? 0);
-                            await dashboardStore.sellCoupon(model).then((_) {
-                              costController.clear();
-                              Navigator.of(context).pop();
+                        ReactionBuilder(
+                          builder: (context) {
+                            return autorun((_) {
+                              final canDialogPop = appState.canDialogPop;
+                              if (canDialogPop) {
+                                Navigator.pop(context);
+                              }
                             });
                           },
-                          child: const Text("Submit"),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white.withOpacity(0.8),
+                            ),
+                            onPressed: () async {
+                              Floor floor = selectedFloor;
+                              MealType mealType = selectedMealType;
+                              String cost = costController.text;
+                              CouponModel model = CouponModel(
+                                  floor: floor,
+                                  mealTime: mealTimeType,
+                                  mealType: mealType,
+                                  cost: int.tryParse(cost) ?? 0);
+                              await dashboardStore.sellCoupon(model);
+                            },
+                            child: const Text("Submit"),
+                          ),
                         ),
                       ],
                     );
@@ -244,12 +254,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Coupon Availability'),
-          actions: [
-            IconButton(
-                onPressed: () async {
-                },
-                icon: const Icon(Icons.abc))
-          ],
         ),
         drawer: const DashboardDrawer(),
         body: DecoratedBox(

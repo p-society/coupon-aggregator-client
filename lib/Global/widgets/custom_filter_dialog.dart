@@ -82,15 +82,15 @@ void showFilterDialog({
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white.withOpacity(0.8),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text("Cancel"),
-                    ),
+                    // TextButton(
+                    //   style: TextButton.styleFrom(
+                    //     foregroundColor: Colors.white.withOpacity(0.8),
+                    //   ),
+                    //   onPressed: () {
+                    //     Navigator.of(context).pop();
+                    //   },
+                    //   child: const Text("Cancel"),
+                    // ),
                     TextButton(
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white.withOpacity(0.8),
@@ -98,7 +98,7 @@ void showFilterDialog({
                       onPressed: () async {
                         Navigator.of(context).pop();
                       },
-                      child: const Text("Apply"),
+                      child: const Text("Done"),
                     ),
                   ],
                 ),

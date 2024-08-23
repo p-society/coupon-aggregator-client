@@ -24,9 +24,10 @@ class ViewScreen extends StatelessWidget {
             onPressed: () {
               showFilterDialog(context: context);
             },
-            label: const Text('Apply Filter'),
+            label: const Text('Apply Filter',style: TextStyle(color: Colors.white),),
             icon: const Icon(
               Icons.filter_list,
+              color: Colors.white,
             ),
           ),
         ],
@@ -89,7 +90,9 @@ class ViewScreen extends StatelessWidget {
                         i: index,
                       ),
                       if (!isPaginationLoading)
-                        pagination.getPaginationwidget(),
+                        pagination.getPaginationwidget(onPressed: (){
+                          dashboardStore.skipLoadMoreData();
+                        }),
                       if (isPaginationLoading) const AppLoader()
                     ],
                   );

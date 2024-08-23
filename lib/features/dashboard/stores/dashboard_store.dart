@@ -11,6 +11,7 @@ import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
+import 'package:mess_mgmt/features/User%20Profile/store/user_profile_store.dart';
 import 'package:mess_mgmt/features/auth/error%20handling/auth_error.dart';
 import 'package:mobx/mobx.dart';
 
@@ -244,14 +245,11 @@ abstract class Dashboard with Store {
         if (response.statusCode == 200) {
           isCouponLoaded = true;
           List<dynamic> list = jsonDecode(response.body)['data'];
-          final total = jsonDecode(response.body)['total'] as int;
-          print(total);
           List<CouponDataModel> mealList = [];
           for (final doc in list) {
             final model = CouponDataModel.fromJson(doc);
             mealList.add(model);
           }
-          print("Length of t ${mealList.length}");
           // mealList.sort((a, b) {
           //   return a.price.compareTo(b.price);
           // });
@@ -435,35 +433,14 @@ abstract class Dashboard with Store {
             .timeout(const Duration(seconds: 6));
         if (res.statusCode == 201) {
           isCouponLoaded = true;
-          // final jsonMap = jsonDecode(res.body);
-          // final model = CouponDataModel(
-          //   id: jsonMap["_id"] as String,
-          //   couponType: jsonMap["couponType"] as String,
-          //   couponDate: jsonMap["couponDate"] as String,
-          //   price: jsonMap["price"] as int,
-          //   couponFloor: jsonMap["ouponFloor"] as int,
-          //   isVeg: jsonMap["isVeg"] as bool,
-          //   status: jsonMap["status"] as String,
-          //   deleted: jsonMap["deleted"] as bool,
-          //   createdAt: jsonMap[" createdAt"] as String,
-          //   createdBy: appState.currentUser,
-          // );
-          // final mealLimit = getLimit(type: model.mealTime);
-          await fetchMeal(type: model.mealTime, mealLimit: getLimit(type: model.mealTime));
-          // switch (model.couponType) {
-          //   case "breakfast":
-          //     breakfastList.add(model);
-          //     totalBreakfastAvailable += 1;
-          //     break;
-          //   case "lunch":
-          //     lunchList.add(model);
-          //     totalLunchAvailable += 1;
-          //     break;
-          //   case "dinner":
-          //     dinnerList.add(model);
-          //     totalDinnerAvailable += 1;
-          //     break;
-          // }
+          await Future.wait([
+            fetchMeal(
+                type: model.mealTime,
+                mealLimit: getLimit(type: model.mealTime)),
+            userProfileStore.fetchSellingCouponList()
+          ]);
+          isLoading = false;
+          appState.canDialogPop = true;
         } else {
           isCouponLoaded = false;
           appState.authError = const AuthErrorUnknownIssue();
