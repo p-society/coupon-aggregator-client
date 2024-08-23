@@ -7,6 +7,8 @@ class CustomPwdTile extends StatefulWidget {
   final TextInputType type;
   final IconData icon;
   final ValueChanged<String?> onChanged;
+  final bool isPassword;
+  final FormFieldValidator? validator;
 
   const CustomPwdTile({
     super.key,
@@ -14,7 +16,9 @@ class CustomPwdTile extends StatefulWidget {
     required this.controller,
     required this.type,
     required this.icon,
-    required this.onChanged, required bool isPassword,
+    required this.onChanged,
+    this.isPassword = true, // Default to true since it's a password field
+    this.validator,
   });
 
   @override
@@ -22,16 +26,29 @@ class CustomPwdTile extends StatefulWidget {
 }
 
 class _CustomPwdTileState extends State<CustomPwdTile> {
-  bool isObscure = true;
+  late bool _isObscure;
 
-  void pwdVisibility() {
-    setState(() {
-      isObscure = !isObscure;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _isObscure = true; // Passwords are obscured by default
   }
 
   @override
   Widget build(BuildContext context) {
+    final suffixIcon = widget.isPassword
+        ? IconButton(
+            icon: _isObscure
+                ? const Icon(Icons.visibility)
+                : const Icon(Icons.visibility_outlined),
+            onPressed: () {
+              setState(() {
+                _isObscure = !_isObscure;
+              });
+            },
+          )
+        : null;
+
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 60.0,
@@ -39,8 +56,9 @@ class _CustomPwdTileState extends State<CustomPwdTile> {
       ),
       child: SizedBox(
         width: 300,
-        child: TextField(
-          obscureText: isObscure,
+        child: TextFormField(
+          validator: widget.validator,
+          obscureText: _isObscure,
           controller: widget.controller,
           onChanged: widget.onChanged,
           decoration: InputDecoration(
@@ -48,23 +66,33 @@ class _CustomPwdTileState extends State<CustomPwdTile> {
               widget.icon,
               color: AppTheme.lightTheme().primaryColor,
             ),
-            border: OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.grey.shade400,
+                color: AppTheme.lightTheme().primaryColor,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppTheme.lightTheme().primaryColor,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.red,
+                width: 2.0,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
             hintText: widget.hintText,
+            hintStyle: const TextStyle(fontSize: 15),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 10.0,
-              vertical: 5,
+              vertical: 15.0,
             ),
-            suffixIcon: IconButton(
-              icon: Icon(
-                isObscure ? Icons.visibility: Icons.visibility_off,
-              ),
-              onPressed: pwdVisibility,
-            ),
+            suffixIcon: suffixIcon,
           ),
           keyboardType: widget.type,
         ),

@@ -13,6 +13,8 @@ import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
+import '../../../Global/Functions/my_error_dialog.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -29,7 +31,11 @@ class _LoginScreenState extends State<LoginScreen>
 
   void login() async {
     if (!isValidate(_emailController.text)) {
-      showMessage(message: "Enter Valid Email", context: context);
+      showMyMessage(message: "Enter Valid Email", context: context);
+      return;
+    }
+    if (!isValidate(_pwdController.text)) {
+      showMyMessage(message: 'Incorrect password', context: context);
       return;
     }
     // await Future.delayed(const Duration(seconds: 2));
