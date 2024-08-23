@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
   final TextInputType type;
@@ -9,6 +9,8 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String?> onChanged;
   final bool isObscure;
   final bool isPassword;
+  final FormFieldValidator? validator;
+
   const CustomTextField({
     super.key,
     required this.hintText,
@@ -18,20 +20,37 @@ class CustomTextField extends StatelessWidget {
     required this.onChanged,
     this.isObscure = false,
     this.isPassword = false,
+    this.validator,
   });
 
   @override
+  _CustomTextFieldState createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool _isObscure;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscure = widget.isObscure;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final suffixIcon = isPassword
+    final suffixIcon = widget.isPassword
         ? IconButton(
-            icon: isObscure
+            icon: _isObscure
                 ? const Icon(Icons.visibility)
-                : const Icon(
-                    Icons.visibility_outlined,
-                  ),
-            onPressed: () {},
+                : const Icon(Icons.visibility_outlined),
+            onPressed: () {
+              setState(() {
+                _isObscure = !_isObscure;
+              });
+            },
           )
         : null;
+
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 60.0,
@@ -39,30 +58,39 @@ class CustomTextField extends StatelessWidget {
       ),
       child: SizedBox(
         width: 300,
-        child: TextField(
-          maxLines: null,
-          obscureText: isObscure,
-          controller: controller,
-          onChanged: onChanged,
+        child: TextFormField(
+          validator: widget.validator,
+          maxLines: 1,
+          obscureText: _isObscure,
+          controller: widget.controller,
+          onChanged: widget.onChanged,
           decoration: InputDecoration(
             prefixIcon: Icon(
-              icon,
+              widget.icon,
               color: AppTheme.lightTheme().primaryColor,
             ),
-            border: OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.grey.shade400,
+                color: AppTheme.lightTheme().primaryColor,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
-            hintText: hintText,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppTheme.lightTheme().primaryColor,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(fontSize: 15),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 10.0,
-              vertical: 5,
+              vertical: 15.0,
             ),
             suffixIcon: suffixIcon,
           ),
-          keyboardType: type,
+          keyboardType: widget.type,
         ),
       ),
     );
