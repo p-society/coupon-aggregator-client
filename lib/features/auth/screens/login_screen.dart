@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen>
                     aspectRatio: 1.2,
                     child: LottieBuilder.asset(
                       'assets/lottie/login_fingerprint.json',
-                      frameRate: FrameRate(100.0),
+                      frameRate: const FrameRate(100.0),
                       controller: _controller,
                     ),
                   ),

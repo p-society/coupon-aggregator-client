@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
+import 'package:mess_mgmt/Global/Functions/my_error_dialog.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
@@ -28,9 +29,11 @@ class SignupScreenTwo extends StatefulWidget {
   State<SignupScreenTwo> createState() => _SignupScreenTwoState();
 }
 
-class _SignupScreenTwoState extends State<SignupScreenTwo> {
+class _SignupScreenTwoState extends State<SignupScreenTwo>
+    with SingleTickerProviderStateMixin {
   final _phoneNumberController = TextEditingController();
   final _pwdController = TextEditingController();
+  late AnimationController _controller;
 
   void login() {
     /* authStore.userSignUp(userData: {}); */
@@ -44,17 +47,17 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
 
   void signupNow() {
     if (!isValidate(_phoneNumberController.text)) {
-      showMessage(message: 'Please Enter Valid Phone Number', context: context);
+      showMyMessage(
+          message: 'Please enter a valid phone number', context: context);
       return;
     }
     if (!isValidate(_pwdController.text)) {
-      showMessage(message: 'Please Enter Password', context: context);
+      showMyMessage(message: 'Please enter password', context: context);
       return;
     }
     if (_pwdController.text.length < 6) {
-      showMessage(
-          message: 'Password length should be greater than 6 characters.',
-          context: context);
+      showMyMessage(
+          message: 'Password length must be 6 characters.', context: context);
       return;
     }
     authStore.userSignUp(
@@ -132,6 +135,15 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   }
 
   @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: Duration(seconds: 4))
+          ..forward()
+          ..repeat();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _phoneNumberController.dispose();
     _pwdController.dispose();
@@ -165,6 +177,8 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                         aspectRatio: 16 / 9,
                         child: LottieBuilder.asset(
                           'assets/lottie/login_lottie.json',
+                          controller: _controller,
+                          frameRate: const FrameRate(100),
                         ),
                       ),
                       CustomTextField(
@@ -191,6 +205,28 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                       ),
                       customElevatedButton("Signup", signupNow, buttonWidth),
                       const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Already have an account?",
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.6),
+                              fontSize: 14,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: login,
+                            child: Text(
+                              "Login now",
+                              style: TextStyle(
+                                color: AppTheme.lightTheme().primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

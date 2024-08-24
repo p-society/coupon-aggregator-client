@@ -12,6 +12,8 @@ import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_2.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
+import '../../../Global/Functions/my_error_dialog.dart';
+
 class SignupScreenOne extends StatefulWidget {
   const SignupScreenOne({super.key});
 
@@ -19,11 +21,12 @@ class SignupScreenOne extends StatefulWidget {
   _SignupScreenOneState createState() => _SignupScreenOneState();
 }
 
-class _SignupScreenOneState extends State<SignupScreenOne> {
+class _SignupScreenOneState extends State<SignupScreenOne>
+    with SingleTickerProviderStateMixin {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
-
+  late AnimationController _controller;
   void login() {
     navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
@@ -33,15 +36,15 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
     final lName = _lastNameController.text.trim();
     final email = _emailController.text.trim();
     if (!isValidate(fName)) {
-      showMessage(message: 'Enter First Name', context: context);
+      showMyMessage(message: 'Enter first name', context: context);
       return;
     }
     if (!isValidate(lName)) {
-      showMessage(message: 'Enter Last Name', context: context);
+      showMyMessage(message: 'Enter last name', context: context);
       return;
     }
     if (!isValidate(email)) {
-      showMessage(message: 'Enter Valid Email', context: context);
+      showMyMessage(message: 'Enter valid email', context: context);
       return;
     }
     navigateAndPopToNextScreen(
@@ -86,6 +89,15 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
   }
 
   @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: Duration(seconds: 4))
+          ..forward()
+          ..repeat();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -118,7 +130,8 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                   AspectRatio(
                     aspectRatio: 1.2,
                     child: LottieBuilder.asset(
-                      frameRate: FrameRate(20),
+                      frameRate: FrameRate(100),
+                      controller: _controller,
                       //controller: AnimationController(vsync:),
                       'assets/lottie/login_lottie.json',
                     ),
