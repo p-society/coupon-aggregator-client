@@ -4,7 +4,7 @@ class AppTheme {
   static ThemeData lightTheme() {
     return ThemeData(
       scaffoldBackgroundColor: Colors.white,
-      primaryColor: Colors.blueAccent,
+      primaryColor: const Color.fromARGB(255, 21, 82, 187),
       colorScheme: ColorScheme.fromSwatch().copyWith(
         primary: Colors.blueAccent,
         secondary: Colors.lightBlueAccent,
@@ -31,6 +31,20 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: Colors.grey[200]!,
+        selectedColor: Colors.blueAccent,
+        disabledColor: Colors.grey[400]!,
+        secondarySelectedColor: Colors.lightBlueAccent,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        labelStyle: const TextStyle(color: Colors.black),
+        secondaryLabelStyle: const TextStyle(color: Colors.white),
+        brightness: Brightness.light,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Colors.transparent),
         ),
       ),
     );

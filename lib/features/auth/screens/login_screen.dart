@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
-import 'package:mess_mgmt/Global/widgets/custome_app_bar_widget.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
-import 'package:mess_mgmt/features/Networking/screens/network_screen.dart';
+import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
-import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
+
+import '../../../Global/Functions/my_error_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,67 +22,54 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  late AnimationController _controller;
 
   void login() async {
-    print('sakfhakhfashf');
     if (!isValidate(_emailController.text)) {
-      showMessage(message: "Enter Valid Email", context: context);
+      showMyMessage(message: "Enter Valid Email", context: context);
       return;
     }
-    Map<String, dynamic> data = {
-      "strategy": "local",
-      "email": _emailController.text.trim(),
-      "password": _pwdController.text.trim(),
-    };
-    print(data);
-    authStore.userLogin(_emailController.text.trim(),_pwdController.text.trim());
+    if (!isValidate(_pwdController.text)) {
+      showMyMessage(message: 'Incorrect password', context: context);
+      return;
+    }
+    // await Future.delayed(const Duration(seconds: 2));
+
+    // bool hasConnection = await checkInternetConnection();
+    // if (!hasConnection) {
+    //   showMessage(message: "Check Internet Connection", context: context);
+    //   return;
+    // }
+    if (_formKey.currentState?.validate() ?? true) {
+      await authStore.userLogin(
+        _emailController.text.trim(),
+        _pwdController.text.trim(),
+      );
+    }
   }
 
   void signupNow() {
     navigateAndPopToNextScreen(
         nextScreen: const SignupScreenOne(), context: context);
   }
-void network() {
-    navigateAndPopToNextScreen(
-        nextScreen: const NetworkScreen(), context: context);
-  }
-  Widget customElevatedButton(
-      String action, VoidCallback ontap, double buttonWidth) {
-    return SizedBox(
-      width: buttonWidth,
-      child: TextButton(
-        onPressed: ontap,
-        style: ButtonStyle(
-          backgroundColor:
-              WidgetStateProperty.all(AppTheme.lightTheme().primaryColor),
-          padding:
-              WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 12)),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        ),
-        child: Observer(builder: (context) {
-          final isLoading = authStore.isLoading;
-          if (isLoading) {
-            return const AppLoader();
-          }
-          return Text(
-            action,
-            style: AppTheme.lightTheme()
-                .textTheme
-                .labelLarge
-                ?.copyWith(fontSize: 20),
-          );
-        }),
-      ),
-    );
+
+  @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: Duration(seconds: 4))
+          ..forward()
+          ..repeat();
+    super.initState();
   }
 
   @override
   void dispose() {
+    _controller.dispose();
     _emailController.dispose();
     _pwdController.dispose();
     super.dispose();
@@ -89,74 +77,116 @@ void network() {
 
   @override
   Widget build(BuildContext context) {
-    double buttonWidth = 300;
     return Scaffold(
-      appBar: const RoundedAppBar(),
-      drawer: const DashboardDrawer(),
+      appBar: const WobbleAppBar(
+        title: "Welcome back",
+        color: Colors.white,
+      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: AppTheme.linearGradient(),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.025),
-                      AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: LottieBuilder.asset(
-                          'assets/lottie/login_lottie.json',
+        child: SafeArea(
+          child: SingleChildScrollView(
+            // Make the content scrollable
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  AspectRatio(
+                    aspectRatio: 1.2,
+                    child: LottieBuilder.asset(
+                      'assets/lottie/login_fingerprint.json',
+                      frameRate: const FrameRate(100.0),
+                      controller: _controller,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  CustomTextField(
+                      hintText: 'Enter your email Id',
+                      controller: _emailController,
+                      type: TextInputType.emailAddress,
+                      icon: Icons.person_rounded,
+                      onChanged: (val) {},
+                      validator: (value) {
+                        if (!isValidate(value)) {
+                          return 'Enter a valid Email';
+                        }
+                        return null;
+                      }),
+                  const SizedBox(height: 20),
+                  CustomPwdTile(
+                      hintText: 'Password',
+                      controller: _pwdController,
+                      type: TextInputType.visiblePassword,
+                      icon: Icons.lock,
+                      onChanged: (val) {},
+                      isPassword: true,
+                      validator: (value) {
+                        //validator for minimum password length
+                        //to be customised according to need
+                        if (value == null || value.length < 6) {
+                          return 'password must be atleast 6 characters long';
+                        } else {
+                          return null;
+                        }
+                      }),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: 500,
+                    child: ElevatedButton(
+                      onPressed: login,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.lightTheme().primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      CustomTextField(
-                        hintText: 'Email Id',
-                        controller: _emailController,
-                        type: TextInputType.emailAddress,
-                        icon: Icons.email,
-                        onChanged: (val) {},
-                      ),
-                      const SizedBox(height: 30),
-                      CustomPwdTile(
-                        hintText: 'Password',
-                        controller: _pwdController,
-                        type: TextInputType.visiblePassword,
-                        icon: Icons.lock,
-                        onChanged: (val) {},
-                        isPassword: true,
-                      ),
-                      const SizedBox(height: 30),
-                      customElevatedButton("Login", login, buttonWidth),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Don't have an account?",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          TextButton(
-                            onPressed: signupNow,
-                            child: const Text("Signup Now"),
-                          ),
-                        ],
-
-                      ),
-                      customElevatedButton("Network", network, buttonWidth)
-                    ],
-                    
+                      child: Observer(builder: (context) {
+                        final isLoading = authStore.isLoading;
+                        if (isLoading) {
+                          return const AppLoader();
+                        }
+                        return Text(
+                          "Login",
+                          style: AppTheme.lightTheme()
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(fontSize: 20),
+                        );
+                      }),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account?",
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.6),
+                          fontSize: 14,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: signupNow,
+                        child: Text(
+                          "Signup now!",
+                          style: TextStyle(
+                            color: AppTheme.lightTheme().primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
