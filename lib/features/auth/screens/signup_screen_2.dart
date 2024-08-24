@@ -28,10 +28,10 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   final _pwdController = TextEditingController(text: authStore.password);
 
   void login() {
-        navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
+    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
 
-  void signupNow() async {
+  void signupNow()  {
     if (!isValidate(_phoneNumberController.text)) {
       showMessage(message: 'Please Enter Valid Phone Number', context: context);
       return;
@@ -46,7 +46,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
           context: context);
       return;
     }
-    await authStore.userSignUp();
+     authStore.userSignUp();
   }
 
   void showValidateDialog(BuildContext context, Builder builder) {
@@ -54,16 +54,17 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-            backgroundColor: Colors.transparent,             child: BackdropFilter(
-              filter:
-                  ImageFilter.blur(sigmaX: 10, sigmaY: 10),               child: Container(
+            backgroundColor: Colors.transparent,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white
-                      .withOpacity(0.2),                   borderRadius: BorderRadius.circular(20),
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.white
-                        .withOpacity(0.3),                     width: 1.5,
+                    color: Colors.white.withOpacity(0.3),
+                    width: 1.5,
                   ),
                 ),
                 child: const Text("Account created"),
@@ -118,7 +119,6 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        
         title: const Text('One more step'),
         leading: IconButton(
             onPressed: () {

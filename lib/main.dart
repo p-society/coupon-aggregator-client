@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
                 final isSuccess = authStore.isSuccessfullyLoggedin;
                 if (!isLoading && authError != null) {
                   showError(context, authError.errorDescription,
-                      authError.errorString);
+                      authError.errorString,);
                   appState.authError = null;
                 }
                 if (isSuccess) {
