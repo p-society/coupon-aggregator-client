@@ -102,7 +102,7 @@ showSuccessSignUp(BuildContext context) {
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
-        child: ContentBox(context),
+        child: SuccessSignUpBox(context),
       );
     },
   );
@@ -144,7 +144,7 @@ class SuccessSignUpBox extends StatelessWidget {
                   child: Icon(
                     Icons.check_circle_outline_rounded,
                     size: 45,
-                    color: AppTheme.primaryColor,
+                    color: Colors.green,
                   ),
                 ),
               ),
