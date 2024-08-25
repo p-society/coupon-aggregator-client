@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
-import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
-import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
+import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
 import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
-import '../../../Global/Functions/my_error_dialog.dart';
+import '../../../Global/Functions/screen_transition.dart';
+import '../../../Global/widgets/scaffold_messenger.dart';
+import '../../../features/Networking/widgets/wobble_appbar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen>
@@ -31,11 +30,11 @@ class _LoginScreenState extends State<LoginScreen>
 
   void login() async {
     if (!isValidate(_emailController.text)) {
-      showMyMessage(message: "Enter Valid Email", context: context);
+      showMessage(message: "Enter Valid Email", context: context);
       return;
     }
     if (!isValidate(_pwdController.text)) {
-      showMyMessage(message: 'Incorrect password', context: context);
+      showMessage(message: 'Incorrect password', context: context);
       return;
     }
     // await Future.delayed(const Duration(seconds: 2));
@@ -54,14 +53,15 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   void signupNow() {
-    navigateAndPopToNextScreen(
-        nextScreen: const SignupScreenOne(), context: context);
+    // navigateAndPopToNextScreen(
+    // nextScreen: const SignupScreenOne(), context: context);
+    authStore.currentAuthScreen = AuthScreens.signUpScreen1;
   }
 
   @override
   void initState() {
     _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 4))
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
           ..forward()
           ..repeat();
     super.initState();

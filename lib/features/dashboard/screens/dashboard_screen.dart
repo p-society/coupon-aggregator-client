@@ -1,23 +1,24 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
+import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
+import 'package:mess_mgmt/Global/widgets/custom_error_messenger.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
+import 'package:mobx/mobx.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen>
@@ -50,6 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void dispose() {
     _animationController.dispose();
+    costController.dispose();
     super.dispose();
   }
 
@@ -72,20 +74,19 @@ class _DashboardScreenState extends State<DashboardScreen>
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        appState.canDialogPop = false;
+
         return Dialog(
-          backgroundColor: Colors.transparent, // Make background transparent
+          backgroundColor: Colors.transparent,
           child: BackdropFilter(
-            filter:
-                ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Apply blur effect
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color:
-                    Colors.white.withOpacity(0.2), // Slightly opaque background
+                color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.white
-                      .withOpacity(0.3), // White border with slight opacity
+                  color: Colors.white.withOpacity(0.3),
                   width: 1.5,
                 ),
               ),
@@ -97,8 +98,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color:
-                          Colors.white, // Text color set to white for contrast
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -106,17 +106,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                     value: selectedFloor,
                     decoration: const InputDecoration(
                       labelText: "Floor",
-                      labelStyle: TextStyle(
-                          color: Colors.white), // Label color set to white
+                      labelStyle: TextStyle(color: Colors.white),
                     ),
                     items: Floor.values.map((Floor value) {
                       return DropdownMenuItem<Floor>(
                         value: value,
                         child: Text(
                           value.intoString(),
-                          style: const TextStyle(
-                              color: Colors
-                                  .white), // Dropdown item color set to white
+                          style: const TextStyle(color: Colors.white),
                         ),
                       );
                     }).toList(),
@@ -132,17 +129,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                     value: selectedMealType,
                     decoration: const InputDecoration(
                       labelText: "Veg or Non-veg",
-                      labelStyle: TextStyle(
-                          color: Colors.white), // Label color set to white
+                      labelStyle: TextStyle(color: Colors.white),
                     ),
                     items: MealType.values.map((MealType value) {
                       return DropdownMenuItem<MealType>(
                         value: value,
                         child: Text(
                           value.intoString(),
-                          style: const TextStyle(
-                              color: Colors
-                                  .white), // Dropdown item color set to white
+                          style: const TextStyle(color: Colors.white),
                         ),
                       );
                     }).toList(),
@@ -151,20 +145,17 @@ class _DashboardScreenState extends State<DashboardScreen>
                         selectedMealType = newValue!;
                       });
                     },
-                    dropdownColor:
-                        Colors.blueAccent, // Dropdown menu background color
+                    dropdownColor: Colors.blueAccent,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: costController,
                     decoration: const InputDecoration(
                       labelText: "Cost",
-                      labelStyle: TextStyle(
-                          color: Colors.white), // Label color set to white
+                      labelStyle: TextStyle(color: Colors.white),
                     ),
                     keyboardType: TextInputType.number,
-                    style: const TextStyle(
-                        color: Colors.white), // Input text color set to white
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 16),
                   Observer(builder: (context) {
@@ -177,34 +168,39 @@ class _DashboardScreenState extends State<DashboardScreen>
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
-                            foregroundColor: Colors.white
-                                .withOpacity(0.8), // Button text color
+                            foregroundColor: Colors.white.withOpacity(0.8),
                           ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                           child: const Text("Cancel"),
                         ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.white
-                                .withOpacity(0.8), // Button text color
-                          ),
-                          onPressed: () async {
-                            Floor floor = selectedFloor;
-                            MealType mealType = selectedMealType;
-                            String cost = costController.text;
-                            CouponModel model = CouponModel(
-                                floor: floor,
-                                mealTime: mealTimeType,
-                                mealType: mealType,
-                                cost: int.tryParse(cost) ?? 0);
-                            await dashboardStore.sellCoupon(model).then((_) {
-                              costController.clear();
-                              Navigator.of(context).pop();
+                        ReactionBuilder(
+                          builder: (context) {
+                            return autorun((_) {
+                              final canDialogPop = appState.canDialogPop;
+                              if (canDialogPop) {
+                                Navigator.pop(context);
+                              }
                             });
                           },
-                          child: const Text("Submit"),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white.withOpacity(0.8),
+                            ),
+                            onPressed: () async {
+                              Floor floor = selectedFloor;
+                              MealType mealType = selectedMealType;
+                              String cost = costController.text;
+                              CouponModel model = CouponModel(
+                                  floor: floor,
+                                  mealTime: mealTimeType,
+                                  mealType: mealType,
+                                  cost: int.tryParse(cost) ?? 0);
+                              await dashboardStore.sellCoupon(model);
+                            },
+                            child: const Text("Submit"),
+                          ),
                         ),
                       ],
                     );
@@ -239,46 +235,57 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     /* double widthFactor = MediaQuery.of(context).width; */
-    return Scaffold(
-      // resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          'Coupon Dashboard',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+    return ReactionBuilder(
+      builder: (context) {
+        return autorun((_) {
+          final isLoading = dashboardStore.isLoading;
+          final error = appState.authError;
+          if (error != null && !isLoading) {
+            showError(
+              context,
+           description:    error.errorDescription,
+           title:    error.errorString,
+            );
+            appState.authError = null;
+          }
+        });
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: const Text('Coupon Availability'),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      drawer: const DashboardDrawer(),
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: AppTheme.linearGradient(),
-        ),
-        child: Column(
-          children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildDatePicker(),
-                    const SizedBox(height: 24),
-                    for (final e in MealTimeType.values) ...[
-                      Observer(builder: (context) {
-                        int count = getCount(e);
-                        return _buildMealCard(
-                            e.intoTitle(), e.getIcon(), count, e);
-                      }),
-                      const SizedBox(height: 16),
+        drawer: const DashboardDrawer(),
+        body: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: AppTheme.linearGradient(),
+          ),
+          child: Column(
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildDatePicker(),
+                      const SizedBox(height: 24),
+                      for (final e in MealTimeType.values) ...[
+                        Observer(builder: (context) {
+                          int count = getCount(e);
+                          return _buildMealCard(
+                              e.intoTitle(), e.getIcon(), count, e);
+                        }),
+                        const SizedBox(height: 16),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
-            const Spacer(),
-          ],
+              const Spacer(),
+            ],
+          ),
         ),
       ),
     );
@@ -347,8 +354,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 style: Theme.of(context).textTheme.titleMedium),
                           ],
                         ),
-                        Text('Available : $count',
-                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          'Available : $count',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -356,12 +365,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton.icon(
-                          onPressed: () => input(context, mealType),
+                          onPressed: () => input(
+                            context,
+                            mealType,
+                          ),
                           icon: const Icon(Icons.add),
-                          label: const Text('Add'),
+                          label: const Text('Sell'),
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
+                              borderRadius: BorderRadius.circular(
+                                20,
+                              ),
+                            ),
                           ),
                         ),
                         OutlinedButton(
@@ -372,9 +387,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                           },
                           style: OutlinedButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
+                              borderRadius: BorderRadius.circular(
+                                20,
+                              ),
+                            ),
                           ),
-                          child: const Text('View'),
+                          child: const Text(
+                            'View',
+                          ),
                         ),
                       ],
                     ),

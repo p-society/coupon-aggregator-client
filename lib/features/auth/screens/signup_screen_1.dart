@@ -2,33 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
-import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
-import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
-import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
-import 'package:mess_mgmt/features/auth/screens/signup_screen_2.dart';
+import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
-import '../../../Global/Functions/my_error_dialog.dart';
+import '../../../features/Networking/widgets/wobble_appbar.dart';
 
 class SignupScreenOne extends StatefulWidget {
   const SignupScreenOne({super.key});
 
   @override
-  _SignupScreenOneState createState() => _SignupScreenOneState();
+  State<SignupScreenOne> createState() => _SignupScreenOneState();
 }
 
 class _SignupScreenOneState extends State<SignupScreenOne>
     with SingleTickerProviderStateMixin {
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _firstNameController = TextEditingController(text: authStore.fName);
+  final _lastNameController = TextEditingController(text: authStore.lName);
+  final _emailController = TextEditingController(text: authStore.email);
   late AnimationController _controller;
+
+// class _SignupScreenOneState extends State<SignupScreenOne> {
+//   final _firstNameController = TextEditingController(text: authStore.fName);
+//   final _lastNameController = TextEditingController(text: authStore.lName);
+//   final _emailController = TextEditingController(text: authStore.email);
+
   void login() {
-    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
+    // navigateAndPopToNextScreen(nextScreen: const LoginScreen(), context: context);
+    authStore.currentAuthScreen = AuthScreens.loginScreen;
   }
 
   void nextLoginScreen() {
@@ -36,24 +40,20 @@ class _SignupScreenOneState extends State<SignupScreenOne>
     final lName = _lastNameController.text.trim();
     final email = _emailController.text.trim();
     if (!isValidate(fName)) {
-      showMyMessage(message: 'Enter first name', context: context);
+      showMessage(message: 'Enter first name', context: context);
       return;
     }
     if (!isValidate(lName)) {
-      showMyMessage(message: 'Enter last name', context: context);
+      showMessage(message: 'Enter last name', context: context);
       return;
     }
     if (!isValidate(email)) {
-      showMyMessage(message: 'Enter valid email', context: context);
+      showMessage(message: 'Enter Valid Email', context: context);
       return;
     }
-    navigateAndPopToNextScreen(
-        nextScreen: SignupScreenTwo(
-          fName: fName,
-          lName: lName,
-          email: email,
-        ),
-        context: context);
+    // navigateAndPopToNextScreen(
+    //     nextScreen: const SignupScreenTwo(), context: context);
+    authStore.currentAuthScreen = AuthScreens.signUpScreen2;
   }
 
   Widget customElevatedButton(
@@ -91,7 +91,7 @@ class _SignupScreenOneState extends State<SignupScreenOne>
   @override
   void initState() {
     _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 4))
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
           ..forward()
           ..repeat();
     super.initState();
@@ -130,7 +130,7 @@ class _SignupScreenOneState extends State<SignupScreenOne>
                   AspectRatio(
                     aspectRatio: 1.2,
                     child: LottieBuilder.asset(
-                      frameRate: FrameRate(100),
+                      frameRate: const FrameRate(100),
                       controller: _controller,
                       //controller: AnimationController(vsync:),
                       'assets/lottie/login_lottie.json',
@@ -142,7 +142,9 @@ class _SignupScreenOneState extends State<SignupScreenOne>
                     controller: _firstNameController,
                     type: TextInputType.text,
                     icon: Icons.person,
-                    onChanged: (val) {},
+                    onChanged: (val) {
+                      authStore.fName = _firstNameController.text.toString();
+                    },
                   ),
                   const SizedBox(height: 15),
                   CustomTextField(
@@ -150,7 +152,9 @@ class _SignupScreenOneState extends State<SignupScreenOne>
                     controller: _lastNameController,
                     type: TextInputType.text,
                     icon: Icons.person_2_outlined,
-                    onChanged: (val) {},
+                    onChanged: (val) {
+                      authStore.lName = _lastNameController.text.toString();
+                    },
                   ),
                   const SizedBox(height: 15),
                   CustomTextField(
@@ -158,7 +162,9 @@ class _SignupScreenOneState extends State<SignupScreenOne>
                     controller: _emailController,
                     type: TextInputType.emailAddress,
                     icon: Icons.email,
-                    onChanged: (val) {},
+                    onChanged: (val) {
+                      authStore.email = _emailController.text.trim();
+                    },
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
@@ -205,12 +211,48 @@ class _SignupScreenOneState extends State<SignupScreenOne>
                           style: TextStyle(
                             color: AppTheme.lightTheme().primaryColor,
                             fontWeight: FontWeight.bold,
+                            // child: Observer(builder: (context) {
+                            //   final isLoading = authStore.isLoading;
+                            //   if (isLoading) {
+                            //     return const AppLoader();
+                            //   }
+                            //   return Text(
+                            //     "Next",
+                            //     style: AppTheme.lightTheme()
+                            //         .textTheme
+                            //         .labelLarge
+                            //         ?.copyWith(fontSize: 20),
+                            //   );
+                            // }),
                           ),
                         ),
                       ),
+                      const SizedBox(height: 15),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     Text(
+                      //       "Already have an account?",
+                      //       style: TextStyle(
+                      //         color: Colors.black.withOpacity(0.6),
+                      //         fontSize: 14,
+                      //       ),
+                      //     ),
+                      //     TextButton(
+                      //       onPressed: login,
+                      //       child: Text(
+                      //         "Login now",
+                      //         style: TextStyle(
+                      //           color: AppTheme.lightTheme().primaryColor,
+                      //           fontWeight: FontWeight.bold,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 10),
                     ],
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),

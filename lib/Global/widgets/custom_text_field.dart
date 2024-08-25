@@ -24,7 +24,7 @@ class CustomTextField extends StatefulWidget {
   });
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
@@ -60,8 +60,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
         width: 300,
         child: TextFormField(
           validator: widget.validator,
-          maxLines: 1,
-          obscureText: _isObscure,
+          maxLines: null,
+          obscureText: widget.isObscure,
           controller: widget.controller,
           onChanged: widget.onChanged,
           decoration: InputDecoration(

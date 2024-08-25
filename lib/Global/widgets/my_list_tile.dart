@@ -16,25 +16,25 @@ class MyListTile extends StatelessWidget {
     return Card(
         child: Row(
       children: [
-        Container(
-            height: 120,
-            padding: EdgeInsets.all(22),
-            decoration: BoxDecoration(
-                color: Colors.blue, borderRadius: BorderRadius.circular(12)),
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                "${coupon.couponType}",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16),
-              ),
-            )),
-        SizedBox(
-          width: 2,
-        ),
+        // Container(
+        //     height: 120,
+        //     padding: EdgeInsets.all(22),
+        //     decoration: BoxDecoration(
+        //         color: Colors.blue, borderRadius: BorderRadius.circular(12)),
+        //     child: RotatedBox(
+        //       quarterTurns: 3,
+        //       child: Text(
+        //         "${coupon.couponType}",
+        //         textAlign: TextAlign.center,
+        //         style: TextStyle(
+        //             color: Colors.white,
+        //             fontWeight: FontWeight.w600,
+        //             fontSize: 16),
+        //       ),
+        //     )),
+        // SizedBox(
+        //   width: 2,
+        // ),
         Expanded(
           child: Container(
               padding: EdgeInsets.fromLTRB(8, 12, 8, 0),

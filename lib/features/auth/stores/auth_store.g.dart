@@ -24,34 +24,129 @@ mixin _$AuthStore on Auth, Store {
     });
   }
 
-  late final _$jwtAtom = Atom(name: 'Auth.jwt', context: context);
+  late final _$isSuccessfullyLoggedinAtom =
+      Atom(name: 'Auth.isSuccessfullyLoggedin', context: context);
 
   @override
-  String? get jwt {
-    _$jwtAtom.reportRead();
-    return super.jwt;
+  bool get isSuccessfullyLoggedin {
+    _$isSuccessfullyLoggedinAtom.reportRead();
+    return super.isSuccessfullyLoggedin;
   }
 
   @override
-  set jwt(String? value) {
-    _$jwtAtom.reportWrite(value, super.jwt, () {
-      super.jwt = value;
+  set isSuccessfullyLoggedin(bool value) {
+    _$isSuccessfullyLoggedinAtom
+        .reportWrite(value, super.isSuccessfullyLoggedin, () {
+      super.isSuccessfullyLoggedin = value;
     });
   }
 
-  late final _$currentUserAtom =
-      Atom(name: 'Auth.currentUser', context: context);
+  late final _$isSuccessfullySignedUpAtom =
+      Atom(name: 'Auth.isSuccessfullySignedUp', context: context);
 
   @override
-  User? get currentUser {
-    _$currentUserAtom.reportRead();
-    return super.currentUser;
+  bool get isSuccessfullySignedUp {
+    _$isSuccessfullySignedUpAtom.reportRead();
+    return super.isSuccessfullySignedUp;
   }
 
   @override
-  set currentUser(User? value) {
-    _$currentUserAtom.reportWrite(value, super.currentUser, () {
-      super.currentUser = value;
+  set isSuccessfullySignedUp(bool value) {
+    _$isSuccessfullySignedUpAtom
+        .reportWrite(value, super.isSuccessfullySignedUp, () {
+      super.isSuccessfullySignedUp = value;
+    });
+  }
+
+  late final _$currentAuthScreenAtom =
+      Atom(name: 'Auth.currentAuthScreen', context: context);
+
+  @override
+  AuthScreens get currentAuthScreen {
+    _$currentAuthScreenAtom.reportRead();
+    return super.currentAuthScreen;
+  }
+
+  @override
+  set currentAuthScreen(AuthScreens value) {
+    _$currentAuthScreenAtom.reportWrite(value, super.currentAuthScreen, () {
+      super.currentAuthScreen = value;
+    });
+  }
+
+  late final _$fNameAtom = Atom(name: 'Auth.fName', context: context);
+
+  @override
+  String get fName {
+    _$fNameAtom.reportRead();
+    return super.fName;
+  }
+
+  @override
+  set fName(String value) {
+    _$fNameAtom.reportWrite(value, super.fName, () {
+      super.fName = value;
+    });
+  }
+
+  late final _$lNameAtom = Atom(name: 'Auth.lName', context: context);
+
+  @override
+  String get lName {
+    _$lNameAtom.reportRead();
+    return super.lName;
+  }
+
+  @override
+  set lName(String value) {
+    _$lNameAtom.reportWrite(value, super.lName, () {
+      super.lName = value;
+    });
+  }
+
+  late final _$emailAtom = Atom(name: 'Auth.email', context: context);
+
+  @override
+  String get email {
+    _$emailAtom.reportRead();
+    return super.email;
+  }
+
+  @override
+  set email(String value) {
+    _$emailAtom.reportWrite(value, super.email, () {
+      super.email = value;
+    });
+  }
+
+  late final _$passwordAtom = Atom(name: 'Auth.password', context: context);
+
+  @override
+  String get password {
+    _$passwordAtom.reportRead();
+    return super.password;
+  }
+
+  @override
+  set password(String value) {
+    _$passwordAtom.reportWrite(value, super.password, () {
+      super.password = value;
+    });
+  }
+
+  late final _$mobileNumberAtom =
+      Atom(name: 'Auth.mobileNumber', context: context);
+
+  @override
+  String get mobileNumber {
+    _$mobileNumberAtom.reportRead();
+    return super.mobileNumber;
+  }
+
+  @override
+  set mobileNumber(String value) {
+    _$mobileNumberAtom.reportWrite(value, super.mobileNumber, () {
+      super.mobileNumber = value;
     });
   }
 
@@ -67,17 +162,43 @@ mixin _$AuthStore on Auth, Store {
       AsyncAction('Auth.userSignUp', context: context);
 
   @override
-  Future<dynamic> userSignUp({required Map<String, dynamic> userData}) {
-    return _$userSignUpAsyncAction
-        .run(() => super.userSignUp(userData: userData));
+  Future<dynamic> userSignUp() {
+    return _$userSignUpAsyncAction.run(() => super.userSignUp());
+  }
+
+  late final _$logoutAsyncAction = AsyncAction('Auth.logout', context: context);
+
+  @override
+  Future<dynamic> logout() {
+    return _$logoutAsyncAction.run(() => super.logout());
+  }
+
+  late final _$AuthActionController =
+      ActionController(name: 'Auth', context: context);
+
+  @override
+  void navigateToAuthScreenScreen(AuthScreens authScreen) {
+    final _$actionInfo = _$AuthActionController.startAction(
+        name: 'Auth.navigateToAuthScreenScreen');
+    try {
+      return super.navigateToAuthScreenScreen(authScreen);
+    } finally {
+      _$AuthActionController.endAction(_$actionInfo);
+    }
   }
 
   @override
   String toString() {
     return '''
 isLoading: ${isLoading},
-jwt: ${jwt},
-currentUser: ${currentUser}
+isSuccessfullyLoggedin: ${isSuccessfullyLoggedin},
+isSuccessfullySignedUp: ${isSuccessfullySignedUp},
+currentAuthScreen: ${currentAuthScreen},
+fName: ${fName},
+lName: ${lName},
+email: ${email},
+password: ${password},
+mobileNumber: ${mobileNumber}
     ''';
   }
 }
