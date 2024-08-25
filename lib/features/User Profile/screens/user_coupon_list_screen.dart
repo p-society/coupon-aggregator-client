@@ -4,18 +4,22 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/Error%20Screen/network_error_screen.dart';
 import 'package:mess_mgmt/Global/dialogs/edit_coupon_dialog.dart';
 import 'package:mess_mgmt/Global/effects/shimmer_effect.dart';
+import 'package:mess_mgmt/Global/enums/pagination_enum.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/features/User%20Profile/store/user_profile_store.dart';
 import 'package:mess_mgmt/features/User%20Profile/widgets/confirm_delete_dialog.dart';
 
 import '../../../Global/theme/app_theme.dart';
+import '../../../Global/widgets/loader.dart';
 
 class CouponListScreen extends StatelessWidget {
   const CouponListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    userProfileStore.fetchSellingCouponList();
+    if (userProfileStore.userSellingCouponsList.isEmpty) {
+      userProfileStore.fetchSellingCouponList();
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Meal Coupons'),
@@ -33,18 +37,12 @@ class CouponListScreen extends StatelessWidget {
               return const SingleChildScrollView(
                 child: Column(
                   children: [
-                    ShimmerEffect(
-                        child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(
-                        child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(
-                        child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(
-                        child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(
-                        child: UserSellingCouponShimmerChildWidget()),
-                    ShimmerEffect(
-                        child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
+                    ShimmerEffect(child: UserSellingCouponShimmerChildWidget()),
                   ],
                 ),
               );
@@ -53,10 +51,36 @@ class CouponListScreen extends StatelessWidget {
               return OfflineRetryPage(
                   onRetry: userProfileStore.fetchSellingCouponList);
             }
+            if (coupons.isEmpty) {
+              return Center(
+                child: Text(
+                  'You haven\'t sell any Coupon yet!',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              );
+            }
             return ListView.builder(
               itemCount: coupons.length,
               itemBuilder: (context, index) {
                 final coupon = coupons[index];
+
+                if (index == coupons.length - 1) {
+                  return Observer(builder: (context) {
+                    final isPaginationLoading =
+                        userProfileStore.isPaginationLoading;
+                    final pagination = userProfileStore.currentPagination;
+                    return Column(
+                      children: [
+                        UserSellingCouponWidget(coupon: coupon),
+                        if (!isPaginationLoading)
+                          pagination.getPaginationwidget(onPressed: () {
+                            userProfileStore.skipLoadMore();
+                          }),
+                        if (isPaginationLoading) const AppLoader()
+                      ],
+                    );
+                  });
+                }
                 return UserSellingCouponWidget(coupon: coupon);
               },
             );

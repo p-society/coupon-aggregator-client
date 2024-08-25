@@ -26,12 +26,10 @@ class AuthRepository {
   static Future<http.Response?> userRegister({
     required Map<String, dynamic> data,
   }) async {
-    try {
       final uri = ApiHelper.getUri(urlEndpoint: ApiEndpoints.createUserApiEndpoint);
-      var res = await http.post(uri, body: data);
+      var res = await http.post(uri, body: data)
+        .timeout(const Duration(seconds: 7));
       return res;
-    } catch (e) {
-      throw Exception(e);
-    }
+  
   }
 }

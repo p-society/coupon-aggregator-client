@@ -9,6 +9,14 @@ part of 'user_profile_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$UserProfileStore on UserProfile, Store {
+  Computed<PaginationEnum>? _$currentPaginationComputed;
+
+  @override
+  PaginationEnum get currentPagination => (_$currentPaginationComputed ??=
+          Computed<PaginationEnum>(() => super.currentPagination,
+              name: 'UserProfile.currentPagination'))
+      .value;
+
   late final _$userSellingCouponsListAtom =
       Atom(name: 'UserProfile.userSellingCouponsList', context: context);
 
@@ -74,6 +82,37 @@ mixin _$UserProfileStore on UserProfile, Store {
     });
   }
 
+  late final _$isPaginationLoadingAtom =
+      Atom(name: 'UserProfile.isPaginationLoading', context: context);
+
+  @override
+  bool get isPaginationLoading {
+    _$isPaginationLoadingAtom.reportRead();
+    return super.isPaginationLoading;
+  }
+
+  @override
+  set isPaginationLoading(bool value) {
+    _$isPaginationLoadingAtom.reportWrite(value, super.isPaginationLoading, () {
+      super.isPaginationLoading = value;
+    });
+  }
+
+  late final _$totalAtom = Atom(name: 'UserProfile.total', context: context);
+
+  @override
+  int get total {
+    _$totalAtom.reportRead();
+    return super.total;
+  }
+
+  @override
+  set total(int value) {
+    _$totalAtom.reportWrite(value, super.total, () {
+      super.total = value;
+    });
+  }
+
   late final _$fetchSellingCouponListAsyncAction =
       AsyncAction('UserProfile.fetchSellingCouponList', context: context);
 
@@ -101,6 +140,14 @@ mixin _$UserProfileStore on UserProfile, Store {
         .run(() => super.updateCoupon(coupon: coupon));
   }
 
+  late final _$skipLoadMoreAsyncAction =
+      AsyncAction('UserProfile.skipLoadMore', context: context);
+
+  @override
+  Future<dynamic> skipLoadMore() {
+    return _$skipLoadMoreAsyncAction.run(() => super.skipLoadMore());
+  }
+
   late final _$UserProfileActionController =
       ActionController(name: 'UserProfile', context: context);
 
@@ -121,7 +168,10 @@ mixin _$UserProfileStore on UserProfile, Store {
 userSellingCouponsList: ${userSellingCouponsList},
 isLoading: ${isLoading},
 isLoadingLocally: ${isLoadingLocally},
-isCouponLoaded: ${isCouponLoaded}
+isCouponLoaded: ${isCouponLoaded},
+isPaginationLoading: ${isPaginationLoading},
+total: ${total},
+currentPagination: ${currentPagination}
     ''';
   }
 }

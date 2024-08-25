@@ -43,9 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
         showMessage(message: "Enter Valid Email", context: context);
         return;
       }
-      await Future.delayed(const Duration(seconds: 2));
-     
-
       if (_formKey.currentState?.validate() ?? true) {
         await authStore.userLogin(
           _emailController.text.trim(),

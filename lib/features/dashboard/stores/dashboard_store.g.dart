@@ -9,6 +9,13 @@ part of 'dashboard_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$DashboardStore on Dashboard, Store {
+  Computed<int>? _$currentViewPageTotalComputed;
+
+  @override
+  int get currentViewPageTotal => (_$currentViewPageTotalComputed ??=
+          Computed<int>(() => super.currentViewPageTotal,
+              name: 'Dashboard.currentViewPageTotal'))
+      .value;
   Computed<int>? _$breakfastCountComputed;
 
   @override
@@ -27,6 +34,13 @@ mixin _$DashboardStore on Dashboard, Store {
   @override
   int get dinnerCount => (_$dinnerCountComputed ??=
           Computed<int>(() => super.dinnerCount, name: 'Dashboard.dinnerCount'))
+      .value;
+  Computed<PaginationEnum>? _$currentPaginationComputed;
+
+  @override
+  PaginationEnum get currentPagination => (_$currentPaginationComputed ??=
+          Computed<PaginationEnum>(() => super.currentPagination,
+              name: 'Dashboard.currentPagination'))
       .value;
   Computed<List<CouponDataModel>>? _$currentViewListComputed;
 
@@ -367,12 +381,28 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
-  late final _$loadMoreAsyncAction =
-      AsyncAction('Dashboard.loadMore', context: context);
+  late final _$isPaginationLoadingAtom =
+      Atom(name: 'Dashboard.isPaginationLoading', context: context);
 
   @override
-  Future<dynamic> loadMore({required MealTimeType type}) {
-    return _$loadMoreAsyncAction.run(() => super.loadMore(type: type));
+  bool get isPaginationLoading {
+    _$isPaginationLoadingAtom.reportRead();
+    return super.isPaginationLoading;
+  }
+
+  @override
+  set isPaginationLoading(bool value) {
+    _$isPaginationLoadingAtom.reportWrite(value, super.isPaginationLoading, () {
+      super.isPaginationLoading = value;
+    });
+  }
+
+  late final _$skipLoadMoreDataAsyncAction =
+      AsyncAction('Dashboard.skipLoadMoreData', context: context);
+
+  @override
+  Future<dynamic> skipLoadMoreData() {
+    return _$skipLoadMoreDataAsyncAction.run(() => super.skipLoadMoreData());
   }
 
   late final _$fetchMealAsyncAction =
@@ -494,9 +524,12 @@ totalDinnerAvailable: ${totalDinnerAvailable},
 isLoadMore: ${isLoadMore},
 isCouponLoaded: ${isCouponLoaded},
 currentView: ${currentView},
+isPaginationLoading: ${isPaginationLoading},
+currentViewPageTotal: ${currentViewPageTotal},
 breakfastCount: ${breakfastCount},
 lunchCount: ${lunchCount},
 dinnerCount: ${dinnerCount},
+currentPagination: ${currentPagination},
 currentViewList: ${currentViewList},
 getBreakfastFilteredList: ${getBreakfastFilteredList},
 getLunchFilteredList: ${getLunchFilteredList},

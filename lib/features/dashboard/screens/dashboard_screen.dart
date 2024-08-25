@@ -51,6 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void dispose() {
     _animationController.dispose();
+    costController.dispose();
     super.dispose();
   }
 
@@ -73,17 +74,20 @@ class _DashboardScreenState extends State<DashboardScreen>
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        appState.canDialogPop = false;
+
         return Dialog(
-          backgroundColor: Colors.transparent,           child: BackdropFilter(
-            filter:
-                ImageFilter.blur(sigmaX: 10, sigmaY: 10),             child: Container(
+          backgroundColor: Colors.transparent,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color:
-                    Colors.white.withOpacity(0.2),                 borderRadius: BorderRadius.circular(20),
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.white
-                      .withOpacity(0.3),                   width: 1.5,
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1.5,
                 ),
               ),
               child: Column(
@@ -94,24 +98,23 @@ class _DashboardScreenState extends State<DashboardScreen>
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color:
-                          Colors.white,                     ),
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<Floor>(
                     value: selectedFloor,
                     decoration: const InputDecoration(
                       labelText: "Floor",
-                      labelStyle: TextStyle(
-                          color: Colors.white),                     ),
+                      labelStyle: TextStyle(color: Colors.white),
+                    ),
                     items: Floor.values.map((Floor value) {
                       return DropdownMenuItem<Floor>(
                         value: value,
                         child: Text(
                           value.intoString(),
-                          style: const TextStyle(
-                              color: Colors
-                                  .white),                         ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       );
                     }).toList(),
                     onChanged: (newValue) {
@@ -126,16 +129,15 @@ class _DashboardScreenState extends State<DashboardScreen>
                     value: selectedMealType,
                     decoration: const InputDecoration(
                       labelText: "Veg or Non-veg",
-                      labelStyle: TextStyle(
-                          color: Colors.white),                     ),
+                      labelStyle: TextStyle(color: Colors.white),
+                    ),
                     items: MealType.values.map((MealType value) {
                       return DropdownMenuItem<MealType>(
                         value: value,
                         child: Text(
                           value.intoString(),
-                          style: const TextStyle(
-                              color: Colors
-                                  .white),                         ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       );
                     }).toList(),
                     onChanged: (newValue) {
@@ -143,18 +145,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                         selectedMealType = newValue!;
                       });
                     },
-                    dropdownColor:
-                        Colors.blueAccent,                   ),
+                    dropdownColor: Colors.blueAccent,
+                  ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: costController,
                     decoration: const InputDecoration(
                       labelText: "Cost",
-                      labelStyle: TextStyle(
-                          color: Colors.white),                     ),
+                      labelStyle: TextStyle(color: Colors.white),
+                    ),
                     keyboardType: TextInputType.number,
-                    style: const TextStyle(
-                        color: Colors.white),                   ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
                   const SizedBox(height: 16),
                   Observer(builder: (context) {
                     final isLoading = dashboardStore.isLoading;
@@ -166,32 +168,39 @@ class _DashboardScreenState extends State<DashboardScreen>
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
-                            foregroundColor: Colors.white
-                                .withOpacity(0.8),                           ),
+                            foregroundColor: Colors.white.withOpacity(0.8),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                           child: const Text("Cancel"),
                         ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.white
-                                .withOpacity(0.8),                           ),
-                          onPressed: () async {
-                            Floor floor = selectedFloor;
-                            MealType mealType = selectedMealType;
-                            String cost = costController.text;
-                            CouponModel model = CouponModel(
-                                floor: floor,
-                                mealTime: mealTimeType,
-                                mealType: mealType,
-                                cost: int.tryParse(cost) ?? 0);
-                            await dashboardStore.sellCoupon(model).then((_) {
-                              costController.clear();
-                              Navigator.of(context).pop();
+                        ReactionBuilder(
+                          builder: (context) {
+                            return autorun((_) {
+                              final canDialogPop = appState.canDialogPop;
+                              if (canDialogPop) {
+                                Navigator.pop(context);
+                              }
                             });
                           },
-                          child: const Text("Submit"),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white.withOpacity(0.8),
+                            ),
+                            onPressed: () async {
+                              Floor floor = selectedFloor;
+                              MealType mealType = selectedMealType;
+                              String cost = costController.text;
+                              CouponModel model = CouponModel(
+                                  floor: floor,
+                                  mealTime: mealTimeType,
+                                  mealType: mealType,
+                                  cost: int.tryParse(cost) ?? 0);
+                              await dashboardStore.sellCoupon(model);
+                            },
+                            child: const Text("Submit"),
+                          ),
                         ),
                       ],
                     );
