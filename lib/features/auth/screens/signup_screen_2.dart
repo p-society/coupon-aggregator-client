@@ -31,7 +31,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
     navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
   }
 
-  void signupNow()  {
+  void signupNow() {
     if (!isValidate(_phoneNumberController.text)) {
       showMessage(message: 'Please Enter Valid Phone Number', context: context);
       return;
@@ -46,7 +46,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
           context: context);
       return;
     }
-     authStore.userSignUp();
+    authStore.userSignUp();
   }
 
   void showValidateDialog(BuildContext context, Builder builder) {

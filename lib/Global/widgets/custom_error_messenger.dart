@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
- showError(BuildContext context, String title, String subtitle) {
+ showError(BuildContext context, {required String title,required String description}) {
   final theme = Theme.of(context);
 
   final snackBar = SnackBar(
@@ -31,7 +31,7 @@ import 'package:flutter/material.dart';
               ),
               const SizedBox(height: 6),
               Text(
-                subtitle,
+                description,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.red.shade900,
                 ),

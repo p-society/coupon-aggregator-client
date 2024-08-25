@@ -83,6 +83,7 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
+
     super.dispose();
   }
 
