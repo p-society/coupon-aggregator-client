@@ -81,15 +81,10 @@ abstract class Auth with Store {
         appState.currentUser = null;
       }
     } on TimeoutException {
-      print('time out ');
       appState.authError = const AuthErrorNetworkIssue();
     } on SocketException {
-      print('socket ');
-
       appState.authError = const AuthErrorNetworkIssue();
     } on ClientException {
-      print('client');
-
       appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
       appState.authError = const AuthErrorUnknownIssue();
@@ -112,7 +107,6 @@ abstract class Auth with Store {
           "mobileNumber": mobileNumber,
         },
       );
-      print('fname is $fName');
       if (res != null && res.statusCode == 201) {
         isLoading = false;
         isSuccessfullySignedUp = true;

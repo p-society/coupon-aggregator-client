@@ -7,10 +7,8 @@ import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
-import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
-import '../../../Global/Functions/screen_transition.dart';
 import '../../../Global/widgets/scaffold_messenger.dart';
 import '../../../features/Networking/widgets/wobble_appbar.dart';
 
@@ -99,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen>
                     aspectRatio: 1.2,
                     child: LottieBuilder.asset(
                       'assets/lottie/login_fingerprint.json',
-                      frameRate: const FrameRate(100.0),
+                      frameRate: FrameRate.composition,
                       controller: _controller,
                     ),
                   ),

@@ -26,7 +26,6 @@ class SwitchingAuthScreen extends StatelessWidget {
             final isSuccessLoggedIn = authStore.isSuccessfullyLoggedin;
             final isSuccessSignedIn = authStore.isSuccessfullySignedUp;
             if (!isLoading && authError != null) {
-              print('object');
               showError(
                 context,
                 title: authError.errorString,
