@@ -41,6 +41,23 @@ mixin _$AuthStore on Auth, Store {
     });
   }
 
+  late final _$isSuccessfullySignedUpAtom =
+      Atom(name: 'Auth.isSuccessfullySignedUp', context: context);
+
+  @override
+  bool get isSuccessfullySignedUp {
+    _$isSuccessfullySignedUpAtom.reportRead();
+    return super.isSuccessfullySignedUp;
+  }
+
+  @override
+  set isSuccessfullySignedUp(bool value) {
+    _$isSuccessfullySignedUpAtom
+        .reportWrite(value, super.isSuccessfullySignedUp, () {
+      super.isSuccessfullySignedUp = value;
+    });
+  }
+
   late final _$currentAuthScreenAtom =
       Atom(name: 'Auth.currentAuthScreen', context: context);
 
@@ -175,6 +192,7 @@ mixin _$AuthStore on Auth, Store {
     return '''
 isLoading: ${isLoading},
 isSuccessfullyLoggedin: ${isSuccessfullyLoggedin},
+isSuccessfullySignedUp: ${isSuccessfullySignedUp},
 currentAuthScreen: ${currentAuthScreen},
 fName: ${fName},
 lName: ${lName},

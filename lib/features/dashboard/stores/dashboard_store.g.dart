@@ -42,6 +42,20 @@ mixin _$DashboardStore on Dashboard, Store {
           Computed<PaginationEnum>(() => super.currentPagination,
               name: 'Dashboard.currentPagination'))
       .value;
+  Computed<int>? _$currentTotalComputed;
+
+  @override
+  int get currentTotal =>
+      (_$currentTotalComputed ??= Computed<int>(() => super.currentTotal,
+              name: 'Dashboard.currentTotal'))
+          .value;
+  Computed<bool>? _$isFilterAppliedComputed;
+
+  @override
+  bool get isFilterApplied =>
+      (_$isFilterAppliedComputed ??= Computed<bool>(() => super.isFilterApplied,
+              name: 'Dashboard.isFilterApplied'))
+          .value;
   Computed<List<CouponDataModel>>? _$currentViewListComputed;
 
   @override
@@ -530,6 +544,8 @@ breakfastCount: ${breakfastCount},
 lunchCount: ${lunchCount},
 dinnerCount: ${dinnerCount},
 currentPagination: ${currentPagination},
+currentTotal: ${currentTotal},
+isFilterApplied: ${isFilterApplied},
 currentViewList: ${currentViewList},
 getBreakfastFilteredList: ${getBreakfastFilteredList},
 getLunchFilteredList: ${getLunchFilteredList},

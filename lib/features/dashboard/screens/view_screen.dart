@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
-import 'package:mess_mgmt/Global/enums/pagination_enum.dart';
 import 'package:mess_mgmt/Global/widgets/custom_filter_dialog.dart';
 import 'package:mess_mgmt/Global/widgets/custom_list_tile.dart';
-import 'package:mess_mgmt/Global/widgets/custom_shimmerlist_tile.dart';
-import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/Global/widgets/my_list_tile.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 import '../../../Global/Error Screen/network_error_screen.dart';
+import '../../../Global/enums/pagination_enum.dart';
+import '../../../Global/widgets/loader.dart';
+import '../../../Global/widgets/custom_shimmerlist_tile.dart';
 
 class ViewScreen extends StatelessWidget {
   const ViewScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,9 +99,8 @@ class ViewScreen extends StatelessWidget {
                   );
                 });
               }
-              return GlassyListTile(
+               return MyListTile(
                 coupon: list[index],
-                i: index,
               );
             },
           );

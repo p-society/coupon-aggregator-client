@@ -116,6 +116,30 @@ abstract class Dashboard with Store {
   }
 
   @computed
+  int get currentTotal {
+    switch (currentView) {
+      case MealTimeType.breakfast:
+        return breakfastCount;
+      case MealTimeType.lunch:
+        return lunchCount;
+
+      case MealTimeType.dinner:
+        return dinnerCount;
+    }
+  }
+
+  @computed
+  bool get isFilterApplied {
+    if (isFilterVeg ||
+        isFilterFirstFloor ||
+        isFilterGroundFloor ||
+        isFilterNonVeg) {
+      return true;
+    }
+    return false;
+  }
+
+  @computed
   List<CouponDataModel> get currentViewList {
     switch (dashboardStore.currentView) {
       case MealTimeType.breakfast:
@@ -229,7 +253,9 @@ abstract class Dashboard with Store {
       if (jwt != null) {
         Map<String, dynamic> queryParams = {
           '\$limit': '10',
-          '\$skip': currentViewList.length.toString(),
+          '\$skip': isFilterApplied
+              ? currentTotal.toString()
+              : currentViewList.length.toString(),
           'couponType': currentView.intoString(),
           '\$populate': 'createdBy',
         };

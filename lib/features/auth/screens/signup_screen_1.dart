@@ -6,10 +6,10 @@ import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
-import 'package:mess_mgmt/features/Networking/widgets/wobble_appbar.dart';
+import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
-import '../enums/auth_enum.dart';
+import '../../../features/Networking/widgets/wobble_appbar.dart';
 
 class SignupScreenOne extends StatefulWidget {
   const SignupScreenOne({super.key});
@@ -18,13 +18,21 @@ class SignupScreenOne extends StatefulWidget {
   State<SignupScreenOne> createState() => _SignupScreenOneState();
 }
 
-class _SignupScreenOneState extends State<SignupScreenOne> {
+class _SignupScreenOneState extends State<SignupScreenOne>
+    with SingleTickerProviderStateMixin {
   final _firstNameController = TextEditingController(text: authStore.fName);
   final _lastNameController = TextEditingController(text: authStore.lName);
   final _emailController = TextEditingController(text: authStore.email);
+  late AnimationController _controller;
+
+// class _SignupScreenOneState extends State<SignupScreenOne> {
+//   final _firstNameController = TextEditingController(text: authStore.fName);
+//   final _lastNameController = TextEditingController(text: authStore.lName);
+//   final _emailController = TextEditingController(text: authStore.email);
 
   void login() {
-    authStore.navigateToAuthScreenScreen(AuthScreens.loginScreen);
+    // navigateAndPopToNextScreen(nextScreen: const LoginScreen(), context: context);
+    authStore.currentAuthScreen = AuthScreens.loginScreen;
   }
 
   void nextLoginScreen() {
@@ -32,18 +40,20 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
     final lName = _lastNameController.text.trim();
     final email = _emailController.text.trim();
     if (!isValidate(fName)) {
-      showMessage(message: 'Enter First Name', context: context);
+      showMessage(message: 'Enter first name', context: context);
       return;
     }
     if (!isValidate(lName)) {
-      showMessage(message: 'Enter Last Name', context: context);
+      showMessage(message: 'Enter last name', context: context);
       return;
     }
     if (!isValidate(email)) {
       showMessage(message: 'Enter Valid Email', context: context);
       return;
     }
-    authStore.navigateToAuthScreenScreen(AuthScreens.signUpScreen2);
+    // navigateAndPopToNextScreen(
+    //     nextScreen: const SignupScreenTwo(), context: context);
+    authStore.currentAuthScreen = AuthScreens.signUpScreen2;
   }
 
   Widget customElevatedButton(
@@ -79,6 +89,15 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
   }
 
   @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
+          ..forward()
+          ..repeat();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -111,6 +130,9 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                   AspectRatio(
                     aspectRatio: 1.2,
                     child: LottieBuilder.asset(
+                      frameRate: const FrameRate(100),
+                      controller: _controller,
+                      //controller: AnimationController(vsync:),
                       'assets/lottie/login_lottie.json',
                     ),
                   ),
@@ -121,7 +143,7 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                     type: TextInputType.text,
                     icon: Icons.person,
                     onChanged: (val) {
-                      authStore.fName = _firstNameController.text.trim();
+                      authStore.fName = _firstNameController.text.toString();
                     },
                   ),
                   const SizedBox(height: 15),
@@ -131,7 +153,7 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                     type: TextInputType.text,
                     icon: Icons.person_2_outlined,
                     onChanged: (val) {
-                      authStore.lName = _lastNameController.text.trim();
+                      authStore.lName = _lastNameController.text.toString();
                     },
                   ),
                   const SizedBox(height: 15),
@@ -189,12 +211,48 @@ class _SignupScreenOneState extends State<SignupScreenOne> {
                           style: TextStyle(
                             color: AppTheme.lightTheme().primaryColor,
                             fontWeight: FontWeight.bold,
+                            // child: Observer(builder: (context) {
+                            //   final isLoading = authStore.isLoading;
+                            //   if (isLoading) {
+                            //     return const AppLoader();
+                            //   }
+                            //   return Text(
+                            //     "Next",
+                            //     style: AppTheme.lightTheme()
+                            //         .textTheme
+                            //         .labelLarge
+                            //         ?.copyWith(fontSize: 20),
+                            //   );
+                            // }),
                           ),
                         ),
                       ),
+                      const SizedBox(height: 15),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     Text(
+                      //       "Already have an account?",
+                      //       style: TextStyle(
+                      //         color: Colors.black.withOpacity(0.6),
+                      //         fontSize: 14,
+                      //       ),
+                      //     ),
+                      //     TextButton(
+                      //       onPressed: login,
+                      //       child: Text(
+                      //         "Login now",
+                      //         style: TextStyle(
+                      //           color: AppTheme.lightTheme().primaryColor,
+                      //           fontWeight: FontWeight.bold,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 10),
                     ],
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),

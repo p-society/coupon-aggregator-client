@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
-import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
-import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
+
+import '../../../Global/widgets/scaffold_messenger.dart';
+import '../../../features/Networking/widgets/wobble_appbar.dart';
 
 class SignupScreenTwo extends StatefulWidget {
   const SignupScreenTwo({
@@ -22,31 +22,39 @@ class SignupScreenTwo extends StatefulWidget {
   State<SignupScreenTwo> createState() => _SignupScreenTwoState();
 }
 
-class _SignupScreenTwoState extends State<SignupScreenTwo> {
+class _SignupScreenTwoState extends State<SignupScreenTwo>
+    with SingleTickerProviderStateMixin {
   final _phoneNumberController =
       TextEditingController(text: authStore.mobileNumber);
   final _pwdController = TextEditingController(text: authStore.password);
+  late AnimationController _controller;
 
   void login() {
-    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
+    // navigateAndPopToNextScreen(nextScreen: const LoginScreen(), context: context);
+    authStore.currentAuthScreen = AuthScreens.loginScreen;
   }
 
-  void signupNow()  {
+  void previousScreen() {
+    // navigateAndPopToNextScreen(nextScreen: const SignupScreenOne(), context: context);
+    authStore.currentAuthScreen = AuthScreens.signUpScreen1;
+  }
+
+  void signupNow() async {
     if (!isValidate(_phoneNumberController.text)) {
-      showMessage(message: 'Please Enter Valid Phone Number', context: context);
+      showMessage(
+          message: 'Please enter a valid phone number', context: context);
       return;
     }
     if (!isValidate(_pwdController.text)) {
-      showMessage(message: 'Please Enter Password', context: context);
+      showMessage(message: 'Please enter password', context: context);
       return;
     }
     if (_pwdController.text.length < 6) {
       showMessage(
-          message: 'Password length should be greater than 6 characters.',
-          context: context);
+          message: 'Password length must be 6 characters.', context: context);
       return;
     }
-     authStore.userSignUp();
+    await authStore.userSignUp();
   }
 
   void showValidateDialog(BuildContext context, Builder builder) {
@@ -75,14 +83,17 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   }
 
   Widget customElevatedButton(
-      String action, VoidCallback ontap, double buttonWidth) {
+      String action, VoidCallback ontap, double buttonWidth,
+      {WidgetStateProperty<Color?>? tileColor,
+      WidgetStateProperty<Color?>? textColor}) {
     return SizedBox(
       width: buttonWidth,
       child: TextButton(
         onPressed: ontap,
         style: ButtonStyle(
-          backgroundColor:
+          backgroundColor: tileColor ??
               WidgetStateProperty.all(AppTheme.lightTheme().primaryColor),
+          foregroundColor: textColor,
           padding:
               WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 12)),
           shape: WidgetStateProperty.all(
@@ -107,6 +118,15 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   }
 
   @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
+          ..forward()
+          ..repeat();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _phoneNumberController.dispose();
     _pwdController.dispose();
@@ -117,14 +137,9 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
   Widget build(BuildContext context) {
     double buttonWidth = 300;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('One more step'),
-        leading: IconButton(
-            onPressed: () {
-              authStore.navigateToAuthScreenScreen(AuthScreens.signUpScreen1);
-            },
-            icon: const Icon(Icons.arrow_back_ios)),
+      appBar: const WobbleAppBar(
+        title: "One more step",
+        color: Colors.white,
       ),
       body: DecoratedBox(
         decoration: BoxDecoration(
@@ -137,6 +152,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                 padding: const EdgeInsets.all(20.0),
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.025),
@@ -144,6 +160,8 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                         aspectRatio: 16 / 9,
                         child: LottieBuilder.asset(
                           'assets/lottie/login_lottie.json',
+                          controller: _controller,
+                          frameRate: const FrameRate(100),
                         ),
                       ),
                       CustomTextField(
@@ -168,8 +186,35 @@ class _SignupScreenTwoState extends State<SignupScreenTwo> {
                         isPassword: true,
                       ),
                       const SizedBox(height: 30),
+                      customElevatedButton("Back", previousScreen, buttonWidth,
+                          tileColor: const WidgetStatePropertyAll(Colors.grey)),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       customElevatedButton("Signup", signupNow, buttonWidth),
                       const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Already have an account?",
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.6),
+                              fontSize: 14,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: login,
+                            child: Text(
+                              "Login now",
+                              style: TextStyle(
+                                color: AppTheme.lightTheme().primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

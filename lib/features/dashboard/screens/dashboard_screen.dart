@@ -243,8 +243,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           if (error != null && !isLoading) {
             showError(
               context,
-              error.errorDescription,
-              error.errorString,
+           description:    error.errorDescription,
+           title:    error.errorString,
             );
             appState.authError = null;
           }
