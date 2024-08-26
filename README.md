@@ -3,12 +3,7 @@ Your Ultimate Platform for Easy Coupon Trading
 
 ## Some - SS of the App
 
-<h4>-- Coming Soon --</h4>
-<style>
-  h4{
-    text-align:center;
-  }
-</style>
+<h4 align="center">-- Coming Soon --</h4>
 
 ## Download Apk 
  **Android** : Coming Soon ... </br>
