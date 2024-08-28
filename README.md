@@ -1,20 +1,45 @@
-# C o u p o n - A g g r e g a t o r
-A perfect coupon selling solution.
+<h1 align="center">
+      Coupon Aggregator - Mobile App
+	<br>
+</h1>
 
-# Some - Glimpses of the App
+
+<div align="center">
+Service made to allow transactions of mess coupons between IIIT-Bh Students.
+
+<h3>P-Society Handles</h3>
+<h3 align="center">
+	<a href="https://dev-psoc.netlify.app/">Website</a>
+	<span> | </span>
+	<a href="https://discord.gg/UhmKJGMnan">Community Discord</a>
+	<span> | </span>
+	<a href="https://github.com/p-society/gc-server/blob/main/docs/CONTRIBUTING.md">Contribute</a>
+</h3>
+
+</div>
+
+----------------------------------------
+<div align="center">
+  
+**Coupon Aggregator** ensures effortless mess coupon listing, enhancing your experience with hassle-free and efficient listing in the app.The application is built using Feathers.js(v4) , MongoDB and Flutter.
+</div>
+<div align="center">
+<br/>
+<img src='https://skillicons.dev/icons?i=nodejs,mongodb,flutter' ></img>
+<img src='https://github.com/p-society/raag/assets/119437069/5f30138e-fa76-4947-946e-603d2de1550f' width='50' height='50' style='border-radius: 10px;'>
+
+</div>
+<br/>
 
 
-# F u n c t i o n i n g
-App has several features including :
-## 1.Authentication :
-This app uses proper authentication and sign up features 
-Student can sell his/her coupon so that other peer can buy/purchase it.
+### Current contributors <a name="Current contributors"></a>
 
-## App Internals :
-  State Management : **MobX** </br>
-  Api handling : **Http**
+<a href="https://github.com/p-society/coupon-aggregator-client/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=p-society/coupon-aggregator-client" />
+</a>
 
-# Run Locally 
+Made with [contributors-img](https://contributors-img.web.app).
 
-# C o n t r i b u t i o n
-Contribution are welcome. Feel free to ask any query regarding for any contribution.
+# License <a name="License"></a>
+
+GC-Server and GC-Client is licensed under [Apache License](https://github.com/p-society/coupon-aggregator-client/blob/master/LICENSE)
