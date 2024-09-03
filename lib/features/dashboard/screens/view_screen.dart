@@ -8,8 +8,8 @@ import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 import '../../../Global/Error Screen/network_error_screen.dart';
 import '../../../Global/enums/pagination_enum.dart';
-import '../../../Global/widgets/loader.dart';
 import '../../../Global/widgets/custom_shimmerlist_tile.dart';
+import '../../../Global/widgets/loader.dart';
 
 class ViewScreen extends StatelessWidget {
   const ViewScreen({super.key});
@@ -22,13 +22,43 @@ class ViewScreen extends StatelessWidget {
           return Text(dashboardStore.currentView.intoTitle());
         }),
         actions: [
-          TextButton.icon(
-            onPressed: () {
+          InkWell(
+            onTap: () {
               showFilterDialog(context: context);
             },
-            label: const Text('Apply Filter'),
-            icon: const Icon(Icons.filter_list),
+            child: Observer(
+              builder: (context) {
+                final isFilterApplied = dashboardStore.isFilterApplied;
+                return isFilterApplied
+                    ? Row(
+                        children: [
+                          const Icon(
+                            Icons.filter_list,
+                            color: Colors.yellowAccent,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            'Applied Filter',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(color: Colors.yellowAccent),
+                          ),
+                        ],
+                      )
+                    : const Row(
+                        children: [
+                          Icon(
+                            Icons.filter_list,
+                          ),
+                          SizedBox(width: 7),
+                          Text('Apply Filter'),
+                        ],
+                      );
+              },
+            ),
           ),
+          const SizedBox(width: 12),
         ],
       ),
       body: DecoratedBox(
@@ -99,7 +129,7 @@ class ViewScreen extends StatelessWidget {
                   );
                 });
               }
-               return MyListTile(
+              return MyListTile(
                 coupon: list[index],
               );
             },

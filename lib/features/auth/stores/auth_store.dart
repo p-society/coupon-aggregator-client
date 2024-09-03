@@ -55,6 +55,7 @@ abstract class Auth with Store {
         email: email,
         password: password,
       );
+
       if (res != null && res.statusCode == 201) {
         final data = jsonDecode(res.body);
         final sp = await SharedPreferences.getInstance();
@@ -112,7 +113,7 @@ abstract class Auth with Store {
         isSuccessfullySignedUp = true;
         await Future.delayed(
           const Duration(
-            seconds: 2,
+            milliseconds: 1,
           ),
         );
         currentAuthScreen = AuthScreens.loginScreen;

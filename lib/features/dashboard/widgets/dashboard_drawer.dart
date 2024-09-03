@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mess_mgmt/Global/store/app_state_store.dart';
 
 import '../../../Global/theme/app_theme.dart';
 import '../../User Profile/screens/user_coupon_list_screen.dart';
@@ -15,25 +13,26 @@ class DashboardDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: AppTheme.lightTheme().appBarTheme.backgroundColor,
+            decoration: const BoxDecoration(
+              color: AppTheme.primaryColor,
             ),
-            child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const Text(
-                  'Your Profile',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
+                Text(
+                  'IIIT CANTEEN',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Colors.white),
                 ),
-                Observer(builder: (context) {
-                  final user = appState.currentUser;
-                  if (user != null) {
-                    return Text(user.fName);
-                  }
-                  return const SizedBox();
-                }),
+                //   Observer(builder: (context) {
+                //     final user = appState.currentUser;
+                //     if (user != null) {
+                //       return Text(user.fName);
+                //     }
+                //     return const SizedBox();
+                //   }),
               ],
             ),
           ),
@@ -45,8 +44,8 @@ class DashboardDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
+            leading: const Icon(Icons.person),
+            title: const Text('Profile'),
             onTap: () {
               Navigator.push(
                 context,
