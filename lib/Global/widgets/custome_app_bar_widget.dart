@@ -2,9 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 
 class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const RoundedAppBar({super.key});
+  final String title;
+
+  const RoundedAppBar({super.key, required this.title});
+
   @override
   Size get preferredSize => const Size.fromHeight(110);
+
+  Widget appBarText(BuildContext context) {
+    return Text(
+      title,
+      textAlign: TextAlign.center,
+      style: AppTheme.lightTheme().textTheme.headlineMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +35,14 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         child: Center(
-          child: Text(
-            'Welcome Back !',
-            style: AppTheme.lightTheme().textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 25, top: 18.0), // Adjust the padding to control spacing from the bottom
+                child: appBarText(context),
+              ),
+            ],
           ),
         ),
       ),

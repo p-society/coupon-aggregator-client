@@ -1,75 +1,60 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mess_mgmt/Global/Functions/field_validation_function.dart';
-import 'package:mess_mgmt/Global/Functions/my_error_dialog.dart';
-import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
-import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
-import 'package:mess_mgmt/features/Networking/widgets/wobbleAppbar.dart';
-import 'package:mess_mgmt/features/auth/screens/login_screen.dart';
-import 'package:mess_mgmt/features/auth/screens/signup_screen_1.dart';
+import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
+
+import '../../../Global/widgets/scaffold_messenger.dart';
+import '../../../features/Networking/widgets/wobble_appbar.dart';
 
 class SignupScreenTwo extends StatefulWidget {
   const SignupScreenTwo({
     super.key,
-    required this.fName,
-    required this.lName,
-    required this.email,
   });
-  final String fName;
-  final String lName;
-  final String email;
   @override
   State<SignupScreenTwo> createState() => _SignupScreenTwoState();
 }
 
 class _SignupScreenTwoState extends State<SignupScreenTwo>
     with SingleTickerProviderStateMixin {
-  final _phoneNumberController = TextEditingController();
-  final _pwdController = TextEditingController();
+  final _phoneNumberController =
+      TextEditingController(text: authStore.mobileNumber);
+  final _pwdController = TextEditingController(text: authStore.password);
   late AnimationController _controller;
 
   void login() {
-    /* authStore.userSignUp(userData: {}); */
-    // Navigator.pushNamed(context, "/dashboard");
-    navigateToNextScreen(nextScreen: const LoginScreen(), context: context);
+    // navigateAndPopToNextScreen(nextScreen: const LoginScreen(), context: context);
+    authStore.currentAuthScreen = AuthScreens.loginScreen;
   }
 
   void previousScreen() {
-    navigateToNextScreen(nextScreen: SignupScreenOne(), context: context);
+    // navigateAndPopToNextScreen(nextScreen: const SignupScreenOne(), context: context);
+    authStore.currentAuthScreen = AuthScreens.signUpScreen1;
   }
 
-  void signupNow() {
+  void signupNow() async {
     if (!isValidate(_phoneNumberController.text)) {
-      showMyMessage(
+      showMessage(
           message: 'Please enter a valid phone number', context: context);
       return;
     }
     if (!isValidate(_pwdController.text)) {
-      showMyMessage(message: 'Please enter password', context: context);
+      showMessage(message: 'Please enter password', context: context);
       return;
     }
     if (_pwdController.text.length < 6) {
-      showMyMessage(
+      showMessage(
           message: 'Password length must be 6 characters.', context: context);
       return;
     }
-    authStore.userSignUp(
-      userData: {
-        "fName": widget.fName,
-        "lName": widget.lName,
-        "email": widget.email,
-        "password": _pwdController.text.trim(),
-        "mobileNumber": _phoneNumberController.text.trim()
-      },
-    );
-    showValidateDialog(context, Builder(builder: (context) => Container()));
+    await authStore.userSignUp();
   }
 
   void showValidateDialog(BuildContext context, Builder builder) {
@@ -77,25 +62,23 @@ class _SignupScreenTwoState extends State<SignupScreenTwo>
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-              backgroundColor:
-                  Colors.transparent, // Make background transparent
-              child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: 10, sigmaY: 10), // Apply blur effect
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white
-                          .withOpacity(0.2), // Slightly opaque background
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(
-                            0.3), // White border with slight opacity
-                        width: 1.5,
-                      ),
-                    ),
-                    child: const Text("Account created"),
-                  )));
+            backgroundColor: Colors.transparent,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: const Text("Account created"),
+              ),
+            ),
+          );
         });
   }
 
@@ -137,7 +120,7 @@ class _SignupScreenTwoState extends State<SignupScreenTwo>
   @override
   void initState() {
     _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 4))
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
           ..forward()
           ..repeat();
     super.initState();
@@ -186,7 +169,10 @@ class _SignupScreenTwoState extends State<SignupScreenTwo>
                         controller: _phoneNumberController,
                         type: TextInputType.phone,
                         icon: Icons.phone,
-                        onChanged: (val) {},
+                        onChanged: (val) {
+                          authStore.mobileNumber =
+                              _phoneNumberController.text.trim();
+                        },
                       ),
                       const SizedBox(height: 30),
                       CustomPwdTile(
@@ -194,13 +180,15 @@ class _SignupScreenTwoState extends State<SignupScreenTwo>
                         controller: _pwdController,
                         type: TextInputType.visiblePassword,
                         icon: Icons.lock,
-                        onChanged: (val) {},
+                        onChanged: (val) {
+                          authStore.password = _pwdController.text.trim();
+                        },
                         isPassword: true,
                       ),
                       const SizedBox(height: 30),
                       customElevatedButton("Back", previousScreen, buttonWidth,
-                          tileColor: WidgetStatePropertyAll(Colors.grey)),
-                      SizedBox(
+                          tileColor: const WidgetStatePropertyAll(Colors.grey)),
+                      const SizedBox(
                         height: 10,
                       ),
                       customElevatedButton("Signup", signupNow, buttonWidth),

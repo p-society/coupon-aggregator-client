@@ -9,8 +9,8 @@ void navigateToNextScreen({
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(1.0, 0.0); // Start position (right side)
-        const end = Offset(0.0, 0.0); // End position (center screen)
+        const begin = Offset(1.0, 0.0);
+        const end = Offset(0.0, 0.0);
         const curve = Curves.easeInOut;
 
         var tween =
@@ -28,7 +28,6 @@ void navigateToNextScreen({
   Navigator.push(context, createRoute());
 }
 
-
 void navigateAndPopToNextScreen({
   required Widget nextScreen,
   required BuildContext context,
@@ -37,8 +36,8 @@ void navigateAndPopToNextScreen({
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(1.0, 0.0); // Start position (right side)
-        const end = Offset(0.0, 0.0); // End position (center screen)
+        const begin = Offset(1.0, 0.0);
+        const end = Offset(0.0, 0.0);
         const curve = Curves.easeInOut;
 
         var tween =
