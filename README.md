@@ -11,17 +11,17 @@ Service made to allow transactions of mess coupons between IIIT-Bh Students.
 
 <h2>Screenshots</h2>
 
-<img title="create account screen 1" alt="create account screen 1" src="/images/boo.svg">
+<img title="create account screen 1" alt="create account screen 1" src="https://github.com/neoandmatrix/coupon-aggregator-client/blob/main/screenshots/register_screen.png">
 
-<img title="login" alt="login screen" src="/images/boo.svg">
+<img title="login" alt="login screen" src="https://github.com/neoandmatrix/coupon-aggregator-client/blob/main/screenshots/login.png">
 
-<img title="welcome screen" alt="welcome screen" src="/images/boo.svg">
+<img title="welcome screen" alt="welcome screen" src="https://github.com/neoandmatrix/coupon-aggregator-client/blob/main/screenshots/welcome_screen.png">
 
-<img title="all coupon view 1" alt="all coupon" src="/images/boo.svg">
+<img title="all coupon view 1" alt="all coupon" src="https://github.com/neoandmatrix/coupon-aggregator-client/blob/main/screenshots/view_coupon_1.png">
 
-<img title="all coupon view 2" alt="all coupon" src="/images/boo.svg">
+<img title="all coupon view 2" alt="all coupon" src="https://github.com/neoandmatrix/coupon-aggregator-client/blob/main/screenshots/view_coupon_2.png">
 
-<img title="add coupon" alt="add coupon" src="/images/boo.svg">
+<img title="add coupon" alt="add coupon" src="https://github.com/neoandmatrix/coupon-aggregator-client/blob/main/screenshots/add_coupon.png">
 
 
 <h2>To setup locally</h2>
