@@ -7,8 +7,8 @@ import 'package:mess_mgmt/Global/widgets/my_list_tile.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 
 import '../../../Global/Error Screen/network_error_screen.dart';
+import '../../../Global/effects/shimmer_widget.dart';
 import '../../../Global/enums/pagination_enum.dart';
-import '../../../Global/widgets/custom_shimmerlist_tile.dart';
 import '../../../Global/widgets/loader.dart';
 
 class ViewScreen extends StatelessWidget {
@@ -77,34 +77,30 @@ class ViewScreen extends StatelessWidget {
           final isLoading = dashboardStore.isLoading;
           final isCouponLoaded = dashboardStore.isCouponLoaded;
           if (isLoading) {
-            return Column(
-              children: [
-                for (int i = 0; i < 3; i++) ...[
-                  const SizedBox(height: 16),
-                  // ShimmerEffect(
-                  //   child: Card(
-                  //     margin: const EdgeInsets.symmetric(horizontal: 16),
-                  //     elevation: 4,
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(12)),
-                  //     child: const Padding(
-                  //       padding: EdgeInsets.all(16),
-                  //       child: SizedBox(height: 100, width: double.infinity),
-                  //     ),
-                  //   ),
-                  // ),
-                  const ShimmerListTile(),
-
-                  const SizedBox(height: 16),
-                ]
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (int i = 0; i < 6; i++) ...[
+                    const SizedBox(height: 8),
+                    const ShimmerWidget(),
+                  ]
+                ],
+              ),
             );
           } else if (!isLoading && !isCouponLoaded) {
             return OfflineRetryPage(onRetry: () {
               dashboardStore.fetchAllMeals();
             });
           }
-
+          if (list.isEmpty) {
+            return Center(
+              child: Text(
+                "Currently, no coupons are available.\nPlease check other coupons by applying or changing the filters.",
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
           return ListView.builder(
             key: const PageStorageKey<String>('listview_key'),
             itemCount: list.length,
@@ -124,7 +120,11 @@ class ViewScreen extends StatelessWidget {
                         pagination.getPaginationwidget(onPressed: () {
                           dashboardStore.skipLoadMoreData();
                         }),
-                      if (isPaginationLoading) const AppLoader()
+                      if (isPaginationLoading)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: AppLoader(),
+                        )
                     ],
                   );
                 });

@@ -80,7 +80,6 @@ abstract class Dashboard with Store {
         return totalBreakfastAvailable;
       case MealTimeType.lunch:
         return totalLunchAvailable;
-
       case MealTimeType.dinner:
         return totalDinnerAvailable;
     }
@@ -109,6 +108,12 @@ abstract class Dashboard with Store {
 
   @computed
   PaginationEnum get currentPagination {
+    if (isFilterApplied) {
+      if (dashboardStore.currentViewPageTotal == currentTotal) {
+        return PaginationEnum.empty;
+      }
+      return PaginationEnum.initial;
+    }
     if (dashboardStore.currentViewPageTotal == currentViewList.length) {
       return PaginationEnum.empty;
     }
@@ -122,7 +127,6 @@ abstract class Dashboard with Store {
         return breakfastCount;
       case MealTimeType.lunch:
         return lunchCount;
-
       case MealTimeType.dinner:
         return dinnerCount;
     }
@@ -563,7 +567,6 @@ abstract class Dashboard with Store {
       appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
       isCouponLoaded = false;
-
       appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
