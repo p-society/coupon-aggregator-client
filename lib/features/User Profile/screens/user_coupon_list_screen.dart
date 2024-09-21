@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mess_mgmt/Global/Error%20Screen/network_error_screen.dart';
+import 'package:mess_mgmt/Global/Functions/format_date.dart';
 import 'package:mess_mgmt/Global/dialogs/edit_coupon_dialog.dart';
 import 'package:mess_mgmt/Global/effects/shimmer_effect.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
@@ -118,7 +119,7 @@ class CouponDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Date: ${coupon.couponDate?.substring(0, 10)}',
+              'Date: ${coupon.couponDate}',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 10),
@@ -176,12 +177,17 @@ class UserSellingCouponWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${mealTimeTypeMap[coupon.couponType]?.intoTitle()} - ${coupon.couponDate?.substring(0, 10)}',
+                      '${mealTimeTypeMap[coupon.couponType]?.intoTitle()}',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ],
+                ),
+                Text(
+                  coupon.couponDate!.getDate(),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),

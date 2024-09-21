@@ -347,6 +347,21 @@ mixin _$DashboardStore on Dashboard, Store {
     });
   }
 
+  late final _$dateAtom = Atom(name: 'Dashboard.date', context: context);
+
+  @override
+  DateTime get date {
+    _$dateAtom.reportRead();
+    return super.date;
+  }
+
+  @override
+  set date(DateTime value) {
+    _$dateAtom.reportWrite(value, super.date, () {
+      super.date = value;
+    });
+  }
+
   late final _$isLoadMoreAtom =
       Atom(name: 'Dashboard.isLoadMore', context: context);
 
@@ -535,6 +550,7 @@ isFilterGroundFloor: ${isFilterGroundFloor},
 totalBreakfastAvailable: ${totalBreakfastAvailable},
 totalLunchAvailable: ${totalLunchAvailable},
 totalDinnerAvailable: ${totalDinnerAvailable},
+date: ${date},
 isLoadMore: ${isLoadMore},
 isCouponLoaded: ${isCouponLoaded},
 currentView: ${currentView},

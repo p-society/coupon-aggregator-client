@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:mess_mgmt/Global/Functions/format_date.dart';
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_endpoints.dart';
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_helper.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
@@ -40,6 +39,7 @@ abstract class Dashboard with Store {
   @observable
   ObservableList<CouponDataModel> dinnerList =
       ObservableList<CouponDataModel>();
+
   @observable
   ObservableList<CouponDataModel> userList = ObservableList<CouponDataModel>();
 
@@ -84,6 +84,9 @@ abstract class Dashboard with Store {
         return totalDinnerAvailable;
     }
   }
+
+  @observable
+  DateTime date = DateTime.now();
 
   @observable
   bool isLoadMore = false;
@@ -449,10 +452,11 @@ abstract class Dashboard with Store {
         final header = ApiHelper.getApiHeader(jwt: jwt);
         final Map<String, dynamic> body = {
           "couponType": model.mealTime.intoString(),
-          "couponDate": formatCurrentDate(),
+          // "couponDate": formatCurrentDate(),
           "price": model.cost,
           "couponFloor": model.floor.intoInt(),
           "isVeg": model.mealType.intoBool(),
+          "couponDate": date.toIso8601String(),
         };
         final res = await http
             .post(
@@ -481,7 +485,7 @@ abstract class Dashboard with Store {
     } on ClientException {
       appState.authError = const AuthErrorNetworkIssue();
     } on TimeoutException {
-      appState.authError = const AuthErrorNetworkIssue();
+      appState.authError = const AuthErrorUnknownIssue();
     } catch (e) {
       appState.authError = const AuthErrorUnknownIssue();
     } finally {
