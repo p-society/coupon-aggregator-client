@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/Functions/format_date.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
@@ -9,6 +10,7 @@ import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_error_messenger.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
@@ -24,7 +26,6 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  final TextEditingController dateController = TextEditingController();
 
   @override
   void initState() {
@@ -38,7 +39,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       duration: const Duration(milliseconds: 1000),
     );
     _animationController.forward();
-    dateController.text = DateTime.now().toString().split(' ')[0];
   }
 
   Floor selectedFloor = Floor.ground;
@@ -55,27 +55,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  void _selectDate() async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(
-        const Duration(days: 7),
-      ),
-    );
-    if (picked != null) {
-      setState(() {
-        dateController.text = picked.toString().split(" ")[0];
-      });
-    }
-  }
-
   void input(BuildContext context, MealTimeType mealTimeType) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         appState.canDialogPop = false;
-
         return Dialog(
           backgroundColor: Colors.transparent,
           child: BackdropFilter(
@@ -158,6 +142,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 16),
+                  const DateSelectionWidget(),
+                  const SizedBox(height: 16),
                   Observer(builder: (context) {
                     final isLoading = dashboardStore.isLoading;
                     if (isLoading) {
@@ -171,7 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             foregroundColor: Colors.white.withOpacity(0.8),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            appState.canDialogPop = true;
                           },
                           child: const Text("Cancel"),
                         ),
@@ -180,6 +166,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                             return autorun((_) {
                               final canDialogPop = appState.canDialogPop;
                               if (canDialogPop) {
+                                dashboardStore.date = DateTime.now();
+                                costController.text = '0';
+                                selectedFloor = Floor.ground;
+                                selectedMealType = MealType.nonVeg;
                                 Navigator.pop(context);
                               }
                             });
@@ -192,11 +182,20 @@ class _DashboardScreenState extends State<DashboardScreen>
                               Floor floor = selectedFloor;
                               MealType mealType = selectedMealType;
                               String cost = costController.text;
+                              int parsedCost = int.tryParse(cost) ?? 0;
+                              if (parsedCost == 0) {
+                                appState.canDialogPop = true;
+                                showMessage(
+                                    message: "Enter Valid Amount",
+                                    context: context);
+                                return;
+                              }
                               CouponModel model = CouponModel(
-                                  floor: floor,
-                                  mealTime: mealTimeType,
-                                  mealType: mealType,
-                                  cost: int.tryParse(cost) ?? 0);
+                                floor: floor,
+                                mealTime: mealTimeType,
+                                mealType: mealType,
+                                cost: parsedCost,
+                              );
                               await dashboardStore.sellCoupon(model);
                             },
                             child: const Text("Submit"),
@@ -234,7 +233,6 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    /* double widthFactor = MediaQuery.of(context).width; */
     return ReactionBuilder(
       builder: (context) {
         return autorun((_) {
@@ -269,8 +267,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildDatePicker(),
-                      const SizedBox(height: 24),
                       for (final e in MealTimeType.values) ...[
                         Observer(builder: (context) {
                           int count = getCount(e);
@@ -286,39 +282,6 @@ class _DashboardScreenState extends State<DashboardScreen>
               const Spacer(),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDatePicker() {
-    return GestureDetector(
-      onTap: _selectDate,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                dateController.text,
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -382,7 +345,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                         OutlinedButton(
                           onPressed: () {
                             dashboardStore.currentView = mealType;
-
                             navigateToViewScreen();
                           },
                           style: OutlinedButton.styleFrom(
@@ -405,6 +367,59 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         );
       },
+    );
+  }
+}
+
+class DateSelectionWidget extends StatelessWidget {
+  const DateSelectionWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        DateTime? picked = await showDatePicker(
+          context: context,
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(
+            const Duration(days: 7),
+          ),
+          initialDate: dashboardStore.date,
+        );
+        if (picked != null) {
+          dashboardStore.date = picked;
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Observer(builder: (context) {
+                final date = dashboardStore.date;
+                return Text(
+                  date.getDate(),
+                  style: const TextStyle(fontSize: 16),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

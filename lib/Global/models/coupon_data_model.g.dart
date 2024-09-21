@@ -10,7 +10,9 @@ CouponDataModel _$CouponDataModelFromJson(Map<String, dynamic> json) =>
     CouponDataModel(
       id: json['_id'] as String,
       couponType: json['couponType'] as String?,
-      couponDate: json['couponDate'] as String?,
+      couponDate: json['couponDate'] == null
+          ? null
+          : DateTime.parse(json['couponDate'] as String),
       price: (json['price'] as num).toInt(),
       couponFloor: (json['couponFloor'] as num?)?.toInt(),
       isVeg: json['isVeg'] as bool,
@@ -26,7 +28,7 @@ Map<String, dynamic> _$CouponDataModelToJson(CouponDataModel instance) =>
     <String, dynamic>{
       '_id': instance.id,
       'couponType': instance.couponType,
-      'couponDate': instance.couponDate,
+      'couponDate': instance.couponDate?.toIso8601String(),
       'price': instance.price,
       'couponFloor': instance.couponFloor,
       'isVeg': instance.isVeg,

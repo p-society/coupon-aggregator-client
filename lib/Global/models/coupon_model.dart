@@ -16,6 +16,7 @@ class CouponModel {
     required this.mealType,
     required this.cost,
   });
-  factory CouponModel.from(Map<String, dynamic> json) => _$CouponModelFromJson(json);
+  factory CouponModel.from(Map<String, dynamic> json) =>
+      _$CouponModelFromJson(json);
   Map<String, dynamic> toJson(json) => _$CouponModelToJson(this);
 }

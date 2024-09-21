@@ -1,48 +1,24 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mess_mgmt/Global/Functions/contact_helper_class.dart';
+import 'package:mess_mgmt/Global/Functions/format_date.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
-import 'package:mess_mgmt/features/dashboard/widgets/user_contact_option_dialog.dart';
 
-// ignore: must_be_immutable
 class MyListTile extends StatelessWidget {
   final CouponDataModel coupon;
-  MyListTile({super.key, required this.coupon});
-
-  var isVeg = true;
+  const MyListTile({super.key, required this.coupon});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Row(
           children: [
-            // Container(
-            //     height: 120,
-            //     padding: EdgeInsets.all(22),
-            //     decoration: BoxDecoration(
-            //         color: Colors.blue, borderRadius: BorderRadius.circular(12)),
-            //     child: RotatedBox(
-            //       quarterTurns: 3,
-            //       child: Text(
-            //         "${coupon.couponType}",
-            //         textAlign: TextAlign.center,
-            //         style: TextStyle(
-            //             color: Colors.white,
-            //             fontWeight: FontWeight.w600,
-            //             fontSize: 16),
-            //       ),
-            //     )),
-            // SizedBox(
-            //   width: 2,
-            // ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.fromLTRB(8, 12, 8, 0),
-                decoration: BoxDecoration(
-                    // color: Color.fromARGB(129, 15, 123, 211),
-                    borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(12)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -54,16 +30,14 @@ class MyListTile extends StatelessWidget {
                         children: [
                           Text(
                             "${coupon.createdBy?.fName}",
-                            style: TextStyle(
-                              // color: Colors.white,
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
-                            "Date : ${coupon.couponDate?.substring(0, 9) ?? ''}\nFloor : ${coupon.couponFloor}",
-                            style: TextStyle(
-                              // color: Colors.white70,
+                            "Date : ${coupon.couponDate!.getDate()}\nFloor : ${coupon.couponFloor}",
+                            style: const TextStyle(
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -72,33 +46,23 @@ class MyListTile extends StatelessWidget {
                             child: Row(
                               children: [
                                 InkWell(
-                                  onTap: () {},
-                                  child: Icon(
+                                  onTap: () {
+                                    ContactHelper.makePhoneCall(
+                                        coupon.createdBy!.mobileNumber);
+                                  },
+                                  child: const Icon(
                                     Icons.phone,
-                                    //   color: const Color.fromARGB(
-                                    //     216,
-                                    //     255,
-                                    //     255,
-                                    //     255,
-                                    //   ),
                                   ),
                                 ),
-                                SizedBox(width: 20),
+                                const SizedBox(width: 20),
                                 InkWell(
                                   onTap: () {
-                                    showContactOptions(
-                                      context,
-                                      coupon.createdBy!.mobileNumber,
-                                    );
+                                    ContactHelper.sendSms(
+                                        coupon.createdBy!.mobileNumber,
+                                        "Hey I want to buy your coupon");
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.chat,
-                                    // color: const Color.fromARGB(
-                                    //   216,
-                                    //   255,
-                                    //   255,
-                                    //   255,
-                                    // ),
                                   ),
                                 ),
                               ],
@@ -121,8 +85,8 @@ class MyListTile extends StatelessWidget {
                           height: 60,
                           colorFilter: ColorFilter.mode(
                             coupon.isVeg
-                                ? Color.fromARGB(255, 33, 134, 37)
-                                : Color.fromARGB(255, 179, 40, 30),
+                                ? const Color.fromARGB(255, 33, 134, 37)
+                                : const Color.fromARGB(255, 179, 40, 30),
                             BlendMode.srcIn,
                           ),
                         )

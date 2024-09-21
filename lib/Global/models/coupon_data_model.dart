@@ -9,7 +9,7 @@ part 'coupon_data_model.g.dart';
 class CouponDataModel {
   final String id;
   final String? couponType; // "lunch"
-  final String? couponDate; // "2024-07-06T00:00:00.000Z",
+  final DateTime? couponDate; // "2024-07-06T00:00:00.000Z",
   final int price; // 50,
   final int? couponFloor; // 1,
   final bool isVeg; // true,
@@ -40,7 +40,7 @@ class CouponDataModel {
   CouponDataModel copyWith({
     String? id,
     String? couponType,
-    String? couponDate,
+    DateTime? couponDate,
     int? price,
     int? couponFloor,
     bool? isVeg,
