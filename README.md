@@ -7,7 +7,7 @@
 <div align="center">
 Service made to allow transactions of mess coupons between IIIT-Bh Students.
 
-<a href="https://github.com/p-society/coupon-aggregator-client/releases/download/v1.0.0-alpha/app-release.apk">Download Android App</a>
+<a href="https://github.com/p-society/coupon-aggregator-client/releases/download/v1.0.0-alpha/app-armeabi-v7a-release.apk">Download Android App</a>
 
 <h2>Screenshots</h2>
 
