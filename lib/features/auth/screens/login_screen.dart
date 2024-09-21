@@ -7,6 +7,7 @@ import 'package:mess_mgmt/Global/widgets/custom_pwd_tile.dart';
 import 'package:mess_mgmt/Global/widgets/custom_text_field.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
 import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
+import 'package:mess_mgmt/features/auth/repository/auth_repo.dart';
 import 'package:mess_mgmt/features/auth/stores/auth_store.dart';
 
 import '../../../Global/widgets/scaffold_messenger.dart';
@@ -28,7 +29,11 @@ class _LoginScreenState extends State<LoginScreen>
 
   void login() async {
     if (!isValidate(_emailController.text)) {
-      showMessage(message: "Enter Valid Email", context: context);
+      showMessage(message: "Please Enter The Email", context: context);
+      return;
+    }
+    if (!AuthRepository.validateEmail(email: _emailController.text)) {
+      showMessage(message: "Enter Your Valid College Email-Id", context: context);
       return;
     }
     if (!isValidate(_pwdController.text)) {

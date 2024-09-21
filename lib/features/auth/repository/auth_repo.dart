@@ -33,4 +33,10 @@ class AuthRepository {
         await http.post(uri, body: data).timeout(const Duration(seconds: 7));
     return res;
   }
+
+  static bool validateEmail({required String email}) {
+    const String emailPattern = r'^[bB]\d{6}@iiit-bh\.ac\.in$';
+    RegExp expression = RegExp(emailPattern);
+    return expression.hasMatch(email.trim().toLowerCase());
+  }
 }
