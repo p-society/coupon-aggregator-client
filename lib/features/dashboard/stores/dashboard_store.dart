@@ -473,8 +473,6 @@ abstract class Dashboard with Store {
                 mealLimit: getLimit(type: model.mealTime)),
             userProfileStore.fetchSellingCouponList()
           ]);
-          isLoading = false;
-          appState.canDialogPop = true;
         } else {
           isCouponLoaded = false;
           appState.authError = const AuthErrorUnknownIssue();
@@ -490,6 +488,7 @@ abstract class Dashboard with Store {
       appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
+      appState.canDialogPop = true;
     }
   }
 

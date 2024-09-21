@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mess_mgmt/Global/Functions/format_date.dart';
 import 'package:mess_mgmt/Global/Functions/screen_transition.dart';
 import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/models/coupon_model.dart';
@@ -9,6 +10,7 @@ import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/Global/theme/app_theme.dart';
 import 'package:mess_mgmt/Global/widgets/custom_error_messenger.dart';
 import 'package:mess_mgmt/Global/widgets/loader.dart';
+import 'package:mess_mgmt/Global/widgets/scaffold_messenger.dart';
 import 'package:mess_mgmt/features/dashboard/screens/view_screen.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mess_mgmt/features/dashboard/widgets/dashboard_drawer.dart';
@@ -155,7 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             foregroundColor: Colors.white.withOpacity(0.8),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            appState.canDialogPop = true;
                           },
                           child: const Text("Cancel"),
                         ),
@@ -180,11 +182,20 @@ class _DashboardScreenState extends State<DashboardScreen>
                               Floor floor = selectedFloor;
                               MealType mealType = selectedMealType;
                               String cost = costController.text;
+                              int parsedCost = int.tryParse(cost) ?? 0;
+                              if (parsedCost == 0) {
+                                appState.canDialogPop = true;
+                                showMessage(
+                                    message: "Enter Valid Amount",
+                                    context: context);
+                                return;
+                              }
                               CouponModel model = CouponModel(
-                                  floor: floor,
-                                  mealTime: mealTimeType,
-                                  mealType: mealType,
-                                  cost: int.tryParse(cost) ?? 0);
+                                floor: floor,
+                                mealTime: mealTimeType,
+                                mealType: mealType,
+                                cost: parsedCost,
+                              );
                               await dashboardStore.sellCoupon(model);
                             },
                             child: const Text("Submit"),
@@ -401,7 +412,7 @@ class DateSelectionWidget extends StatelessWidget {
               child: Observer(builder: (context) {
                 final date = dashboardStore.date;
                 return Text(
-                  "${date.year}-${date.month}-${date.day}",
+                  date.getDate(),
                   style: const TextStyle(fontSize: 16),
                 );
               }),
