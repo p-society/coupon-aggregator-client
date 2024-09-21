@@ -26,39 +26,49 @@ class AuthErrorUserNotFound implements AuthError {
 class AuthErrorInvalidCredentails implements AuthError {
   const AuthErrorInvalidCredentails();
   @override
-  String get errorDescription => "Invalid Credentials";
+  String get errorDescription =>
+      "It seems like you have entered wrong email or password";
 
   @override
-  String get errorString => "It seems like you have entered wrong email or password";
+  String get errorString => "Invalid Credentials !";
 }
 
 @immutable
 class AuthErrorEmailAlreadyExist implements AuthError {
   const AuthErrorEmailAlreadyExist();
   @override
-  String get errorDescription => "Given emailid Already exist !";
+  String get errorDescription => "Given Email Id Already exist !";
 
   @override
   String get errorString => "Email Already Exist";
+}
+
+@immutable
+class AuthErrorMobileNumberAlreadyExist implements AuthError {
+  const AuthErrorMobileNumberAlreadyExist();
+  @override
+  String get errorDescription => "Given Mobile Number is already in use !";
+
+  @override
+  String get errorString => "Mobile Number Already Registered";
 }
 
 class AuthErrorNetworkIssue implements AuthError {
   const AuthErrorNetworkIssue();
 
   @override
-  String get errorDescription => "Connection error !";
+  String get errorDescription => "Please check your network and try again.";
 
   @override
-  String get errorString => "Please check your network and try again.";
+  String get errorString => "Connection error !";
 }
-
 
 class AuthErrorUnknownIssue implements AuthError {
   const AuthErrorUnknownIssue();
 
   @override
-  String get errorDescription => "Oops , Something Went wrong !";
+  String get errorDescription => "Please try again .";
 
   @override
-  String get errorString => "Please try again .";
+  String get errorString => "Something Went wrong !";
 }

@@ -27,6 +27,9 @@ abstract class Auth with Store {
   bool isSuccessfullyLoggedin = false;
 
   @observable
+  bool isSuccessfullySignedUp = false;
+
+  @observable
   AuthScreens currentAuthScreen = AuthScreens.loginScreen;
 
   @observable
@@ -52,6 +55,7 @@ abstract class Auth with Store {
         email: email,
         password: password,
       );
+
       if (res != null && res.statusCode == 201) {
         final data = jsonDecode(res.body);
         final sp = await SharedPreferences.getInstance();
@@ -95,17 +99,36 @@ abstract class Auth with Store {
   Future userSignUp() async {
     isLoading = true;
     try {
-      final res = await AuthRepository.userRegister(data: {
-        "fName": fName,
-        "lName": lName,
-        "email": email,
-        "password": password,
-        "mobileNumber": mobileNumber,
-      });
+      final res = await AuthRepository.userRegister(
+        data: {
+          "fName": fName,
+          "lName": lName,
+          "email": email,
+          "password": password,
+          "mobileNumber": mobileNumber,
+        },
+      );
       if (res != null && res.statusCode == 201) {
+        isLoading = false;
+        isSuccessfullySignedUp = true;
+        await Future.delayed(
+          const Duration(
+            milliseconds: 1,
+          ),
+        );
         currentAuthScreen = AuthScreens.loginScreen;
       } else if (res != null && res.statusCode == 409) {
+        String error = jsonDecode(res.body)['message'];
+        if (error == "email: value already exists.") {
+          appState.authError = const AuthErrorEmailAlreadyExist();
+        } else if (error == "mobileNumber: value already exists.") {
+          appState.authError = const AuthErrorMobileNumberAlreadyExist();
+        } else {
+          appState.authError = const AuthErrorUnknownIssue();
+        }
         appState.currentUser = null;
+      } else {
+        appState.authError = const AuthErrorUnknownIssue();
       }
     } on TimeoutException {
       appState.authError = const AuthErrorNetworkIssue();
@@ -117,6 +140,7 @@ abstract class Auth with Store {
       appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
+      isSuccessfullySignedUp = false;
     }
   }
 

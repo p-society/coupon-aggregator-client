@@ -243,8 +243,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           if (error != null && !isLoading) {
             showError(
               context,
-              error.errorDescription,
-              error.errorString,
+              description: error.errorDescription,
+              title: error.errorString,
             );
             appState.authError = null;
           }
@@ -253,7 +253,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Coupon Availability'),
+          title: const Text('IIIT CANTEEN'),
         ),
         drawer: const DashboardDrawer(),
         body: DecoratedBox(

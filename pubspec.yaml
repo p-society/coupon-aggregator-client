@@ -45,6 +45,7 @@ dependencies:
   http: ^1.2.2
   shimmer: ^3.0.0
   flutter_svg:
+  font_awesome_flutter: ^10.7.0
 
 
 dev_dependencies:

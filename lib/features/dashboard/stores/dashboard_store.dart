@@ -80,7 +80,6 @@ abstract class Dashboard with Store {
         return totalBreakfastAvailable;
       case MealTimeType.lunch:
         return totalLunchAvailable;
-
       case MealTimeType.dinner:
         return totalDinnerAvailable;
     }
@@ -109,10 +108,39 @@ abstract class Dashboard with Store {
 
   @computed
   PaginationEnum get currentPagination {
+    if (isFilterApplied) {
+      if (dashboardStore.currentViewPageTotal == currentTotal) {
+        return PaginationEnum.empty;
+      }
+      return PaginationEnum.initial;
+    }
     if (dashboardStore.currentViewPageTotal == currentViewList.length) {
       return PaginationEnum.empty;
     }
     return PaginationEnum.initial;
+  }
+
+  @computed
+  int get currentTotal {
+    switch (currentView) {
+      case MealTimeType.breakfast:
+        return breakfastCount;
+      case MealTimeType.lunch:
+        return lunchCount;
+      case MealTimeType.dinner:
+        return dinnerCount;
+    }
+  }
+
+  @computed
+  bool get isFilterApplied {
+    if (isFilterVeg ||
+        isFilterFirstFloor ||
+        isFilterGroundFloor ||
+        isFilterNonVeg) {
+      return true;
+    }
+    return false;
   }
 
   @computed
@@ -229,7 +257,9 @@ abstract class Dashboard with Store {
       if (jwt != null) {
         Map<String, dynamic> queryParams = {
           '\$limit': '10',
-          '\$skip': currentViewList.length.toString(),
+          '\$skip': isFilterApplied
+              ? currentTotal.toString()
+              : currentViewList.length.toString(),
           'couponType': currentView.intoString(),
           '\$populate': 'createdBy',
         };
@@ -537,7 +567,6 @@ abstract class Dashboard with Store {
       appState.authError = const AuthErrorNetworkIssue();
     } catch (e) {
       isCouponLoaded = false;
-
       appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;

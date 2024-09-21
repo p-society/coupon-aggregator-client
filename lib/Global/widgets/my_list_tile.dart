@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
+import 'package:mess_mgmt/features/dashboard/widgets/user_contact_option_dialog.dart';
 
 // ignore: must_be_immutable
 class MyListTile extends StatelessWidget {
@@ -14,93 +15,124 @@ class MyListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Row(
-      children: [
-        // Container(
-        //     height: 120,
-        //     padding: EdgeInsets.all(22),
-        //     decoration: BoxDecoration(
-        //         color: Colors.blue, borderRadius: BorderRadius.circular(12)),
-        //     child: RotatedBox(
-        //       quarterTurns: 3,
-        //       child: Text(
-        //         "${coupon.couponType}",
-        //         textAlign: TextAlign.center,
-        //         style: TextStyle(
-        //             color: Colors.white,
-        //             fontWeight: FontWeight.w600,
-        //             fontSize: 16),
-        //       ),
-        //     )),
-        // SizedBox(
-        //   width: 2,
-        // ),
-        Expanded(
-          child: Container(
-              padding: EdgeInsets.fromLTRB(8, 12, 8, 0),
-              decoration: BoxDecoration(
-                  color: Color.fromARGB(129, 15, 123, 211),
-                  borderRadius: BorderRadius.circular(12)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${coupon.createdBy?.fName}",
+          children: [
+            // Container(
+            //     height: 120,
+            //     padding: EdgeInsets.all(22),
+            //     decoration: BoxDecoration(
+            //         color: Colors.blue, borderRadius: BorderRadius.circular(12)),
+            //     child: RotatedBox(
+            //       quarterTurns: 3,
+            //       child: Text(
+            //         "${coupon.couponType}",
+            //         textAlign: TextAlign.center,
+            //         style: TextStyle(
+            //             color: Colors.white,
+            //             fontWeight: FontWeight.w600,
+            //             fontSize: 16),
+            //       ),
+            //     )),
+            // SizedBox(
+            //   width: 2,
+            // ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(8, 12, 8, 0),
+                decoration: BoxDecoration(
+                    // color: Color.fromARGB(129, 15, 123, 211),
+                    borderRadius: BorderRadius.circular(12)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${coupon.createdBy?.fName}",
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600)),
-                        Text("${coupon.couponDate}     ${coupon.couponFloor}",
-                            style: TextStyle(
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w500)),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
-                          child: Row(
-                            children: [
-                              Icon(Icons.phone,
-                                  color:
-                                      const Color.fromARGB(216, 255, 255, 255)),
-                              SizedBox(width: 20),
-                              Icon(Icons.chat,
-                                  color:
-                                      const Color.fromARGB(216, 255, 255, 255)),
-                            ],
+                              // color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        )
-                      ],
+                          Text(
+                            "Date : ${coupon.couponDate?.substring(0, 9) ?? ''}\nFloor : ${coupon.couponFloor}",
+                            style: TextStyle(
+                              // color: Colors.white70,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {},
+                                  child: Icon(
+                                    Icons.phone,
+                                    //   color: const Color.fromARGB(
+                                    //     216,
+                                    //     255,
+                                    //     255,
+                                    //     255,
+                                    //   ),
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                InkWell(
+                                  onTap: () {
+                                    showContactOptions(
+                                      context,
+                                      coupon.createdBy!.mobileNumber,
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.chat,
+                                    // color: const Color.fromARGB(
+                                    //   216,
+                                    //   255,
+                                    //   255,
+                                    //   255,
+                                    // ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("${coupon.price}",
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 28,
-                              fontWeight: FontWeight.w500)),
-                      SvgPicture.asset(
-                        "assets/svg_image/isVeg.svg",
-                        width: 60,
-                        height: 60,
-                        colorFilter: ColorFilter.mode(
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "₹ ${coupon.price}",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        SvgPicture.asset(
+                          "assets/svg_image/isVeg.svg",
+                          width: 60,
+                          height: 60,
+                          colorFilter: ColorFilter.mode(
                             coupon.isVeg
                                 ? Color.fromARGB(255, 33, 134, 37)
                                 : Color.fromARGB(255, 179, 40, 30),
-                            BlendMode.srcIn),
-                      )
-                    ],
-                  )
-                ],
-              )),
-        )
-      ],
-    ));
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ));
   }
 }

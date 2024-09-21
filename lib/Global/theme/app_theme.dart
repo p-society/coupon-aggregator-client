@@ -5,7 +5,7 @@ class AppTheme {
   static ThemeData lightTheme() {
     return ThemeData(
       scaffoldBackgroundColor: Colors.white,
-      primaryColor: primaryColor,
+      primaryColor: const Color.fromARGB(255, 21, 82, 187),
       colorScheme: ColorScheme.fromSwatch().copyWith(
         primary: primaryColor,
         secondary: Colors.lightBlueAccent,

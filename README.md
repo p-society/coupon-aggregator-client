@@ -26,13 +26,13 @@ Service made to allow transactions of mess coupons between IIIT-Bh Students.
 
 <h2>To setup locally</h2>
 
-1.Clone or Fork this repository along with [Coupon Aggregator backend](https://github.com/p-society/coupon-aggregator-server).
+<h3>1.Clone or Fork this repository along with [Coupon Aggregator backend](https://github.com/p-society/coupon-aggregator-server).</h3>
 
-2.Start the Coupon Aggregator server.
+<h3>2.Start the Coupon Aggregator server.</h3>
 
-3.Create a .env file.
+<h3>3.Create a .env file.</h3>
 
-4.Place the following in it.
+<h3>4.Place the following in it.</h3>
 ```bash
 Base_URL="http://10.0.2.2:3030/"
 ```
@@ -81,3 +81,7 @@ Made with [contributors-img](https://contributors-img.web.app).
 # License <a name="License"></a>
 
 GC-Server and GC-Client is licensed under [Apache License](https://github.com/p-society/coupon-aggregator-client/blob/master/LICENSE)
+
+
+# C o n t r i b u t i o n
+Contributions are welcome! Feel free to reach out with any queries regarding contributions.

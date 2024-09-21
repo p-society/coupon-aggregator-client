@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_endpoints.dart';
 import 'package:mess_mgmt/Global/Helper/API%20Helper/api_helper.dart';
@@ -26,10 +27,10 @@ class AuthRepository {
   static Future<http.Response?> userRegister({
     required Map<String, dynamic> data,
   }) async {
-      final uri = ApiHelper.getUri(urlEndpoint: ApiEndpoints.createUserApiEndpoint);
-      var res = await http.post(uri, body: data)
-        .timeout(const Duration(seconds: 7));
-      return res;
-  
+    final uri =
+        ApiHelper.getUri(urlEndpoint: ApiEndpoints.createUserApiEndpoint);
+    var res =
+        await http.post(uri, body: data).timeout(const Duration(seconds: 7));
+    return res;
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mess_mgmt/Global/Error%20Screen/network_error_screen.dart';
 import 'package:mess_mgmt/Global/dialogs/edit_coupon_dialog.dart';
 import 'package:mess_mgmt/Global/effects/shimmer_effect.dart';
+import 'package:mess_mgmt/Global/enums/enums.dart';
 import 'package:mess_mgmt/Global/enums/pagination_enum.dart';
 import 'package:mess_mgmt/Global/models/coupon_data_model.dart';
 import 'package:mess_mgmt/features/User%20Profile/store/user_profile_store.dart';
@@ -160,7 +162,7 @@ class UserSellingCouponWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -176,7 +178,7 @@ class UserSellingCouponWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${coupon.couponType} - ${coupon.couponDate?.substring(0, 10)}',
+                      '${mealTimeTypeMap[coupon.couponType]?.intoTitle()} - ${coupon.couponDate?.substring(0, 10)}',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ],
@@ -186,21 +188,43 @@ class UserSellingCouponWidget extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                if (coupon.isVeg) const Icon(Icons.eco, color: Colors.green),
-                const SizedBox(width: 8),
+                const Text(
+                  'Status: ',
+                ),
                 Text(
-                  'Status: ${coupon.status}',
+                  '${coupon.status?.toUpperCase()}',
                   style: TextStyle(
                     color:
-                        coupon.status == 'Active' ? Colors.green : Colors.red,
+                        coupon.status == 'active' ? Colors.green : Colors.red,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              '\$${coupon.price.toStringAsFixed(2)}',
-              style: Theme.of(context).textTheme.bodyMedium,
+            Row(
+              children: [
+                Text(
+                  'Available at : ',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  '₹ ${coupon.price}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const Spacer(),
+                SvgPicture.asset(
+                  "assets/svg_image/isVeg.svg",
+                  width: 60,
+                  height: 60,
+                  colorFilter: ColorFilter.mode(
+                    coupon.isVeg
+                        ? const Color.fromARGB(255, 33, 134, 37)
+                        : const Color.fromARGB(255, 179, 40, 30),
+                    BlendMode.srcIn,
+                  ),
+                )
+              ],
             ),
             const SizedBox(height: 4),
             Text(

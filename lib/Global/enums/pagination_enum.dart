@@ -19,6 +19,15 @@ extension PaginationEnumExtension on PaginationEnum {
         return const SizedBox();
       case PaginationEnum.initial:
         return ElevatedButton.icon(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  8,
+                ),
+              ),
+            ),
+          ),
           onPressed: onPressed,
           label: const Text('Load More !'),
         );
