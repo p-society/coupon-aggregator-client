@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:mess_mgmt/Global/Helper/Storage/storage_helper.dart';
 import 'package:mess_mgmt/Global/models/user_model.dart';
 import 'package:mess_mgmt/features/auth/error%20handling/auth_error.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'app_state_store.g.dart';
 
@@ -34,10 +34,11 @@ abstract class AppStateStore with Store {
   @action
   Future initialization() async {
     await validateSession();
+    final storage = StorageHelper.instance.storage;
     if (!isExpire) {
-      final sp = await SharedPreferences.getInstance();
-      jwt = sp.getString('JWT');
-      final json = sp.getString('userJsonString');
+      jwt = await storage.read(key: 'JWT');
+      final json = await storage.read(key: 'userJsonString');
+
       if (json != null) {
         currentUser = User.fromJson(jsonDecode(json));
       } else {
@@ -54,13 +55,18 @@ abstract class AppStateStore with Store {
 
   @action
   Future validateSession() async {
-    final sp = await SharedPreferences.getInstance();
-    final expireTime = sp.getInt('exp');
+    final storage = StorageHelper.instance.storage;
+    final expireTime = await storage.read(key: 'exp');
     if (expireTime != null) {
-      final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      if (currentTime >= expireTime) {
-        isExpire = true;
+      final exp = int.tryParse(expireTime);
+      if (exp != null) {
+        final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        if (currentTime >= exp) {
+          isExpire = true;
+        }
       }
+    }else{
+      isExpire = true;
     }
   }
 }

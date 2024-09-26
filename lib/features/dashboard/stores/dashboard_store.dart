@@ -488,6 +488,7 @@ abstract class Dashboard with Store {
       appState.authError = const AuthErrorUnknownIssue();
     } finally {
       isLoading = false;
+      Future.delayed(const Duration(milliseconds: 500));
       appState.canDialogPop = true;
     }
   }

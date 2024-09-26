@@ -40,12 +40,12 @@ dependencies:
   lottie: ^3.1.2
   pinput: ^5.0.0
   flutter_dotenv: ^5.1.0
-  shared_preferences: ^2.3.1
   json_annotation: ^4.9.0
   http: ^1.2.2
   shimmer: ^3.0.0
   flutter_svg:
   font_awesome_flutter: ^10.7.0
+  flutter_secure_storage: ^4.2.1
 
 
 dev_dependencies:
