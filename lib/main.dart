@@ -15,13 +15,15 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutt',
+      title: 'Coupon Aggregator',
       theme: AppTheme.lightTheme(),
       home: Observer(
         builder: (context) {
@@ -30,31 +32,6 @@ class MyApp extends StatelessWidget {
             return const DashboardScreen();
           }
           return const SwitchingAuthScreen();
-          // return ReactionBuilder(
-          //   builder: (context) {
-          //     return autorun((_) {
-          //       final isLoading = authStore.isLoading;
-          //       final authError = appState.authError;
-          //       final isSuccessLoggedIn = authStore.isSuccessfullyLoggedin;
-          //       final isSuccessSignedIn = authStore.isSuccessfullySignedUp;
-          //       if (!isLoading && authError != null) {
-          //         showError(
-          //           context,
-          //           authError.errorDescription,
-          //           authError.errorString,
-          //         );
-          //         appState.authError = null;
-          //       }
-          //       if (isSuccessLoggedIn) {
-          //         showSuccessLogin(context);
-          //       }
-          //       if (isSuccessSignedIn) {
-          //         showSuccessSignUp(context);
-          //       }
-          //     });
-          //   },
-          //   child: const SwitchingAuthScreen(),
-          // );
         },
       ),
     );
