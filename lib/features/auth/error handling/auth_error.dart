@@ -72,3 +72,23 @@ class AuthErrorUnknownIssue implements AuthError {
   @override
   String get errorString => "Something Went wrong !";
 }
+
+class MessageIssue implements AuthError {
+  const MessageIssue();
+
+  @override
+  String get errorDescription => "Please try again .";
+
+  @override
+  String get errorString => "We couldn't find the Message App";
+}
+
+class CallIssue implements AuthError {
+  const CallIssue();
+
+  @override
+  String get errorDescription => "Please try again .";
+
+  @override
+  String get errorString => "We couldn't find the Caller App";
+}

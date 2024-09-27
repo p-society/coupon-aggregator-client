@@ -58,8 +58,9 @@ class MyListTile extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     ContactHelper.sendSms(
-                                        coupon.createdBy!.mobileNumber,
-                                        "Hey I want to buy your coupon");
+                                      coupon.createdBy!.mobileNumber,
+                                      "Hey I want to buy your coupon",
+                                    );
                                   },
                                   child: const Icon(
                                     Icons.chat,
