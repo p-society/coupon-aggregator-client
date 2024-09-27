@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:mess_mgmt/Global/Helper/Storage/storage_helper.dart';
 import 'package:mess_mgmt/Global/models/user_model.dart';
 import 'package:mess_mgmt/features/auth/enums/auth_enum.dart';
 import 'package:mess_mgmt/features/auth/repository/auth_repo.dart';
 import 'package:mess_mgmt/features/dashboard/stores/dashboard_store.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../Global/store/app_state_store.dart';
 import '../error handling/auth_error.dart';
@@ -57,19 +57,22 @@ abstract class Auth with Store {
       );
 
       if (res != null && res.statusCode == 201) {
+        final storage = StorageHelper.instance.storage;
         final data = jsonDecode(res.body);
-        final sp = await SharedPreferences.getInstance();
         final jwt = data['accessToken'];
         if (jwt != null) {
-          sp.setString('JWT', jwt!);
+          storage.write(key: 'JWT', value: jwt!);
           appState.jwt = jwt;
           final userJson = data['user'];
           appState.currentUser = User.fromJson(userJson);
           final userJsonString = jsonEncode(userJson);
-          sp.setString('userJsonString', userJsonString);
+          storage.write(key: 'userJsonString', value: userJsonString);
           final expire = data['authentication']['payload']['exp'] as int;
           isSuccessfullyLoggedin = true;
-          await sp.setInt('exp', expire);
+          storage.write(
+            key: 'exp',
+            value: expire.toString(),
+          );
           await dashboardStore.fetchAllMeals();
         }
       } else if (res != null && res.statusCode == 401) {
@@ -146,12 +149,10 @@ abstract class Auth with Store {
 
   @action
   Future logout() async {
-    final sp = await SharedPreferences.getInstance();
-    final isRemoved = await sp.remove('JWT');
-    if (isRemoved) {
-      appState.currentUser = null;
-      appState.jwt = null;
-    }
+    final storage = StorageHelper.instance.storage;
+    await storage.delete(key: 'JWT');
+    appState.currentUser = null;
+    appState.jwt = null;
   }
 
   @action

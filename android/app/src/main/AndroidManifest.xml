@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <application
         android:label="Coupon Aggregator"
         android:name="${applicationName}"
@@ -42,5 +44,16 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- If your app checks for SMS support -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="sms" />
+          </intent>
+          <!-- If your app checks for call support -->
+          <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="tel" />
+          </intent>
     </queries>
+      
 </manifest>

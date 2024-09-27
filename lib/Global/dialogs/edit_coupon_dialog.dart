@@ -1,9 +1,11 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mess_mgmt/Global/store/app_state_store.dart';
 import 'package:mess_mgmt/features/User%20Profile/store/user_profile_store.dart';
 import 'package:mobx/mobx.dart';
+
 import '../enums/enums.dart';
 import '../models/coupon_data_model.dart';
 import '../widgets/loader.dart';
@@ -62,15 +64,14 @@ class _DialogWidgetState extends State<DialogWidget> {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), 
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white
-                  .withOpacity(0.3),
+              color: Colors.white.withOpacity(0.3),
               width: 1.5,
             ),
           ),
@@ -94,16 +95,14 @@ class _DialogWidgetState extends State<DialogWidget> {
                     labelText: "Floor",
                     labelStyle: TextStyle(
                       color: Colors.white,
-                    ), 
+                    ),
                   ),
                   items: Floor.values.map((Floor value) {
                     return DropdownMenuItem<Floor>(
                       value: value,
                       child: Text(
                         value.intoString(),
-                        style: const TextStyle(
-                            color: Colors
-                                .white), 
+                        style: const TextStyle(color: Colors.white),
                       ),
                     );
                   }).toList(),
@@ -205,8 +204,7 @@ class _DialogWidgetState extends State<DialogWidget> {
                           ),
                           builder: (context) {
                             return autorun((_) {
-                              final canDialogPop =
-                                  appState.canDialogPop;
+                              final canDialogPop = appState.canDialogPop;
                               if (canDialogPop) {
                                 Navigator.pop(context);
                               }

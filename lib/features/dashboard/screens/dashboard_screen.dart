@@ -56,6 +56,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   void input(BuildContext context, MealTimeType mealTimeType) {
+    dashboardStore.date = DateTime.now();
+    costController.text = '0';
+    selectedFloor = Floor.ground;
+    selectedMealType = MealType.nonVeg;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -165,11 +169,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           builder: (context) {
                             return autorun((_) {
                               final canDialogPop = appState.canDialogPop;
-                              if (canDialogPop) {
-                                dashboardStore.date = DateTime.now();
-                                costController.text = '0';
-                                selectedFloor = Floor.ground;
-                                selectedMealType = MealType.nonVeg;
+                              if (canDialogPop && !isLoading) {
                                 Navigator.pop(context);
                               }
                             });
