@@ -26,13 +26,13 @@ Service made to allow transactions of mess coupons between IIIT-Bh Students.
 
 <h2>To setup locally</h2>
 
-<h3>1.Clone or Fork this repository along with [Coupon Aggregator backend](https://github.com/p-society/coupon-aggregator-server).</h3>
+1.Clone or Fork this repository along with [Coupon Aggregator backend](https://github.com/p-society/coupon-aggregator-server).
 
-<h3>2.Start the Coupon Aggregator server.</h3>
+2.Start the Coupon Aggregator server.
 
-<h3>3.Create a .env file.</h3>
+3.Create a .env file.
 
-<h3>4.Place the following in it.</h3>
+4.Place the following in it.
 ```bash
 Base_URL="http://10.0.2.2:3030/"
 ```
